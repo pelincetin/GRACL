@@ -6,8 +6,8 @@ rule tokenize = parse
 | '-' { MINUS }
 | '*' { TIMES }
 | '/' { DIVIDE }
-| '=' { EQUALS }
+| '=' { ASSIGN }
 | ';' { SEMICOLON }
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
-| ['a'-'z']+ as lit  { VARIABLE(lit) }
+| ['a'-'z']+ as lit  { ID(lit) }
 | eof { EOF }
