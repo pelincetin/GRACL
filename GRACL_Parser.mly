@@ -91,4 +91,4 @@ expression:
 | expression LTEQ expression
 | MINUS expression %prec NEG 
 | NOT expression
-| ID DOT ID LPAREN  RPAREN
+| ID DOT ID LPAREN params RPAREN
