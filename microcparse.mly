@@ -5,7 +5,7 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
-%token NOT EQ NEQ LT LEQ GT GEQ AND OR
+%token NOT EQ LT LEQ AND OR
 %token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
 %token <int> LITERAL
 %token <bool> BLIT
@@ -20,8 +20,8 @@ open Ast
 %right ASSIGN
 %left OR
 %left AND
-%left EQ NEQ
-%left LT GT LEQ GEQ
+%left EQ 
+%left LT LEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
 %right NOT
@@ -55,8 +55,18 @@ formal_list:
 typ:
     INT   { Int   }
   | BOOL  { Bool  }
-  | FLOAT { Float }
+  | DOUBLE { Double }
   | VOID  { Void  }
+  | STRING { String }
+  | GRAPH { Graph }
+  | NODE { Node }
+  | EDGE { Edge }
+  | INTTABLE { Inttable }
+  | DOUBLETABLE { Doubletable }
+  | NODELIST { Nodelist }
+  | EDGELIST { Edgelist }
+  | LOCK { Lock }
+
 
 vdecl_list:
     /* nothing */    { [] }
@@ -85,7 +95,7 @@ expr_opt:
 
 expr:
     LITERAL          { Literal($1)            }
-  | FLIT	     { Fliteral($1)           }
+  | FLIT	           { Fliteral($1)           }
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
@@ -93,11 +103,8 @@ expr:
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
   | expr DIVIDE expr { Binop($1, Div,   $3)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
-  | expr NEQ    expr { Binop($1, Neq,   $3)   }
   | expr LT     expr { Binop($1, Less,  $3)   }
   | expr LEQ    expr { Binop($1, Leq,   $3)   }
-  | expr GT     expr { Binop($1, Greater, $3) }
-  | expr GEQ    expr { Binop($1, Geq,   $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | MINUS expr %prec NOT { Unop(Neg, $2)      }
