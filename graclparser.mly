@@ -26,8 +26,9 @@ open Ast
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %right NOT
+%left DOT
 
-%%                                 /* Table access, Hatch, Synch, Javalike function calls */
+%%     /* Javalike function calls (chainable), dec + init, fdecl vdecl b4 statements */
 
 program:
   decls EOF { $1 }
@@ -81,38 +82,42 @@ stmt_list:
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMI                               { Expr $1               }
-  | RETURN expr_opt SEMI                    { Return $2             }
-  | LBRACE stmt_list RBRACE                 { Block(List.rev $2)    }
-  | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)        }
-  | FOR LPAREN NODE ID IN ID RPAREN stmt    { NodeFor($4, $6, $8)   }
-  | FOR LPAREN EDGE ID IN ID RPAREN stmt    { EdgeFor($4, $6, $8)   }                                 
-  | WHILE LPAREN expr RPAREN stmt           { While($3, $5)         }
+    expr SEMI                                             { Expr $1                }
+  | RETURN expr_opt SEMI                                  { Return $2              }
+  | LBRACE stmt_list RBRACE                               { Block(List.rev $2)     }
+  | IF LPAREN expr RPAREN stmt ELSE stmt                  { If($3, $5, $7)         }
+  | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }
+  | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
+  | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
+  | HATCH expr ID LPAREN args_opt RPAREN stmt %prec HATCH { Hatch($2, $3, $5, $7)  }
+  | SYNCH expr LBRACE stmt_list RBRACE                    { Synch($2, List.rev $4) } /* SYNCH ID ... ? */
 
 expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
 
 expr:
-    LITERAL          { Literal($1)            }
-  | FLIT	           { Fliteral($1)           }
-  | BLIT             { BoolLit($1)            }
-  | ID               { Id($1)                 }
-  | expr PLUS   expr { Binop($1, Add,   $3)   }
-  | expr MINUS  expr { Binop($1, Sub,   $3)   }
-  | expr TIMES  expr { Binop($1, Mult,  $3)   }
-  | expr DIVIDE expr { Binop($1, Div,   $3)   }
-  | expr MODULO expr { Binop($1, Mod,   $3)   }
-  | expr EQ     expr { Binop($1, Equal, $3)   }
-  | expr LT     expr { Binop($1, Less,  $3)   }
-  | expr LEQ    expr { Binop($1, Leq,   $3)   }
-  | expr AND    expr { Binop($1, And,   $3)   }
-  | expr OR     expr { Binop($1, Or,    $3)   }
-  | MINUS expr %prec NOT { Unop(Neg, $2)      }
-  | NOT expr         { Unop(Not, $2)          }
-  | ID ASSIGN expr   { Assign($1, $3)         }
-  | ID LPAREN args_opt RPAREN { Call($1, $3)  }
-  | LPAREN expr RPAREN { $2                   }
+    LITERAL          { Literal($1)                       }
+  | FLIT	         { Fliteral($1)                      }
+  | BLIT             { BoolLit($1)                       }
+  | ID               { Id($1)                            }
+  | expr PLUS   expr { Binop($1, Add,   $3)              }
+  | expr MINUS  expr { Binop($1, Sub,   $3)              }
+  | expr TIMES  expr { Binop($1, Mult,  $3)              }
+  | expr DIVIDE expr { Binop($1, Div,   $3)              }
+  | expr MODULO expr { Binop($1, Mod,   $3)              }
+  | expr EQ     expr { Binop($1, Equal, $3)              }
+  | expr LT     expr { Binop($1, Less,  $3)              }
+  | expr LEQ    expr { Binop($1, Leq,   $3)              }
+  | expr AND    expr { Binop($1, And,   $3)              }
+  | expr OR     expr { Binop($1, Or,    $3)              }
+  | MINUS expr %prec NOT { Unop(Neg, $2)                 }
+  | NOT expr         { Unop(Not, $2)                     }
+  | ID ASSIGN expr   { Assign($1, $3)                    }
+  | ID LPAREN args_opt RPAREN { Call($1, $3)             }
+  | ID LBRACK ID RBRACK { Access($1, $3)                 }
+  | ID LBRACK ID RBRACK ASSIGN expr { Insert($1, $3, $6) }
+  | LPAREN expr RPAREN { $2                              }
 
 args_opt:
     /* nothing */ { [] }

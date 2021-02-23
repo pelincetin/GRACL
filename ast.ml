@@ -20,6 +20,8 @@ type expr =
   | Unop of uop * expr
   | Assign of string * expr
   | Call of string * expr list
+  | Access of string * string
+  | Insert of string * string * expr
   | Noexpr
 
 type stmt =
@@ -27,9 +29,11 @@ type stmt =
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | NodeFor of expr * expr * stmt (* Should just be Id * Id, not expr * expr *)
-  | EdgeFor of expr * expr * stmt (* Should just be Id * Id, not expr * expr *)
+  | NodeFor of string * string * stmt 
+  | EdgeFor of string * string * stmt 
   | While of expr * stmt
+  | Hatch of expr * string * expr list * stmt
+  | Synch of expr * stmt list
 
 type func_decl = {
     typ : typ;
@@ -72,6 +76,8 @@ let rec string_of_expr = function
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+  | Access(t, n) -> t ^ "[" ^ n ^ "]"
+  | Insert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_expr e
   | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -81,11 +87,13 @@ let rec string_of_stmt = function
   | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | NodeFor(id1, id2, s) -> "for (Node " ^ string_of_expr id1 ^ " in " ^ string_of_expr id2 ^
-      ") " ^ string_of_stmt s
-  | EdgeFor(id1, id2, s) -> "for (Edge " ^ string_of_expr id1 ^ " in " ^ string_of_expr id2 ^
-      ") " ^ string_of_stmt s
+  | NodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_stmt s
+  | EdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | Hatch(e, f, el, s) -> "hatch " ^ string_of_expr e ^ 
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
+  | Synch(l, stmts) -> "synch " ^ string_of_expr l ^ 
+      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
 
 let string_of_typ = function
     Int -> "int"
