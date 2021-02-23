@@ -28,7 +28,7 @@ open Ast
 %right NOT
 %left DOT
 
-%%     /* Javalike function calls (chainable), dec + init, fdecl vdecl b4 statements */
+%%     
 
 program:
   decls EOF { $1 }
@@ -39,12 +39,17 @@ decls:
  | decls fdecl { (fst $1, ($2 :: snd $1)) }
 
 fdecl:
-   typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
+   typ ID LPAREN formals_opt RPAREN LBRACE func_body RBRACE
      { { typ = $1;
 	 fname = $2;
 	 formals = List.rev $4;
-	 locals = List.rev $7;
-	 body = List.rev $8 } }
+	 locals = List.rev fst $7;
+	 body = List.rev snd $7 } }
+
+func_body:
+    /* nothing */     { ([], [])                 }
+  | func_body vdecl   { (($2 :: fst $1), snd $1) }
+  | func_body stmt    { (fst $1, ($2 :: snd $1)) }
 
 formals_opt:
     /* nothing */ { [] }
@@ -69,13 +74,9 @@ typ:
   | EDGELIST { Edgelist }
   | LOCK { Lock }
 
-
-vdecl_list:
-    /* nothing */    { [] }
-  | vdecl_list vdecl { $2 :: $1 }
-
 vdecl:
-   typ ID SEMI { ($1, $2) }
+   typ ID SEMI { Dec($1, $2) }
+   | typ ID ASSIGN expr SEMI { Decinit($1, $2, $4) }
 
 stmt_list:
     /* nothing */  { [] }
@@ -116,9 +117,14 @@ expr:
   | NOT expr         { Unop(Not, $2)                     }
   | ID ASSIGN expr   { Assign($1, $3)                    }
   | ID LPAREN args_opt RPAREN { Call($1, $3)             }
+  | ID DOT call_chain    { Method($1, List.rev $3)       }
   | ID LBRACK ID RBRACK { Access($1, $3)                 }
   | ID LBRACK ID RBRACK ASSIGN expr { Insert($1, $3, $6) }
   | LPAREN expr RPAREN { $2                              }
+
+call_chain:
+    ID LPAREN args_opt RPAREN                { [($1, $3)]     }
+  | call_chain DOT ID LPAREN args_opt RPAREN { ($3, $5) :: $1 }
 
 args_opt:
     /* nothing */ { [] }

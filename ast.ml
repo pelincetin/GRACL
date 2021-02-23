@@ -8,8 +8,6 @@ type uop = Neg | Not
 type typ = Int | Bool | Void | Double | String | Graph | Node | Edge |
            Inttable | Doubletable | Nodelist | Edgelist | Lock
 
-type bind = typ * string
-
 type expr =
     Literal of int
   | Fliteral of string
@@ -22,7 +20,14 @@ type expr =
   | Call of string * expr list
   | Access of string * string
   | Insert of string * string * expr
+  | Method of string * (string * expr list) list
   | Noexpr
+
+type bind = 
+    Dec of typ * string
+  | Decinit of typ * string * expr
+
+type formal = typ * string
 
 type stmt =
     Block of stmt list
@@ -38,7 +43,7 @@ type stmt =
 type func_decl = {
     typ : typ;
     fname : string;
-    formals : bind list;
+    formals : formal list;
     locals : bind list;
     body : stmt list;
   }
@@ -78,6 +83,8 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Access(t, n) -> t ^ "[" ^ n ^ "]"
   | Insert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_expr e
+  | Method(obj, calls) -> obj ^ "." ^ String.concat "." 
+    (List.map  (fun (f, el) -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")") calls)
   | Noexpr -> ""
 
 let rec string_of_stmt = function
@@ -110,7 +117,9 @@ let string_of_typ = function
   | Edgelist -> "EdgeList"
   | Lock -> "Lock"
 
-let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
+let string_of_vdecl = function
+| Dec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"
+| Decinit(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
 
 let string_of_fdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
