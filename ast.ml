@@ -1,11 +1,12 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Mult | Div | Equal | Less | Leq | 
+type op = Add | Sub | Mult | Div | Mod | Equal | Less | Leq | 
           And | Or
 
 type uop = Neg | Not
 
-type typ = Int | Bool | Void
+type typ = Int | Bool | Void | Double | String | Graph | Node | Edge |
+           Inttable | Doubletable | Nodelist | Edgelist | Lock
 
 type bind = typ * string
 
@@ -46,6 +47,7 @@ let string_of_op = function
   | Sub -> "-"
   | Mult -> "*"
   | Div -> "/"
+  | Mod -> "%"
   | Equal -> "=="
   | Less -> "<"
   | Leq -> "<="
@@ -88,6 +90,16 @@ let string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
+  | Double -> "double"
+  | String -> "String"
+  | Graph -> "Graph"
+  | Node -> "Node"
+  | Edge -> "Edge"
+  | Inttable -> "IntTable"
+  | Doubletable -> "DoubleTable"
+  | Nodelist -> "NodeList"
+  | Edgelist -> "EdgeList"
+  | Lock -> "Lock"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

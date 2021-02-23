@@ -4,12 +4,13 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE COMMA PLUS MINUS TIMES DIVIDE ASSIGN
+%token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
 %token NOT EQ LT LEQ AND OR
-%token RETURN IF ELSE FOR WHILE INT BOOL FLOAT VOID
+%token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
+%token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH LOCK EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
 %token <bool> BLIT
-%token <string> ID FLIT
+%token <string> ID FLIT SLIT
 %token EOF
 
 %start program
@@ -22,8 +23,9 @@ open Ast
 %left AND
 %left EQ 
 %left LT LEQ
+%nonassoc HATCH SYNCH
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MODULO
 %right NOT
 
 %%
@@ -102,6 +104,7 @@ expr:
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mult,  $3)   }
   | expr DIVIDE expr { Binop($1, Div,   $3)   }
+  | expr MODULO expr { Binop($1, Mod,   $3)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr LT     expr { Binop($1, Less,  $3)   }
   | expr LEQ    expr { Binop($1, Leq,   $3)   }
