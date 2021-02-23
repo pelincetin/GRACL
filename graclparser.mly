@@ -100,6 +100,7 @@ expr:
     LITERAL          { Literal($1)                       }
   | FLIT	         { Fliteral($1)                      }
   | BLIT             { BoolLit($1)                       }
+  | SLIT             { Sliteral($1)                      }
   | ID               { Id($1)                            }
   | expr PLUS   expr { Binop($1, Add,   $3)              }
   | expr MINUS  expr { Binop($1, Sub,   $3)              }
