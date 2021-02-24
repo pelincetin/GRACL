@@ -46,7 +46,6 @@ rule token = parse
 | "Node"   { NODE }
 | "Edge"   { EDGE }
 | "Graph"  { GRAPH }
-| "Lock"   { LOCK }
 | "EdgeList" { EDGELIST }
 | "NodeList" { NODELIST }
 | "IntTable" { INTTABLE }
@@ -68,6 +67,3 @@ and comment = parse
 and slcomment = parse 
   '\n' { token lexbuf }
 | _ { slcomment lexbuf }
-
-
-

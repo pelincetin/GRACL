@@ -7,7 +7,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
 %token NOT EQ LT LEQ AND OR
 %token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
-%token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH LOCK EDGELIST NODELIST INTTABLE DOUBLETABLE 
+%token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID FLIT SLIT
@@ -72,7 +72,6 @@ typ:
   | DOUBLETABLE { Doubletable }
   | NODELIST { Nodelist }
   | EDGELIST { Edgelist }
-  | LOCK { Lock }
 
 vdecl:
    typ ID SEMI { Dec($1, $2) }
@@ -91,7 +90,7 @@ stmt:
   | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
   | HATCH expr ID LPAREN args_opt RPAREN stmt %prec HATCH { Hatch($2, $3, $5, $7)  }
-  | SYNCH expr LBRACE stmt_list RBRACE                    { Synch($2, List.rev $4) } /* SYNCH ID ... ? */
+  | SYNCH ID LBRACE stmt_list RBRACE                      { Synch($2, List.rev $4) }
 
 expr_opt:
     /* nothing */ { Noexpr }

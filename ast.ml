@@ -6,7 +6,7 @@ type op = Add | Sub | Mult | Div | Mod | Equal | Less | Leq |
 type uop = Neg | Not
 
 type typ = Int | Bool | Void | Double | String | Graph | Node | Edge |
-           Inttable | Doubletable | Nodelist | Edgelist | Lock
+           Inttable | Doubletable | Nodelist | Edgelist 
 
 type expr =
     Literal of int
@@ -38,7 +38,7 @@ type stmt =
   | EdgeFor of string * string * stmt 
   | While of expr * stmt
   | Hatch of expr * string * expr list * stmt
-  | Synch of expr * stmt list
+  | Synch of string * stmt list
 
 type func_decl = {
     typ : typ;
@@ -99,7 +99,7 @@ let rec string_of_stmt = function
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Hatch(e, f, el, s) -> "hatch " ^ string_of_expr e ^ 
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
-  | Synch(l, stmts) -> "synch " ^ string_of_expr l ^ 
+  | Synch(l, stmts) -> "synch " ^ l ^ 
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
 
 let string_of_typ = function
@@ -115,7 +115,6 @@ let string_of_typ = function
   | Doubletable -> "DoubleTable"
   | Nodelist -> "NodeList"
   | Edgelist -> "EdgeList"
-  | Lock -> "Lock"
 
 let string_of_vdecl = function
 | Dec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"
