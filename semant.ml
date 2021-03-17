@@ -93,7 +93,7 @@ let check (globals, functions) =
 
     (* Build local symbol table of variables for this function *)
     let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
-	                StringMap.empty (globals @ func.formals @ func.locals )
+	                StringMap.empty ((List.map strip_val globals) @ func.formals @ (List.map strip_val func.locals) )
     in
 
     (* Return a variable from our local symbol table *)
@@ -105,7 +105,7 @@ let check (globals, functions) =
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr = function
         Literal  l -> (Int, SLiteral l)
-      | Fliteral l -> (Float, SFliteral l)
+      | Fliteral l -> (Double, SFliteral l)
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
@@ -119,7 +119,7 @@ let check (globals, functions) =
       | Unop(op, e) as ex -> 
           let (t, e') = expr e in
           let ty = match op with
-            Neg when t = Int || t = Float -> t
+            Neg when t = Int || t = Double -> t
           | Not when t = Bool -> Bool
           | _ -> raise (Failure ("illegal unary operator " ^ 
                                  string_of_uop op ^ string_of_typ t ^
@@ -133,10 +133,10 @@ let check (globals, functions) =
           (* Determine expression type based on operator and operand types *)
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
-          | Add | Sub | Mult | Div when same && t1 = Float -> Float
+          | Add | Sub | Mult | Div when same && t1 = Double -> Double
           | Equal           when same               -> Bool
           | Less | Leq 
-                     when same && (t1 = Int || t1 = Float) -> Bool
+                     when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
           | _ -> raise (
 	      Failure ("illegal binary operator " ^
@@ -199,7 +199,7 @@ let check (globals, functions) =
     in (* body of check_function *)
     { styp = func.typ;
       sfname = func.fname;
-      sformals = func.formals;
+      sformals = func.formals; 
       slocals  = func.locals;
       sbody = match check_stmt (Block func.body) with
 	SBlock(sl) -> sl

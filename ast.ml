@@ -23,7 +23,7 @@ type expr =
   | Method of string * (string * expr list) list
   | Noexpr
 
-type bind = 
+type bind =  (* Consider OPT type *)
     Dec of typ * string
   | Decinit of typ * string * expr
 
@@ -71,8 +71,9 @@ let string_of_uop = function
 let name_of_bind = function
     Dec(_, n) -> n
   | Decinit(_, n, _) -> n
-
-
+let strip_val = function
+    Dec(a, b) -> (a, b)
+  | Decinit(a, b, _) -> (a, b)
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | Fliteral(l) -> l
