@@ -68,6 +68,11 @@ let string_of_uop = function
     Neg -> "-"
   | Not -> "!"
 
+let name_of_bind = function
+    Dec(_, n) -> n
+  | Decinit(_, n, _) -> n
+
+
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | Fliteral(l) -> l

@@ -44,8 +44,8 @@ fdecl:
      { { typ = $1;
 	 fname = $2;
 	 formals = List.rev $4;
-	 locals = List.rev fst $7;
-	 body = List.rev snd $7 } }
+	 locals = List.rev ( fst $7 );
+	 body = List.rev ( snd $7 ) } }
 
 func_body:
     /* nothing */     { ([], [])                 }
