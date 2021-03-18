@@ -1,0 +1,8 @@
+int main() {
+    print("Hello, World!");
+    return 0;
+
+    /*
+        Need String type, assignment, printing, main (might come from LLVM), returns
+    */
+}

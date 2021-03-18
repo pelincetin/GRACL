@@ -14,7 +14,7 @@ let () =
     ("-c", Arg.Unit (set_action Compile),
       "Check and print the generated LLVM IR (default)");
   ] in  
-  let usage_msg = "usage: ./gracl.native [-a|-s|-l|-c] [file.mc]" in
+  let usage_msg = "usage: ./gracl.native [-a|-s|-l|-c] [file.grc]" in
   let channel = ref stdin in
   Arg.parse speclist (fun filename -> channel := open_in filename) usage_msg;
   
@@ -26,8 +26,8 @@ let () =
     match !action with
       Ast     -> ()
     | Sast    -> print_string (Sast.string_of_sprogram sast)
-    (*| LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate sast))
+    | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate sast))
     | Compile -> let m = Codegen.translate sast in
 	Llvm_analysis.assert_valid_module m;
 	print_string (Llvm.string_of_llmodule m)
-    *)
+    

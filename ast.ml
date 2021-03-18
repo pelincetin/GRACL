@@ -37,7 +37,7 @@ type stmt =
   | NodeFor of string * string * stmt 
   | EdgeFor of string * string * stmt 
   | While of expr * stmt
-  | Hatch of expr * string * expr list * stmt
+  | Hatch of string * string * expr list * stmt 
   | Synch of string * stmt list
 
 type func_decl = {
@@ -104,7 +104,7 @@ let rec string_of_stmt = function
   | NodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_stmt s
   | EdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-  | Hatch(e, f, el, s) -> "hatch " ^ string_of_expr e ^ 
+  | Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
   | Synch(l, stmts) -> "synch " ^ l ^ 
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"

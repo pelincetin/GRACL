@@ -91,7 +91,7 @@ stmt:
   | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }
   | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
-  | HATCH expr ID LPAREN args_opt RPAREN stmt %prec HATCH { Hatch($2, $3, $5, $7)  }
+  | HATCH ID ID LPAREN args_list RPAREN stmt              { Hatch($2, $3, $5, $7)  }
   | SYNCH ID LBRACE stmt_list RBRACE                      { Synch($2, List.rev $4) }
 
 expr_opt:

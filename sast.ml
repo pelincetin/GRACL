@@ -26,7 +26,7 @@ type sstmt =
   | SNodeFor of string * string * sstmt 
   | SEdgeFor of string * string * sstmt 
   | SWhile of sexpr * sstmt
-  (*| Hatch of expr * string * expr list * stmt *)
+  (*| SHatch of string * string * expr list * stmt *)
   | SSynch of string * sstmt list
 
 
@@ -75,8 +75,8 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
   | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  (*| Hatch(e, f, el, s) -> "hatch " ^ string_of_expr e ^ 
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s *)
+  (*| Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
+      f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ") " ^ string_of_sstmt s *)
   | SSynch(l, stmts) -> "synch " ^ l ^ 
       "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
 let string_of_sfdecl fdecl =
