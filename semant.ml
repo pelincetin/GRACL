@@ -36,11 +36,12 @@ let check (globals, functions) =
   (* Collect function declarations for built-in functions: no bodies *) (*BUILTIN FUNCTIONS*)
   let built_in_decls = 
     let add_bind map (name, ty) = StringMap.add name {
-      typ = Void;
+      typ = Void; (*TODO: ALLOW FOR NONVOID RETURNS/MORE VARIETY IN FORMALS FOR STANDARD FUNCTIONS, HARD CODE?*)
       fname = name; 
       formals = [(ty, "x")];
       locals = []; body = [] } map
     in List.fold_left add_bind StringMap.empty [ ("print", String);
+                               ("printi", Int);
 			                         (*("printb", Bool); DELETED *)
 			                         (*("printf", Float); DELETED *)
 			                         ("printbig", Int) ]
@@ -173,14 +174,14 @@ let check (globals, functions) =
         Expr e -> SExpr (expr e)
       | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
       | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
-      | Return e -> let (t, e') = expr e in
+      | Return e -> let (t, e') = expr e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
         if t = func.typ then SReturn (t, e') 
         else raise (
 	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
 		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
 	    
 	    (* A block is correct if each statement is correct and nothing
-	       follows any Return statement.  Nested blocks are flattened. *)
+	       follows any Return statement.  Nested blocks are flattened. *)   (* TODO: HOW IS SCOPING HANDLED? *)
       | Block sl -> 
           let rec check_stmt_list = function
               [Return _ as s] -> [check_stmt s]

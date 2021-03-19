@@ -1,0 +1,14 @@
+int a;
+double b;
+
+void foo(int c, double d)    
+{
+  int d;
+  double e;
+  b + a; /* Error: float + int */
+}
+
+int main()
+{
+  return 0;
+}

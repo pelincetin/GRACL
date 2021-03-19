@@ -42,7 +42,7 @@ let translate (globals, functions) =
     | A.Void  -> void_t
     | A.String -> string_t
   in
-(*
+
   (* Create a map of global variables after creating each *)
   let global_vars : L.llvalue StringMap.t =
     let global_var m (t, n) = 
@@ -51,11 +51,12 @@ let translate (globals, functions) =
         | _ -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
-*)
+
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| string_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
+
 (*
   let printbig_t : L.lltype =
       L.function_type i32_t [| i32_t |] in
@@ -78,10 +79,10 @@ let translate (globals, functions) =
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
-    (*let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder
-    and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
-    let string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
-(*
+    let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder and
+    (*and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
+     string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
+
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
        value, if appropriate, and remember their values in the "locals" map *)
@@ -109,7 +110,7 @@ let translate (globals, functions) =
     let lookup n = try StringMap.find n local_vars
                    with Not_found -> StringMap.find n global_vars
     in
-*)
+
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
 	SLiteral i  -> L.const_int i32_t i
@@ -117,9 +118,9 @@ let translate (globals, functions) =
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
       | SFliteral l -> L.const_float_of_string double_t l
       | SNoexpr     -> L.const_int i32_t 0
-      (*| SId s       -> L.build_load (lookup s) s builder 
+      | SId s       -> L.build_load (lookup s) s builder 
       | SAssign (s, e) -> let e' = expr builder e in
-                          ignore(L.build_store e' (lookup s) builder); e' *)
+                          ignore(L.build_store e' (lookup s) builder); e' 
       | SBinop ((A.Double,_ ) as e1, op, e2) ->
 	  let e1' = expr builder e1
 	  and e2' = expr builder e2 in
@@ -164,6 +165,8 @@ let translate (globals, functions) =
 	    "printf" builder *)
       | SCall("print", [e]) ->  (* New line when printing *)
          L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
+      | SCall("printi", [e]) ->  (* New line when printing *)
+         L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
