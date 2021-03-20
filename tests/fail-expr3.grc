@@ -5,7 +5,7 @@ void foo(int c, double d)
 {
   int d;
   double e;
-  b + a; /* Error: float + int */
+  b + a; /* Error: double + int */
 }
 
 int main()
