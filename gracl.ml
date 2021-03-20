@@ -2,6 +2,8 @@
    check the resulting AST and generate an SAST from it, generate LLVM IR,
    and dump the module, borrowed from MicroC *)
 
+open Ast (* TODO: REMOVE THIS *)
+
 type action = Ast | Sast | LLVM_IR | Compile
 
 let () =
@@ -22,10 +24,11 @@ let () =
   let ast = Graclparser.program Scanner.token lexbuf in  
   match !action with
     Ast -> print_string (Ast.string_of_program ast)
-  | _ -> let sast = Semant.check ast in
+  | _ -> let sast1 = Semant.check ast in
+  let sast = (List.map strip_val (fst sast1), snd sast1 ) in             (* TODO: REMOVE THIS *)
     match !action with
       Ast     -> ()
-    | Sast    -> print_string (Sast.string_of_sprogram sast)
+    | Sast    -> print_string (Sast.string_of_sprogram sast1)
     | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate sast))
     | Compile -> let m = Codegen.translate sast in
 	Llvm_analysis.assert_valid_module m;
