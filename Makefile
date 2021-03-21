@@ -13,7 +13,7 @@ gracl.native :
 
 .PHONY: gracllib
 gracllib: gracllib.c 
-	$(CC) $(CFLAGS) -o gracllib gracllib.c
+	$(CC) $(CFLAGS) -pthread -o gracllib gracllib.c
 
 .PHONY : codegen
 codegen: 
