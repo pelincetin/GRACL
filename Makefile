@@ -30,10 +30,10 @@ helloworld:
 .PHONY : clean
 clean :
 	ocamlbuild -clean
-	rm -rf testall.log ocamlllvm *.diff *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
+	rm -rf testall.log ocamlllvm *.diff *.mli graclparser.ml gracllib *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
 
 # removes some generated files while keeping those useful for debugging
 .PHONY : debugclean
 debugclean:
 	ocamlbuild -clean
-	rm -rf ocamlllvm *.mli graclparser.ml *.output gracl.native gracllib *.cmi *.cmo *.out *.s *.exe 
+	rm -rf ocamlllvm *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.s *.exe 
