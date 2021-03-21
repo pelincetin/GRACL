@@ -4,10 +4,16 @@
 # packages, enabling warnings
 #
 # See https://github.com/ocaml/ocamlbuild/blob/master/manual/manual.adoc
+CC = gcc
+CFLAGS = -g -Wall
 
 gracl.native :
 	opam config exec -- \
 	ocamlbuild -use-ocamlfind gracl.native
+
+.PHONY: gracllib
+gracllib: gracllib.c 
+	$(CC) $(CFLAGS) -o gracllib gracllib.c
 
 .PHONY : codegen
 codegen: 
@@ -30,4 +36,4 @@ clean :
 .PHONY : debugclean
 debugclean:
 	ocamlbuild -clean
-	rm -rf ocamlllvm *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.s *.exe 
+	rm -rf ocamlllvm *.mli graclparser.ml *.output gracl.native gracllib *.cmi *.cmo *.out *.s *.exe 
