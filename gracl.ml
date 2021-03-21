@@ -2,7 +2,7 @@
    check the resulting AST and generate an SAST from it, generate LLVM IR,
    and dump the module, borrowed from MicroC *)
 
-open Ast (* TODO: REMOVE THIS *)
+open Sast (* TODO: REMOVE THIS *)
 
 type action = Ast | Sast | LLVM_IR | Compile
 
@@ -25,7 +25,7 @@ let () =
   match !action with
     Ast -> print_string (Ast.string_of_program ast)
   | _ -> let sast1 = Semant.check ast in
-  let sast = (List.map strip_val (fst sast1), snd sast1 ) in             (* TODO: REMOVE THIS *)
+  let sast = (List.map strip_sval (fst sast1), snd sast1 ) in             (* TODO: REMOVE THIS *)
     match !action with
       Ast     -> ()
     | Sast    -> print_string (Sast.string_of_sprogram sast1)

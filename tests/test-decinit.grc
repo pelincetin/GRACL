@@ -1,0 +1,11 @@
+int glob = 123;
+String me = "Are you";
+int main()
+{
+  int a = 42;
+  String you = "me?";
+  printi(glob);
+  print(me);
+  print(you);
+  printi(a);
+}

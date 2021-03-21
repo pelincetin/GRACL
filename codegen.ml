@@ -102,7 +102,7 @@ let translate (globals, functions) =
 
       let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
           (Array.to_list (L.params the_function)) in
-      List.fold_left add_local formals ( List.map A.strip_val fdecl.slocals )                            (* TODO: UNHIDE DECINIT BEHAVIOR *)
+      List.fold_left add_local formals ( List.map strip_sval fdecl.slocals )                            (* TODO: UNHIDE DECINIT BEHAVIOR *)
     in
 
     (* Return the value for a variable or formal argument.
