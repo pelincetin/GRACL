@@ -8,19 +8,37 @@ pthread_mutex_t lock;
 pthread_t tid[2];
 int counter;
 
-int synch_start(){
-     if (pthread_mutex_init(&lock, NULL) != 0)
+int synch_init(){
+    if (pthread_mutex_init(&lock, NULL) != 0)
     {
         printf("\n mutex init failed\n");
-        return 1;
+        return -1;
     }
-    pthread_mutex_lock(&lock);
+    return 0;
+}
+
+int synch_start(){
+    if (pthread_mutex_lock(&lock) != 0)
+    {
+        printf("\n locking failed\n");
+        return -1;
+    }
     return 0;
 }
 
 int synch_end(){
-    pthread_mutex_unlock(&lock);
-    pthread_mutex_destroy(&lock);
+    if(pthread_mutex_unlock(&lock) != 0){
+        printf("\n mutex is not valid, unlock failed\n");
+        return -1;
+    }
+    return 0;
+}
+
+int synch_destroy(){
+    if(pthread_mutex_destroy(&lock) != 0){
+        printf("\n mutex is not valid, destroy failed\n");
+        return -1;
+    }
     return 0;
 }
 
@@ -45,7 +63,9 @@ int main(){
     // testing of synch
     int i = 0;
     int err;
-    
+
+    synch_init();
+
     while(i < 2)
     {
         err = pthread_create(&(tid[i]), NULL, &testSync, NULL);
@@ -56,6 +76,7 @@ int main(){
 
     pthread_join(tid[0], NULL);
     pthread_join(tid[1], NULL);
+    synch_destroy();
 
     return 0;
 }
