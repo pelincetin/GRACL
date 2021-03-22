@@ -104,9 +104,7 @@ let check (globals, functions) =
                        string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                        string_of_typ t2 ^ " in " ^ string_of_expr e))
           in (ty, SBinop((t1, e1'), op, (t2, e2')))
-      | _ as ex -> raise (Failure ("initializer element " ^ string_of_expr ex ^ "is not a compile time constant"))
-     (* 
-      | Method(obj, calls) *)
+      | _ as ex -> raise (Failure ("initializer element " ^ string_of_expr ex ^ " is not a compile time constant"))
     in function
   | Decinit(t, n, e) as di -> 
         let (rt, ex) = constexpr e 
@@ -207,7 +205,7 @@ let check (globals, functions) =
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
-     (* | Access(table, key)
+     (* TODO: | Access(table, key)
       | Insert(table, key, ex)
       | Method(obj, calls) *)
     in
@@ -249,7 +247,7 @@ let check (globals, functions) =
             | s :: ss         -> check_stmt s :: check_stmt_list ss
             | []              -> []
           in SBlock(check_stmt_list sl)
-      (*
+      (* TODO:
       | NodeFor 
       | EdgeFor
       | Hatch 
