@@ -1,0 +1,14 @@
+int glob = 120 - -3;
+//String me = "Are you";
+int main()
+{
+  int a = 42;
+  int b = a + 5;
+  String you = "me?";
+  printi(glob);
+  //print(me);
+  print(you);
+  printi(a);
+  printi(b);
+  return 0;
+}

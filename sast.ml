@@ -29,18 +29,26 @@ type sstmt =
   (*| SHatch of string * string * expr list * stmt *)
   | SSynch of string * sstmt list
 
+type sbind = 
+    SDec of typ * string
+  | SDecinit of typ * string * sexpr
 
 type sfunc_decl = {
     styp : typ;
     sfname : string;
     sformals : formal list;
-    slocals : bind list;
+    slocals : sbind list;
     sbody : sstmt list;
   }
 
-type sprogram = bind list * sfunc_decl list
+type sprogram = sbind list * sfunc_decl list
 
 (* Pretty-printing functions *)
+
+
+let strip_sval = function
+    SDec(a, b) -> (a, b)
+  | SDecinit(a, b, _) -> (a, b)
 
 let rec string_of_sexpr (t, e) =
   "(" ^ string_of_typ t ^ " : " ^ (match e with
@@ -79,14 +87,18 @@ let rec string_of_sstmt = function
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ") " ^ string_of_sstmt s *)
   | SSynch(l, stmts) -> "synch " ^ l ^ 
       "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
+
+let string_of_svdecl = function
+| SDec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"
+| SDecinit(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_sexpr e ^ ";\n"
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.styp ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.slocals) ^
+  String.concat "" (List.map string_of_svdecl fdecl.slocals) ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
   "}\n"
 
 let string_of_sprogram (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
+  String.concat "" (List.map string_of_svdecl vars) ^ "\n" ^
   String.concat "\n" (List.map string_of_sfdecl funcs)

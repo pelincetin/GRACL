@@ -15,6 +15,12 @@ codegen:
 	ocamlc -c sast.ml ast.cmo
 	ocamlfind ocamlc -c -w +a-4 -package llvm -package llvm.analysis -o codegen.cmo codegen.ml
 
+.PHONY : semant
+semant:
+	ocamlc ast.ml
+	ocamlc -c sast.ml ast.cmo
+	ocamlc -c semant.ml ast.cmo sast.cmo
+
 .PHONY : helloworld
 helloworld:
 	./scripts/breakdown.sh helloWorld 

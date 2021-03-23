@@ -24,7 +24,7 @@ let translate (globals, functions) =
   
   (* Create the LLVM compilation module into which
      we will generate code *)
-  let the_module = L.create_module context "GRACL" in (* Dispose of module? *)
+  let the_module = L.create_module context "GRACL" in (* TODO: Dispose of module? *)
 
   (* Get types from the context *)
   let i32_t      = L.i32_type    context
@@ -43,13 +43,57 @@ let translate (globals, functions) =
     | A.String -> string_t
   in
 
-  (* Create a map of global variables after creating each *)                   (* TODO: Globals have default values? *)
+  (* Create a map of global variables after creating each, initialize as needed *)                   (* TODO: Globals have default values? *)
   let global_vars : L.llvalue StringMap.t =
-    let global_var m (t, n) = 
-      let init = match t with
+    let global_var m  = function
+    | SDec(t, n) ->
+      let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
-        | _ -> L.const_int (ltype_of_typ t) 0
-      in StringMap.add n (L.define_global n init the_module) m in
+        | A.String -> L.const_stringz context ""                               (* TODO: HANDLE STRINGS *)
+        | A.Int -> L.const_int (ltype_of_typ t) 0
+      in StringMap.add n (L.define_global n defaultinit the_module) m 
+    | SDecinit(_, n, e) ->
+      let rec constexpr ((_, e) : sexpr) = match e with
+	    SLiteral i  -> L.const_int i32_t i
+      | SSliteral s -> let str = L.const_stringz context s in L.const_in_bounds_gep (L.const_pointer_null i8_t) [|str|]
+      | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
+      | SFliteral l -> L.const_float_of_string double_t l
+      | SBinop ((A.Double,_ ) as e1, op, e2) ->
+	  let e1' = constexpr e1
+	  and e2' = constexpr e2 in
+	  (match op with 
+	    A.Add     -> L.const_fadd
+	  | A.Sub     -> L.const_fsub
+	  | A.Mult    -> L.const_fmul                                           
+	  | A.Div     -> L.const_fdiv 
+	  | A.Equal   -> L.const_fcmp L.Fcmp.Oeq
+	  | A.Less    -> L.const_fcmp L.Fcmp.Olt
+	  | A.Leq     -> L.const_fcmp L.Fcmp.Ole
+	  | A.And | A.Or ->
+	      raise (Failure "internal error: semant should have rejected and/or on float")
+	  ) e1' e2' 
+      | SBinop (e1, op, e2) ->
+	  let e1' = constexpr e1
+	  and e2' = constexpr e2 in
+	  (match op with
+	    A.Add     -> L.const_add
+	  | A.Sub     -> L.const_sub                                   (*TODO:ADD MOUDLO?*)
+	  | A.Mult    -> L.const_mul
+    | A.Div     -> L.const_sdiv
+	  | A.And     -> L.const_and
+	  | A.Or      -> L.const_or
+	  | A.Equal   -> L.const_icmp L.Icmp.Eq
+	  | A.Less    -> L.const_icmp L.Icmp.Slt
+	  | A.Leq     -> L.const_icmp L.Icmp.Sle
+	  ) e1' e2' 
+      | SUnop(op, ((t, _) as e)) ->
+          let e' = constexpr e in
+	  (match op with
+	    A.Neg when t = A.Double -> L.const_fneg 
+	  | A.Neg                  -> L.const_neg
+    | A.Not                  -> L.const_not) e'                      
+      in StringMap.add n (L.define_global n (constexpr e) the_module) m 
+    in
     List.fold_left global_var StringMap.empty globals in
 
   let printf_t : L.lltype = 
@@ -102,7 +146,7 @@ let translate (globals, functions) =
 
       let formals = List.fold_left2 add_formal StringMap.empty fdecl.sformals
           (Array.to_list (L.params the_function)) in
-      List.fold_left add_local formals ( List.map A.strip_val fdecl.slocals )                            (* TODO: UNHIDE DECINIT BEHAVIOR *)
+      List.fold_left add_local formals ( List.map strip_sval fdecl.slocals )                           
     in
 
     (* Return the value for a variable or formal argument.
@@ -176,6 +220,16 @@ let translate (globals, functions) =
          L.build_call fdef (Array.of_list llargs) result builder
     in
     
+
+      (* Initialize local variables *)
+    let _ = 
+      let init = function 
+    | SDecinit(_, n, e) -> ignore(L.build_store (expr builder e) (lookup n) builder)
+    | SDec _ -> ()
+      in (List.map init fdecl.slocals) 
+    in
+
+
     (* LLVM insists each basic block end with exactly one "terminator" 
        instruction that transfers control.  This function runs "instr builder"
        if the current block does not already have a terminator.  Used,

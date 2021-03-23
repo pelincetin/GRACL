@@ -1,0 +1,6 @@
+int i = 6;
+int k = i; //Cannot initialize a global to a nonconstant expression
+int main()
+{
+  return 0;
+}
