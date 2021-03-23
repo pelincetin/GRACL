@@ -43,19 +43,23 @@ let translate (globals, functions) =
     | A.String -> string_t
   in
 
+  let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] and    
+    (*and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
+     string_format_str = let str = L.define_global "fmt" (L.const_stringz context "%s\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] in
+
   (* Create a map of global variables after creating each, initialize as needed *)                   (* TODO: Globals have default values? *)
   let global_vars : L.llvalue StringMap.t =
     let global_var m  = function
     | SDec(t, n) ->
       let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
-        | A.String -> L.const_stringz context ""                               (* TODO: HANDLE STRINGS *)
+        | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
         | A.Int -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
 	    SLiteral i  -> L.const_int i32_t i
-      | SSliteral s -> let str = L.const_stringz context s in L.const_in_bounds_gep (L.const_pointer_null i8_t) [|str|]
+      | SSliteral s -> let str = L.define_global "str" (L.const_stringz context s) the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
       | SFliteral l -> L.const_float_of_string double_t l
       | SBinop ((A.Double,_ ) as e1, op, e2) ->
@@ -77,7 +81,7 @@ let translate (globals, functions) =
 	  and e2' = constexpr e2 in
 	  (match op with
 	    A.Add     -> L.const_add
-	  | A.Sub     -> L.const_sub                                   (*TODO:ADD MOUDLO?*)
+	  | A.Sub     -> L.const_sub                                   (*TODO:ADD MODULO*)
 	  | A.Mult    -> L.const_mul
     | A.Div     -> L.const_sdiv
 	  | A.And     -> L.const_and
@@ -91,7 +95,8 @@ let translate (globals, functions) =
 	  (match op with
 	    A.Neg when t = A.Double -> L.const_fneg 
 	  | A.Neg                  -> L.const_neg
-    | A.Not                  -> L.const_not) e'                      
+    | A.Not                  -> L.const_not) e' 
+    | _ -> raise (Failure "internal error: semant should have caught global nonconstant initialization")                     
       in StringMap.add n (L.define_global n (constexpr e) the_module) m 
     in
     List.fold_left global_var StringMap.empty globals in
@@ -123,9 +128,7 @@ let translate (globals, functions) =
     let (the_function, _) = StringMap.find fdecl.sfname function_decls in
     let builder = L.builder_at_end context (L.entry_block the_function) in
 
-    let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder and
-    (*and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
-     string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
+    
 
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -186,7 +189,7 @@ let translate (globals, functions) =
 	    A.Add     -> L.build_add
 	  | A.Sub     -> L.build_sub
 	  | A.Mult    -> L.build_mul
-          | A.Div     -> L.build_sdiv
+    | A.Div     -> L.build_sdiv
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq
@@ -295,7 +298,7 @@ let translate (globals, functions) =
     add_terminal builder (match fdecl.styp with
         A.Void -> L.build_ret_void
       | A.Double -> L.build_ret (L.const_float double_t 0.0)
-      | t -> L.build_ret (L.const_int (ltype_of_typ t) 0))
+      | A.Int -> L.build_ret (L.const_int i32_t 0))
   in
 
   List.iter build_function_body functions; 
