@@ -4,44 +4,49 @@
 #include <string.h>
 #include <unistd.h>
 
-pthread_mutex_t lock;
-pthread_t tid[2];
-int counter;
+// TODO: The idea here is that these functions would be invoked with a pointer
+// to the lock associated with whatever object synch is called upon 
 
-int synch_init(){
-    if (pthread_mutex_init(&lock, NULL) != 0)
-    {
+// pthread_t tid[2];
+// int counter;
+
+// TODO: Do we want to init here or when object is created
+// Is this for Pelin+Maya or Defne+Pelin
+// Should we init and destroy every time synch is called 
+
+int synch_init(pthread_mutex_t* lock) {
+    if (pthread_mutex_init(lock, NULL) != 0) {
         printf("\n mutex init failed\n");
         return -1;
     }
     return 0;
 }
 
-int synch_start(){
-    if (pthread_mutex_lock(&lock) != 0)
-    {
+int synch_start(pthread_mutex_t* lock) {
+    if (pthread_mutex_lock(lock) != 0) {
         printf("\n locking failed\n");
         return -1;
     }
     return 0;
 }
 
-int synch_end(){
-    if(pthread_mutex_unlock(&lock) != 0){
+int synch_end(pthread_mutex_t* lock) {
+    if(pthread_mutex_unlock(lock) != 0) {
         printf("\n mutex is not valid, unlock failed\n");
         return -1;
     }
     return 0;
 }
 
-int synch_destroy(){
-    if(pthread_mutex_destroy(&lock) != 0){
+int synch_destroy(pthread_mutex_t* lock) {
+    if (pthread_mutex_destroy(lock) != 0) {
         printf("\n mutex is not valid, destroy failed\n");
         return -1;
     }
     return 0;
 }
 
+/*
 void* testSync(void *arg)
 {
     synch_start();
@@ -80,3 +85,4 @@ int main(){
 
     return 0;
 }
+*/
