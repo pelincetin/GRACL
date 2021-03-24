@@ -2,7 +2,7 @@
 
 open Ast
 open Sast
-
+module F = Functions
 module StringMap = Map.Make(String)
 
 (* Semantic checking of the AST. Returns an SAST if successful,
@@ -34,18 +34,7 @@ let check (globals, functions) =
   (**** Check functions ****)
 
   (* Collect function declarations for built-in functions: no bodies *) (*BUILTIN FUNCTIONS*)
-  let built_in_decls = 
-    let add_bind map (name, ty) = StringMap.add name {
-      typ = Void; (*TODO: ALLOW FOR NONVOID RETURNS/MORE VARIETY IN FORMALS FOR STANDARD FUNCTIONS, HARD CODE?*)
-      fname = name; 
-      formals = [(ty, "x")];
-      locals = []; body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", String);
-                               ("printi", Int);
-			                         (*("printb", Bool); DELETED *)
-			                         (*("printf", Float); DELETED *)
-			                         ("printbig", Int) ]
-  in
+  let built_in_decls = F.function_decls in 
 
   (* Add function name to symbol table *)
   let add_func map fd = 

@@ -43,9 +43,9 @@ let translate (globals, functions) =
     | A.String -> string_t
   in
 
-  let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] and    
-    (*and float_format_str = L.build_global_stringptr "%g\n" "fmt" builder *)
-     string_format_str = let str = L.define_global "fmt" (L.const_stringz context "%s\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] in
+  let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
+     and float_format_str = let str = L.define_global "cast" (L.const_stringz context "%f") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
+     and string_format_str = let str = L.define_global "fmt" (L.const_stringz context "%s\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] in
 
   (* Create a map of global variables after creating each, initialize as needed *)                   (* TODO: Globals have default values? *)
   let global_vars : L.llvalue StringMap.t =
@@ -55,6 +55,7 @@ let translate (globals, functions) =
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
         | A.Int -> L.const_int (ltype_of_typ t) 0
+        | A.Bool -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
@@ -80,10 +81,11 @@ let translate (globals, functions) =
 	  let e1' = constexpr e1
 	  and e2' = constexpr e2 in
 	  (match op with
-	    A.Add     -> L.const_add
+	    A.Add     -> L.const_add                                    (* TODO: MENTION OVERFLOW BEHAVIOR *)
 	  | A.Sub     -> L.const_sub                                   (*TODO:ADD MODULO*)
 	  | A.Mult    -> L.const_mul
     | A.Div     -> L.const_sdiv
+    | A.Mod     -> L.const_srem
 	  | A.And     -> L.const_and
 	  | A.Or      -> L.const_or
 	  | A.Equal   -> L.const_icmp L.Icmp.Eq
@@ -105,6 +107,11 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| string_t |] in
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
+
+let sprintf_t : L.lltype = 
+      L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
+  let sprintf_func : L.llvalue = 
+      L.declare_function "__sprintf_chk" sprintf_t the_module in
 
 (*
   let printbig_t : L.lltype =
@@ -190,6 +197,7 @@ let translate (globals, functions) =
 	  | A.Sub     -> L.build_sub
 	  | A.Mult    -> L.build_mul
     | A.Div     -> L.build_sdiv
+    | A.Mod     -> L.build_srem
 	  | A.And     -> L.build_and
 	  | A.Or      -> L.build_or
 	  | A.Equal   -> L.build_icmp L.Icmp.Eq
@@ -214,6 +222,11 @@ let translate (globals, functions) =
          L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
       | SCall("printi", [e]) ->  (* New line when printing *)
          L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      | SCall("doubleToString", [e]) -> 
+        let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
+        let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
+        L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
+          "doubleToString" builder; arrptr
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
