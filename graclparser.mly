@@ -3,6 +3,7 @@
 %{
 open Ast
 
+(*
 let parse_error s =
       begin
         try
@@ -16,12 +17,12 @@ let parse_error s =
         with Invalid_argument(_) -> ()
       end;
       Printf.printf "Syntax error: %s\n" s;
-      raise Parsing.Parse_error
+      raise Parsing.Parse_error *)
 
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
-%token NOT EQ LT LEQ AND OR
+%token NOT EQ LT GT LEQ AND OR NEQ
 %token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
 %token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
@@ -37,8 +38,8 @@ let parse_error s =
 %right ASSIGN
 %left OR
 %left AND
-%left EQ 
-%left LT LEQ
+%left EQ NEQ
+%left LT LEQ GT
 %nonassoc HATCH SYNCH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
@@ -126,7 +127,9 @@ expr:
   | expr DIVIDE expr { Binop($1, Div,   $3)              }
   | expr MODULO expr { Binop($1, Mod,   $3)              }
   | expr EQ     expr { Binop($1, Equal, $3)              }
+  | expr NEQ    expr { Binop($1, Neq,   $3)              }
   | expr LT     expr { Binop($1, Less,  $3)              }
+  | expr GT     expr { Binop($1, Great,  $3)              } 
   | expr LEQ    expr { Binop($1, Leq,   $3)              }
   | expr AND    expr { Binop($1, And,   $3)              }
   | expr OR     expr { Binop($1, Or,    $3)              }
