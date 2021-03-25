@@ -1,0 +1,28 @@
+void printb(bool b){
+  if (b){
+    printi(1);
+  }
+  else {
+    printi(0);
+  }
+}
+int main()
+{
+  printb(1 >= 2);
+  printb(1 >= 1);
+  printb(2 >= 1);
+  printi(99);
+
+  printb(4.0 >= 1.0);
+  printb(1.0 >= 4.0); 
+  printb(2 >= -1.0); 
+  printb(1 >= -1); 
+  printb(1.0 >= 1.0);
+  printb(4.0 >= -4.0);   
+  printb(0.00 >= -0.);
+  printb(4 >= -0); 
+  printb(-4 >= -0); 
+  printb(-1.0 >= -0.00000);       
+
+  return 0;
+}
