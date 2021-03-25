@@ -22,7 +22,7 @@ let parse_error s =
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
-%token NOT EQ LT GT LEQ AND OR NEQ
+%token NOT EQ LT LEQ GT GEQ AND OR NEQ
 %token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
 %token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
@@ -39,7 +39,7 @@ let parse_error s =
 %left OR
 %left AND
 %left EQ NEQ
-%left LT LEQ GT
+%left LT LEQ GT GEQ
 %nonassoc HATCH SYNCH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
@@ -129,8 +129,9 @@ expr:
   | expr EQ     expr { Binop($1, Equal, $3)              }
   | expr NEQ    expr { Binop($1, Neq,   $3)              }
   | expr LT     expr { Binop($1, Less,  $3)              }
-  | expr GT     expr { Binop($1, Great,  $3)              } 
+  | expr GT     expr { Binop($1, Great, $3)              } 
   | expr LEQ    expr { Binop($1, Leq,   $3)              }
+  | expr GEQ    expr { Binop($1, Geq,   $3)              }
   | expr AND    expr { Binop($1, And,   $3)              }
   | expr OR     expr { Binop($1, Or,    $3)              }
   | MINUS expr %prec NOT { Unop(Neg, $2)                 }
