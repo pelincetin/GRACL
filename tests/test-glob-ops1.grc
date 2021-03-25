@@ -1,0 +1,47 @@
+bool one = 3 >= 4;
+bool two = 5.0 >= 4.0;
+bool three = 0.00 > -0.;
+bool four = 0.00 <= -1.0;
+bool five = 0 > -1;
+bool six = 526 > (10 / 2);
+bool seven = 546 != 2;
+
+int intone = 1;
+int inttwo = 4;
+double dubone = 1.0;
+double dubtwo = -3.0;
+double dubthree = 0.;
+
+void printb(bool b){
+  if (b){
+    printi(1);
+  }
+  else {
+    printi(0);
+  }
+}
+
+int main()
+{
+  printb(one);
+  printb(two);
+  printb(three);
+  printb(four);
+  printb(five);
+  printb(six);
+  printb(seven);
+  printi(99);
+ 
+  printb(intone == inttwo);
+  printb(intone != inttwo);
+  printb(dubone != dubthree);
+  printi(99);
+
+  printb(dubtwo > dubone);
+  printb(dubone > dubthree);
+  printb(dubtwo > dubtwo);
+  printb(intone >= inttwo); 
+  printb(dubone <= dubthree);     
+
+  return 0;
+}
