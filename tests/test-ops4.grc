@@ -15,7 +15,7 @@ int main()
 
   printb(4.0 >= 1.0);
   printb(1.0 >= 4.0); 
-  printb(2 >= -1.0); 
+  printb(2. >= -1.0); 
   printb(1 >= -1); 
   printb(1.0 >= 1.0);
   printb(4.0 >= -4.0);   
