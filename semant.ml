@@ -85,7 +85,7 @@ let check (globals, functions) =
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
           | Equal | Neq          when same               -> Bool
-          | Less | Leq | Great
+          | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
           | _ -> raise (
@@ -172,7 +172,7 @@ let check (globals, functions) =
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
           | Equal | Neq          when same               -> Bool
-          | Less | Leq | Great
+          | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
           | _ -> raise (

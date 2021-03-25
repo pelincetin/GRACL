@@ -76,6 +76,7 @@ let translate (globals, functions) =
 	  | A.Less    -> L.const_fcmp L.Fcmp.Olt
 	  | A.Great   -> L.const_fcmp L.Fcmp.Ogt
 	  | A.Leq     -> L.const_fcmp L.Fcmp.Ole
+    | A.Geq     -> L.const_fcmp L.Fcmp.Oge
 	  | A.And | A.Or ->
 	      raise (Failure "internal error: semant should have rejected and/or on float")
 	  ) e1' e2' 
@@ -95,6 +96,7 @@ let translate (globals, functions) =
 	  | A.Less    -> L.const_icmp L.Icmp.Slt
 	  | A.Great   -> L.const_icmp L.Icmp.Sgt
 	  | A.Leq     -> L.const_icmp L.Icmp.Sle
+    | A.Geq     -> L.const_icmp L.Icmp.Sge
 	  ) e1' e2' 
       | SUnop(op, ((t, _) as e)) ->
           let e' = constexpr e in
@@ -192,6 +194,7 @@ let sprintf_t : L.lltype =
 	  | A.Less    -> L.build_fcmp L.Fcmp.Olt
 	  | A.Great   -> L.build_fcmp L.Fcmp.Ogt    
 	  | A.Leq     -> L.build_fcmp L.Fcmp.Ole
+    | A.Geq     -> L.build_fcmp L.Fcmp.Oge
 	  | A.And | A.Or ->
 	      raise (Failure "internal error: semant should have rejected and/or on float")
 	  ) e1' e2' "tmp" builder
@@ -211,6 +214,7 @@ let sprintf_t : L.lltype =
 	  | A.Less    -> L.build_icmp L.Icmp.Slt
 	  | A.Great   -> L.build_icmp L.Icmp.Sgt
 	  | A.Leq     -> L.build_icmp L.Icmp.Sle
+    | A.Geq     -> L.build_icmp L.Icmp.Sge
 	  ) e1' e2' "tmp" builder
       | SUnop(op, ((t, _) as e)) ->
           let e' = expr builder e in
