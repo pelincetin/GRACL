@@ -1,0 +1,44 @@
+void printf(double d){
+    print(doubleToString(d));
+}
+void printb(bool b){
+    if (b) printi(1);
+    else printi(0);
+}
+double inf = infinity;
+int main() {   
+    double inity = infinity;
+    printf(inf);
+    printf(inity);
+    printf(inf + 4.0);
+    printf(inf - 2.5);
+    printf(inf * 3.9);
+    printf(inf / 1.8);
+    printf(inf + inity);
+    printf(inf - inity);
+    printf(inf * inity);
+    printf(inf / inity);
+    printf(1.0 / inf);
+    printf(1.0 / 0.0);
+    printf(1.0 - inf);
+    printf(-inf);
+    printb(inf == 4.0);
+    printb(inf == inity);
+    printb(4.0 == inf);
+    printb(inf != 42.0);
+    printb(inf != inity);
+    printb(42.0 != inf);
+    printb(inf > 10.0);
+    printb(inf > inity);
+    printb(10.0 > inf);
+    printb(inf < 10.0);
+    printb(inf < inity);
+    printb(10.0 < inf);
+    printb(inf >= 10.0);
+    printb(inf >= inity);
+    printb(10.0 >= inf);
+    printb(inf <= 10.0);
+    printb(inf <= inity);
+    printb(10.0 <= inf);
+    return 0;
+}

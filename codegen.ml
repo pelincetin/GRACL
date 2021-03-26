@@ -62,7 +62,7 @@ let translate (globals, functions) =
 	    SLiteral i  -> L.const_int i32_t i
       | SSliteral s -> let str = L.define_global "str" (L.const_stringz context s) the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
-      | SFliteral l -> L.const_float_of_string double_t l
+      | SFliteral l -> if l = "infinity" then L.const_float double_t infinity else L.const_float_of_string double_t l
       | SBinop ((A.Double,_ ) as e1, op, e2) ->
 	  let e1' = constexpr e1
 	  and e2' = constexpr e2 in
@@ -176,7 +176,7 @@ let sprintf_t : L.lltype =
 	SLiteral i  -> L.const_int i32_t i
       | SSliteral s -> L.build_global_stringptr s "str" builder
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
-      | SFliteral l -> L.const_float_of_string double_t l
+      | SFliteral l -> if l = "infinity" then L.const_float double_t infinity else L.const_float_of_string double_t l
       | SNoexpr     -> L.const_int i32_t 0
       | SId s       -> L.build_load (lookup s) s builder 
       | SAssign (s, e) -> let e' = expr builder e in
