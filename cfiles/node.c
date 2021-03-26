@@ -1,67 +1,67 @@
 #include <stdlib.h>
-#include <stdbool.h> 
-#include <string.h>
-#include "edgelist.c"
+#include <stdio.h>
 #include "lockedobject.h"
+#include <pthread.h>
 
 void incrementId(){
     id_num++;
 }
 
-Node createNode(char *data){
-    struct LockedNode *Node = malloc(sizeof(struct LockedNode));
-    Node.data = data;
-    Node.visited = false;
-    Node.id = id_num;
+struct LockedNode* createNode(char* data){
+    struct LockedNode* node = malloc(sizeof(struct LockedNode));
+    node->data = data;
+    node->visited = false;
+    node->id = id_num;
     incrementId();
-    return Node;
-}
+    if (pthread_mutex_init(node->lock, NULL) {
+        print("createNode: Failure to initialize mutex")
+        // TODO: ERROR HANDLING HERE 
+        node->id = -1
+        return node;
+    }
+    else {
+        return node;
+    }
+};
 
-const char * data()
+const char* data(struct LockedNode* node)
 {
-    // Returns data stored in the Node object.
-    return data;
+    return node->data;
 }
 
+/*
 NodeList neighbors()
 {
-    // Returns a list of neighbor Nodes. 
+
     return neighbors;
 }
+*/
 
-bool visited()
+/* Returns a boolean representing
+ * if the node has already been visited. */
+bool visited(struct LockedNode* node)
 {
-    // Returns a boolean representing if the Node has already been visited.
-    return visited;
+    return node->visited;
 }
 
-
-
-int updateData(String newData)
+int updateData(char* new_data, struct LockedNode* node)
 {
-    // Updates the data field on the Node to be the new data passed in and returns 0 on success. On failure, returns -1.
-    data = newData;
-    if (data != newData) {
-        return -1;
-    }
-    return 0;
+    node->data = new_data;
+    return node;
 }
 
-int updateVisited(bool tf)
+/* Updates the visited field on the Node to be the new bool passed in */
+int updateVisited(bool tf, struct LockedNode* node)
 {
-    // Updates the visited field on the Node to be the new bool passed in and returns 0 on success. On failure, returns -1.
-    visited = tf;
-    if (visited != tf) {
-        return -1;
-    }
-    return 0;
+    node->visited = tf;
+    return node;
 }
 
-bool equals(Node n)
+/* Compares the two Node objects by id 
+ * Returns True if they are the same and returns False if not */
+bool equals(struct LockedNode* node1, struct LockedNode* node2)
 {
-    // Compares the two Node objects. Returns True if they are the same and returns False if they’re not the same.
-    // Under the hood, this is implemented by comparing the implicit id associated with the Node object. 
-    if (id == n.id) {
+    if (node1->id == node2->id) {
         return true;
     }
     return false;
