@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <pthread.h>
 
 /* Can pass a pointer from a lockednode to a lockedobject safely
@@ -7,23 +8,23 @@
  * Need a cast operation to make llvm types happy */
 int id_num=1;
 
-struct LockedObject {
+struct Object {
     pthread_mutex_t lock;
 };
 
-struct LockedNode {
+struct Node {
     pthread_mutex_t lock;
     int id; // Only used under the hood
     char *data;
     bool visited;
-    struct LockedEdgeList* edges;
+    struct EdgeList* edges;
 };
 
-struct LockedEdge {
+struct Edge {
     pthread_mutex_t lock;
     double weight; 
-    struct LockedNode* start; 
-    struct LockedNode* end;
+    struct Node* start; 
+    struct Node* end;
 };
 
 // struct LockedGraph
@@ -33,11 +34,11 @@ struct LockedEdge {
 //     struct LockedEdgeList edges; 
 // };
 
-struct LockedEdgeList {
+struct EdgeList {
     pthread_mutex_t lock;
-    struct LockedEdge* edge;
-    struct LockedEdge* next;
-    struct LockedEdge* prev;
+    struct Edge* edge;
+    struct Edge* next;
+    struct Edge* prev;
 };
 
 // struct LockedNodeList

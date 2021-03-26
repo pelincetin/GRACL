@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: node
-node: node.c 
-	$(CC) $(CFLAGS) -pthread -o node lockedobject.h node.c
+node: node.c
+	$(CC) $(CFLAGS) -pthread -o node node.c
 
-.PHONY : clean
+.PHONY: clean
 clean:
-	rm -f node
+	rm -f *.o
