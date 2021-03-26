@@ -1,10 +1,13 @@
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+#include "lockedobject.h"
 
-struct Edge
-{
-    double weight; 
-    struct Node start; // Should these be pointers to nodes?
-    struct Node end;
-    /* Mutex?? */
-};
+
+void updateEdge(double new_weight, struct LockedEdge* edge) {
+    edge->weight = new_weight;
+    return;
+}
+
+double weight(struct LockedEdge* edge) {
+    return edge->weight;
+}

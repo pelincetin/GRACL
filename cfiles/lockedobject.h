@@ -7,13 +7,11 @@
  * Need a cast operation to make llvm types happy */
 int id_num=1;
 
-struct LockedObject
-{
+struct LockedObject {
     pthread_mutex_t lock;
 };
 
-struct LockedNode
-{
+struct LockedNode {
     pthread_mutex_t lock;
     int id; // Only used under the hood
     char *data;
@@ -21,13 +19,12 @@ struct LockedNode
     // struct LockedEdgeList neighbors;
 };
 
-// struct LockedEdge
-// {
-//     pthread_mutex_t lock;
-//     double weight; 
-//     struct LockedNode start; // Should these be pointers to nodes?
-//     struct LockedNode end;
-// };
+struct LockedEdge {
+    pthread_mutex_t lock;
+    double weight; 
+    struct LockedNode* start; 
+    struct LockedNode* end;
+};
 
 // struct LockedGraph
 // {
