@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h> 
 #include <pthread.h>
 
 // Can pass a pointer from a lockednode to a lockedobject safely
 // All objects should look like lockednode -- no need for plain node
 // Need a cast operation to make llvm types happy
+int id_num=1;
 
 struct LockedObject
 {
@@ -16,7 +16,7 @@ struct LockedNode
 {
     pthread_mutex_t lock;
     int id; // Only used under the hood
-    char data[];
+    char *data;
     bool visited;
     // struct LockedEdgeList neighbors;
 };

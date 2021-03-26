@@ -2,17 +2,20 @@
 #include <stdbool.h> 
 #include <string.h>
 #include "edgelist.c"
+#include "lockedobject.h"
 
-int idNum = 1;
+void incrementId(){
+    id_num++;
+}
 
-// struct Node
-// {
-//     int id = idNum++; // Only used under the hood
-//     char data[];
-//     bool visited;
-//     struct EdgeList neighbors;
-//     /* Mutex? */
-// };
+Node createNode(char *data){
+    struct LockedNode *Node = malloc(sizeof(struct LockedNode));
+    Node.data = data;
+    Node.visited = false;
+    Node.id = id_num;
+    incrementId();
+    return Node;
+}
 
 const char * data()
 {
