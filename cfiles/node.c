@@ -1,10 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "lockedobject.h"
 #include <pthread.h>
 
 void incrementId(){
     id_num++;
+}
+
+void printNode(struct Node* node){
+    //node->data; pointer reference
+    printf("%s", node->visited ? "true\n" : "false\n");
+    printf("%d", node->id);
+    printf("%s", node->data);
 }
 
 struct Node* createNode(char* data){
@@ -16,11 +24,8 @@ struct Node* createNode(char* data){
     node->edges = edge_list;
     incrementId();
     if (pthread_mutex_init(&node->lock, NULL) !=0) {
-        fprintf(stderr, "createNode: Failure to initialize mutex");
+        fprintf(stderr, "createNode: Failure to initialize mutex\n");
         exit(1); 
-        // TODO: ERROR HANDLING HERE 
-        //node->id = -1
-        //return node;
     }
     else {
         return node;
@@ -83,5 +88,39 @@ bool equals(struct Node* node1, struct Node* node2)
 
 int main()
 {
+    //TODO: PUT THE TESTS IN ANOTHER FILE
+    //this is for testing purposes for createNode
+    char greeting[] = "Hello\n";
+    struct Node* temp;
+    bool temporary;
+    struct Node* temp2;
+
+    temp = createNode(greeting);
+    printNode(temp);    
+
+    //this is for testing updateData
+    char hsm_forever[] = "zac efron\n";
+    temp = updateData(hsm_forever, temp);
+    printNode(temp);
+
+    //this is for testing visited()
+    temporary = visited(temp);
+    printf("%s", temporary ? "true\n" : "false\n");
+
+    //this is for testing updateVisited()
+    temp = updateVisited(true, temp);
+    temporary = visited(temp);
+    printf("%s", temporary ? "true\n" : "false\n");
+
+    // this is for testing equals()
+    temp = updateData(greeting, temp);
+    temp2 = createNode(greeting);
+    printNode(temp2);    
+    temporary = equals(temp, temp2);
+    printf("%s", temporary ? "true\n" : "false\n");
+
+    temporary = equals(temp, temp);
+    printf("%s", temporary ? "true\n" : "false\n");
+
     return 0;
 }

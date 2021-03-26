@@ -3,11 +3,15 @@
 #include "lockedobject.h"
 
 
-void updateEdge(double new_weight, struct LockedEdge* edge) {
+void updateEdge(double new_weight, struct Edge* edge) {
     edge->weight = new_weight;
     return;
 }
 
-double weight(struct LockedEdge* edge) {
+double weight(struct Edge* edge) {
     return edge->weight;
+}
+
+int main(){
+    return 0;
 }

@@ -5,6 +5,10 @@ CFLAGS = -g -Wall
 node: node.c
 	$(CC) $(CFLAGS) -pthread -o node node.c
 
+.PHONY: edge
+edge: edge.c
+	$(CC) $(CFLAGS) -pthread -o edge edge.c
+
 .PHONY: clean
 clean:
-	rm -f *.o
+	rm -f *.o node edge
