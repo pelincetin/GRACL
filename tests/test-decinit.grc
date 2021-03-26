@@ -1,5 +1,6 @@
 int glob = 120 - -3;
 String me = "Are you";
+double e = 2.718;
 int main()
 {
   int a = 42;
@@ -10,5 +11,6 @@ int main()
   print(you);
   printi(a);
   printi(b);
+  print(doubleToString(e));
   return 0;
 }
