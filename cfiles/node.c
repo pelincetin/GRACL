@@ -9,12 +9,14 @@ void incrementId(){
 
 struct LockedNode* createNode(char* data){
     struct LockedNode* node = malloc(sizeof(struct LockedNode));
+    struct LockedEdgeList* edge_list = malloc(sizeof(struct LockedEdgeList));
     node->data = data;
     node->visited = false;
     node->id = id_num;
+    node->edges = edge_list;
     incrementId();
     if (pthread_mutex_init(node->lock, NULL) {
-        print("createNode: Failure to initialize mutex")
+        fprintf("createNode: Failure to initialize mutex", stderr);
         // TODO: ERROR HANDLING HERE 
         node->id = -1
         return node;
@@ -29,13 +31,23 @@ const char* data(struct LockedNode* node)
     return node->data;
 }
 
-/*
-NodeList neighbors()
+/* Return the nodelist of surrounding neighbors */
+NodeList neighbors(struct LockedNode* node)
 {
+    struct LockedEdgeList* edges = node->edges;
 
-    return neighbors;
+    /* for (edge in edges) {
+
+    }
+    return neighbors; */
 }
-*/
+
+/* Return the edgelist of surrounding edges */
+EdgeList edges(struct LockedNode* node)
+{
+    return node->edges; 
+}
+
 
 /* Returns a boolean representing
  * if the node has already been visited. */

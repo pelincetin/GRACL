@@ -16,7 +16,7 @@ struct LockedNode {
     int id; // Only used under the hood
     char *data;
     bool visited;
-    // struct LockedEdgeList neighbors;
+    struct LockedEdgeList* edges;
 };
 
 struct LockedEdge {
@@ -33,13 +33,12 @@ struct LockedEdge {
 //     struct LockedEdgeList edges; 
 // };
 
-// struct LockedEdgeList
-// {
-//     pthread_mutex_t lock;
-//     struct LockedEdge edge;
-//     struct EdgeListItem *next;
-//     struct EdgeListItem *prev;
-// };
+struct LockedEdgeList {
+    pthread_mutex_t lock;
+    struct LockedEdge* edge;
+    struct LockedEdge* next;
+    struct LockedEdge* prev;
+};
 
 // struct LockedNodeList
 // {
