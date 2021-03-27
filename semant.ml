@@ -195,8 +195,7 @@ let check (globals, functions) =
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
      (* TODO: | Access(table, key)
-      | Insert(table, key, ex)
-      | Method(obj, calls) *)
+      | Insert(table, key, ex)*)
     in
 
     let check_bool_expr e = 
