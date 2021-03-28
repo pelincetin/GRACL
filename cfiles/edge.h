@@ -9,6 +9,7 @@ void printEdge(struct Edge* edge) {
     printf("Weight: %f", edge->weight);
 }
 
+// SHOULD GO IN GRAPH EVENTUALLY!
 struct Edge* addEdge(struct Node* start_node, struct Node* end_node, double edge_weight) {
     struct Edge* edge = malloc(sizeof(struct Edge));
     edge->start = start_node;
