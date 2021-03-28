@@ -14,33 +14,36 @@ int main()
 
     struct Edge* e1;
     e1 = addEdge(n1, n2, 15.3);
-    printEdge(e1);
-    printf("\n");
     struct Edge* e2;
     e2 = addEdge(n2, n1, 3.7);
-    printEdge(e2);
-    printf("\n");
 
     struct EdgeList* el = createEdgeList();
-    printf("Should be empty: %s", empty(el) ? "true\n" : "false\n");
+    printf("Should be true: %s", empty(el) ? "true\n" : "false\n");
+
+    printf("Append edge with start 'hello'\n");
     appendEdge(el, e1);
+    printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
+    printf("List should be goodbye hello: ");
     printEdgeList(el);
-    printf("\nLength should be 2: %d\n", length(el));
+    printf("Length should be 2: %d\n", length(el));
 
     removeFirst(el);
-    printf("after remove first: ");
+    printf("After remove first (list should be hello): ");
     printEdgeList(el);
     printf("\n");
 
+    printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
-    // printEdge(el->tail->edge);
-    printf("Should be false: %s", (el->tail ==NULL) ? "true\n" : "false\n");
     removeLast(el);
-    printf("after remove last: \n");
+    printf("After remove last (list should be goodbye): ");
     printEdgeList(el);
+    printf("\n");
+
+    printf("Append edge with start 'hello'\n");
+    appendEdge(el, e1);
     removeEdge(el, e1);
-    printf("after remove edge: ");
+    printf("After remove edge with start hello (list should be goodbye): ");
     printEdgeList(el); 
     printf("\n");
 

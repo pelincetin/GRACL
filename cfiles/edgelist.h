@@ -43,7 +43,7 @@ void printEdgeList(struct EdgeList* edge_list) {
 int length(struct EdgeList* edge_list) {
     int length = 0;
     struct EdgeListItem *current;
-    current = edge_list->head; // EdgeList vs. EdgeList item?
+    current = edge_list->head;
     while (current != NULL) {
         length++;
         current = current->next;
@@ -70,7 +70,6 @@ struct Edge* removeFirst(struct EdgeList* edge_list) {
     }
 }
 
-// DOESN'T WORK!
 struct Edge* removeLast(struct EdgeList* edge_list) {
     if (edge_list->tail) {
         struct EdgeListItem *last = edge_list->tail;
@@ -111,29 +110,27 @@ int removeEdge(struct EdgeList* edge_list, struct Edge* e) {
 // Changed names since stdio.h has append and prepend
 // What about error handling? What if e is null?
 void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
-    struct EdgeListItem* append_item = createEdgeListItem(e);
-    append_item->prev = edge_list->tail;
+    struct EdgeListItem* new_last = createEdgeListItem(e);
     if (!empty(edge_list)) {
-        // if list not empty; 
-        struct EdgeListItem *last_item = malloc(sizeof(struct EdgeListItem));
-        last_item = edge_list->tail;
-        last_item->next = append_item;
-        edge_list->tail = append_item;
+        // if list not empty;
+        new_last->prev = edge_list->tail;
+        struct EdgeListItem *old_last = malloc(sizeof(struct EdgeListItem));
+        old_last = edge_list->tail;
+        old_last->next = new_last;
+        edge_list->tail = new_last;
     } else {
         // if list is empty;
-        edge_list->head = append_item;
-        edge_list->tail = append_item;
+        edge_list->head = new_last;
+        edge_list->tail = new_last;
     }
     return;
 }
 
 void prependEdge(struct EdgeList* edge_list, struct Edge* e) {
-    struct EdgeListItem *prepend_item;
-    prepend_item = malloc(sizeof(struct EdgeListItem));
-    prepend_item->edge = e;
-    prepend_item->prev = NULL;
+    struct EdgeListItem *prepend_item = createEdgeListItem(e);
     struct EdgeListItem *head = edge_list->head;
     prepend_item->next = head;
+    head->prev = prepend_item;
     edge_list->head = prepend_item;
     if (!head) {
         // if list is empty

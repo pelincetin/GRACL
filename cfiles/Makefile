@@ -27,4 +27,4 @@ edgelist-test: edgelist-test.c
 
 .PHONY: clean
 clean:
-	rm -f *.o node edge
+	rm -f *.o node node-test edge edge-test edgelist edgelist-test
