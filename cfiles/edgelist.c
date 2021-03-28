@@ -57,14 +57,14 @@ struct Edge* removeLast(struct EdgeList* edge_list) {
     }
 }
 
-
-int remove(struct EdgeList* edge_list, Edge e) {
-    struct EdgeListItem* current = head;
-    struct EdgeListItem* previous = NULL;
+/*
+int remove(struct EdgeList* edge_list, Edge* e) {
+    struct EdgeListItem* head = edge_list->head;
+    struct EdgeListItem* tail = edge_list->tail;
     if(head == NULL) {
         return -1;
     }
-    while(current->edge != e) {
+    while(head->edge != e) {
         if(current->next == NULL) {
             return -1;
         } else {
@@ -84,6 +84,7 @@ int remove(struct EdgeList* edge_list, Edge e) {
     }
     return 0; 
 }
+*/
 
 // WHY WAS APPEND ORIGINALLY AN INT TYPE IF PREPEND WAS VOID?
 // DOESN'T SUPER MAKE SENSE
