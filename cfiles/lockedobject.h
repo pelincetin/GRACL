@@ -29,10 +29,9 @@ struct Edge {
 
 struct EdgeList {
     pthread_mutex_t lock; 
-    struct EdgeListItem *head = NULL;
-    struct EdgeListItem *tail = NULL;
+    struct EdgeListItem *head;
+    struct EdgeListItem *tail;
 };
-
 
 
 // struct LockedGraph

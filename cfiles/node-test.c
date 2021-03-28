@@ -31,10 +31,10 @@ int main()
     temp = updateData(greeting, temp);
     temp2 = createNode(greeting);
     printNode(temp2);    
-    temporary = equals(temp, temp2);
+    temporary = nodeEquals(temp, temp2);
     printf("%s", temporary ? "true\n" : "false\n");
 
-    temporary = equals(temp, temp);
+    temporary = nodeEquals(temp, temp);
     printf("%s", temporary ? "true\n" : "false\n");
 
     return 0;

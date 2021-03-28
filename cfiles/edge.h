@@ -24,6 +24,10 @@ struct Edge* addEdge(struct Node* start_node, struct Node* end_node, double edge
     }
 };
 
+bool edgeEquals(struct Edge* e1, struct Edge* e2) {
+    return (((e1->weight == e2->weight) && nodeEquals(e1->start, e2->start)) && nodeEquals(e1->end, e2->end));
+}
+
 void updateEdge(double new_weight, struct Edge* edge) {
     edge->weight = new_weight;
     return;

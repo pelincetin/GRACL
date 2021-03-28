@@ -80,7 +80,7 @@ struct Node* updateVisited(bool tf, struct Node* node)
 
 /* Compares the two Node objects by id 
  * Returns True if they are the same and returns False if not */
-bool equals(struct Node* node1, struct Node* node2)
+bool nodeEquals(struct Node* node1, struct Node* node2)
 {
     if (node1->id == node2->id) {
         return true;

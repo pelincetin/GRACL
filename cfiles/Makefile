@@ -17,6 +17,14 @@ edge: edge.h
 edge-test: edge-test.c
 	$(CC) $(CFLAGS) -pthread -o edge-test edge-test.c
 
+.PHONY: edgelist
+edgelist: edgelist.h
+	$(CC) $(CFLAGS) -pthread -o edgelist edgelist.h
+
+.PHONY: edgelist-test
+edgelist-test: edgelist-test.c
+	$(CC) $(CFLAGS) -pthread -o edgelist-test edgelist-test.c
+
 .PHONY: clean
 clean:
 	rm -f *.o node edge
