@@ -8,14 +8,15 @@ void incrementId(){
     id_num++;
 }
 
-void printNode(struct Node* node){
+// this function is not intended for the user, right?
+void printNode(struct Node* node) {
     //node->data; pointer reference
     printf("%s", node->visited ? "true\n" : "false\n");
     printf("%d", node->id);
     printf("%s", node->data);
 }
 
-struct Node* createNode(char* data){
+struct Node* createNode(char* data) {
     struct Node* node = malloc(sizeof(struct Node));
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
     node->data = data;
@@ -37,7 +38,8 @@ const char* data(struct Node* node)
     return node->data;
 }
 
-/* Return the nodelist of surrounding neighbors 
+/* Return the NodeList of surrounding neighbors 
+ * NodeList type not defined yet though
 NodeList neighbors(struct Node* node)
 {
     struct EdgeList* edges = node->edges;
@@ -69,7 +71,7 @@ struct Node* updateData(char* new_data, struct Node* node)
     return node;
 }
 
-/* Updates the visited field on the Node to be the new bool passed in */
+/* Updates the visited field on the node to be the inputted bool */
 struct Node* updateVisited(bool tf, struct Node* node)
 {
     node->visited = tf;
