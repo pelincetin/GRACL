@@ -7,11 +7,6 @@ struct EdgeListItem {
     struct EdgeListItem* prev;
 };
 
-/*
-STILL NEED IMPLEMENTATION: 
-int .remove(Edge e)
-*/
-
 int length(struct EdgeList* edge_list) {
     int length = 0;
     struct EdgeListItem *current;
