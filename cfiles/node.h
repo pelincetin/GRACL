@@ -86,4 +86,3 @@ bool equals(struct Node* node1, struct Node* node2)
     }
     return false;
 }
-

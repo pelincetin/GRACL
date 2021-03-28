@@ -2,12 +2,20 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: node
-node: node.c
-	$(CC) $(CFLAGS) -pthread -o node node.c
+node: node.h
+	$(CC) $(CFLAGS) -pthread -o node node.h
+
+.PHONY: node-test
+node-test: node-test.c
+	$(CC) $(CFLAGS) -pthread -o node-test node-test.c
 
 .PHONY: edge
-edge: edge.c
-	$(CC) $(CFLAGS) -pthread -o edge edge.c
+edge: edge.h
+	$(CC) $(CFLAGS) -pthread -o edge edge.h
+
+.PHONY: edge-test
+edge-test: edge-test.c
+	$(CC) $(CFLAGS) -pthread -o edge-test edge-test.c
 
 .PHONY: clean
 clean:
