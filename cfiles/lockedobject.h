@@ -27,6 +27,14 @@ struct Edge {
     struct Node* end;
 };
 
+struct EdgeList {
+    pthread_mutex_t lock; 
+    struct EdgeListItem *head = NULL;
+    struct EdgeListItem *last = NULL;
+};
+
+
+
 // struct LockedGraph
 // {
 //     pthread_mutex_t lock;
@@ -34,12 +42,6 @@ struct Edge {
 //     struct LockedEdgeList edges; 
 // };
 
-struct EdgeList {
-    pthread_mutex_t lock;
-    struct Edge* edge;
-    struct Edge* next;
-    struct Edge* prev;
-};
 
 // struct LockedNodeList
 // {

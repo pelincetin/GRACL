@@ -7,40 +7,47 @@ struct EdgeListItem {
     struct EdgeListItem *prev;
 };
 
-// SHOULD THIS BE IN THIS FILE WITH ALL OF THE FUNCTIONS?
-struct EdgeList
-{
-    struct EdgeListItem *head = NULL;
-    struct EdgeListItem *last = NULL;
-    /* Mutex?? */
-};
-
 /*
-int length() {
+int .remove(Edge e)
+Edge .removeFirst()
+Edge .removeLast()
+int .append(Edge e)
+int .prepend(Edge e)
+*/
+
+int length(struct EdgeList* edge_list) {
     int length = 0;
     struct EdgeListItem *current;
-    for(current = head; current != NULL; current = current->next){
+    current = edge_list->head;
+    while (current != NULL) {
         length++;
+        current = current->next;
     }
     return length;
 }
 
-bool empty() {
-    return head == NULL;
+bool empty(struct EdgeList* edge_list) {
+    struct EdgeListItem *current;
+    current = edge_list->head;
+    return (current == NULL) 
 }
 
-struct EdgeListItem* removeFirst() {
-    struct EdgeListItem *tempLink = head;
-    if(head->next == NULL){
-        last = NULL;
-    } else {
-        head->next->prev = NULL;
+// GOING TO KEEP WORKING HERE, THIS STILL NEEDS WORK
+struct EdgeListItem* removeFirst(struct EdgeList* edge_list) {
+    struct EdgeListItem *head;
+    head = edge_list->head;
+    if (head) {
+        if (head->next) {
+
+        } else {
+            
+        }
+    } else { 
+        // NEED TO HANDLE THE CASE WHERE HEAD DOESNT EXIST, EMPTY LIST 
     }
-    head = head->next;
-    return tempLink; // LRM says actual edge, but this is a pointer
 }
 
-struct EdgeListItem* removeLast() {
+struct EdgeListItem* removeLast(struct EdgeList* edge_list) {
     struct EdgeListItem *tempLink = last;
     if(head->next == NULL) {
         head = NULL;
@@ -51,7 +58,7 @@ struct EdgeListItem* removeLast() {
     return tempLink; // LRM says actual edge, but this is a pointer
 }
 
-int remove(Edge e) {
+int remove(struct EdgeList* edge_list, Edge e) {
     struct EdgeListItem* current = head;
     struct EdgeListItem* previous = NULL;
     if(head == NULL) {
@@ -78,7 +85,7 @@ int remove(Edge e) {
     return 0; 
 }
 
-int append(Edge e) {
+int append(struct EdgeList* edge_list, Edge e) {
     struct EdgeListItem *link = (struct EdgeListItem*) malloc(sizeof(struct EdgeListItem));
     link->edge = e; // Should this be a pointer to the edge?
     if(empty()) {
@@ -94,7 +101,7 @@ int append(Edge e) {
     return -1;
 }
 
-void prepend(Edge e) {
+void prepend(struct EdgeList* edge_list, Edge e) {
     struct EdgeListItem *link = (struct EdgeListItem*) malloc(sizeof(struct EdgeListItem));
     link->edge = e;
     if(empty()) {
