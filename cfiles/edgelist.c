@@ -45,10 +45,10 @@ struct Edge* removeFirst(struct EdgeList* edge_list) {
 
 struct Edge* removeLast(struct EdgeList* edge_list) {
     struct EdgeListItem *last;
-    last = edge_list->last;
+    last = edge_list->tail;
     if (last) {
         prev = last->prev;
-        edge_list->last = prev;
+        edge_list->tail = prev;
         prev->next = NULL;
         return *(last->edge);
     } else { 
@@ -85,36 +85,38 @@ int remove(struct EdgeList* edge_list, Edge e) {
     return 0; 
 }
 
-int append(struct EdgeList* edge_list, Edge* e) {
-    struct EdgeListItem *last_item;
+// WHY WAS APPEND ORIGINALLY AN INT TYPE IF PREPEND WAS VOID?
+// DOESN'T SUPER MAKE SENSE
+void append(struct EdgeList* edge_list, Edge* e) {
+    struct EdgeListItem *append_item;
     last_item = malloc(sizeof(struct EdgeListItem));
-    last_item->edge = e; 
-    last_item->next = NULL;
-    last_item->prev = edge_list->last;
+    append_item->edge = e; 
+    append_item->next = NULL;
+    append_item->prev = edge_list->tail;
     if (edge_list->head) {
         // if list not empty; 
-        edge_list->last->next = last_item;
+        edge_list->tail->next = append_item;
     } else {
         // if list is empty;
-        edge_list->head = last_item;
-        edge_list->last = last_item;
+        edge_list->head = append_item;
+        edge_list->tail = append_item;
     }
+    return;
 }
 
-void prepend(struct EdgeList* edge_list, Edge e) {
-    struct EdgeListItem *link = (struct EdgeListItem*) malloc(sizeof(struct EdgeListItem));
-    link->edge = e;
-    if(empty()) {
-        last = link;
-    } else {
-        head->prev = link;
+void prepend(struct EdgeList* edge_list, Edge* e) {
+    struct EdgeListItem *prepend_item;
+    prepend_item = malloc(sizeof(struct EdgeListItem));
+    prepend_item->edge = e;
+    prepend_item->prev = NULL;
+    head = edge_list->head
+    prepend_item->next = head;
+    edge_list->head = prepend_item;
+    if (!head) {
+        // if list is empty
+        edge_list->tail = prepend_item;
     }
-    link->next = head;
-    head = link;
-    if (head->edge == e) {
-        return 0;
-    }
-    return -1;
+    return; 
 }
 */
 // https://www.tutorialspoint.com/data_structures_algorithms/doubly_linked_list_program_in_c.htm

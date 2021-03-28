@@ -30,7 +30,7 @@ struct Edge {
 struct EdgeList {
     pthread_mutex_t lock; 
     struct EdgeListItem *head = NULL;
-    struct EdgeListItem *last = NULL;
+    struct EdgeListItem *tail = NULL;
 };
 
 
