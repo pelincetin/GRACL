@@ -10,7 +10,6 @@ struct EdgeListItem {
 /*
 STILL NEED IMPLEMENTATION: 
 int .remove(Edge e)
-int .prepend(Edge e)
 */
 
 int length(struct EdgeList* edge_list) {
@@ -57,38 +56,39 @@ struct Edge* removeLast(struct EdgeList* edge_list) {
     }
 }
 
-/*
-int remove(struct EdgeList* edge_list, Edge* e) {
+int remove(struct EdgeList* edge_list, struct Edge* e) {
     struct EdgeListItem* head = edge_list->head;
-    struct EdgeListItem* tail = edge_list->tail;
+    struct EdgeListItem* prev = NULL;
     if(head == NULL) {
+        // list is empty 
         return -1;
     }
-    while(head->edge != e) {
-        if(current->next == NULL) {
-            return -1;
-        } else {
-            previous = current;
-            current = current->next;             
+    while (head) {
+        if (edge_equals(e, head->edge)) {
+            if (prev) {
+                prev->next = head->next;
+            } else {
+                edge_list->head = head->next;
+            }
+            return 0;
         }
-    }
-    if(current == head) {
+        prev = head;
         head = head->next;
-    } else {
-        current->prev->next = current->next;
-    }    
-    if(current == last) {
-        last = current->prev;
-    } else {
-        current->next->prev = current->prev;
     }
-    return 0; 
+    return -1;
 }
-*/
+
+/*
+ * This should be moved to edge @ defne and hadley */ 
+
+bool edge_equals(struct Edge* e1, struct Edge* e2) {
+    return (((e1->weight == e2->weight) && equals(e1->start, e2->start))
+     && equals(e1->end, e2->end))
+}
+
 
 // WHY WAS APPEND ORIGINALLY AN INT TYPE IF PREPEND WAS VOID?
-// DOESN'T SUPER MAKE SENSE
-void append(struct EdgeList* edge_list, Edge* e) {
+void append(struct EdgeList* edge_list, struct Edge* e) {
     struct EdgeListItem *append_item;
     last_item = malloc(sizeof(struct EdgeListItem));
     append_item->edge = e; 
@@ -105,7 +105,7 @@ void append(struct EdgeList* edge_list, Edge* e) {
     return;
 }
 
-void prepend(struct EdgeList* edge_list, Edge* e) {
+void prepend(struct EdgeList* edge_list, struct Edge* e) {
     struct EdgeListItem *prepend_item;
     prepend_item = malloc(sizeof(struct EdgeListItem));
     prepend_item->edge = e;
