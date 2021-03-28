@@ -15,6 +15,7 @@ void printNode(struct Node* node) {
     printf("%s", node->data);
 }
 
+// SHOULD GO IN GRAPH EVENTUALLY!
 struct Node* createNode(char* data) {
     struct Node* node = malloc(sizeof(struct Node));
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
@@ -86,4 +87,3 @@ bool equals(struct Node* node1, struct Node* node2)
     }
     return false;
 }
-
