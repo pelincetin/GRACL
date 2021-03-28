@@ -8,9 +8,8 @@ struct EdgeListItem {
 };
 
 /*
+STILL NEED IMPLEMENTATION: 
 int .remove(Edge e)
-Edge .removeFirst()
-Edge .removeLast()
 int .append(Edge e)
 int .prepend(Edge e)
 */
@@ -32,31 +31,34 @@ bool empty(struct EdgeList* edge_list) {
     return (current == NULL) 
 }
 
-// GOING TO KEEP WORKING HERE, THIS STILL NEEDS WORK
-struct EdgeListItem* removeFirst(struct EdgeList* edge_list) {
+struct Edge* removeFirst(struct EdgeList* edge_list) {
     struct EdgeListItem *head;
     head = edge_list->head;
     if (head) {
-        if (head->next) {
-
-        } else {
-            
-        }
+        edge_list->head = head->next;
+        edge_list->head->prev = NULL;
+        return head->edge;
     } else { 
         // NEED TO HANDLE THE CASE WHERE HEAD DOESNT EXIST, EMPTY LIST 
+        exit(1) // ?
     }
 }
 
-struct EdgeListItem* removeLast(struct EdgeList* edge_list) {
-    struct EdgeListItem *tempLink = last;
-    if(head->next == NULL) {
-        head = NULL;
-    } else {
-        last->prev->next = NULL;
+
+struct Edge* removeLast(struct EdgeList* edge_list) {
+    struct EdgeListItem *last;
+    last = edge_list->last;
+    if (last) {
+        prev = last->prev;
+        edge_list->last = prev;
+        prev->next = NULL;
+        return last->edge;
+    } else { 
+        // NEED TO HANDLE THE CASE WHERE LAST DOESNT EXIST, EMPTY LIST 
+        exit(1) // ?
     }
-    last = last->prev;
-    return tempLink; // LRM says actual edge, but this is a pointer
 }
+
 
 int remove(struct EdgeList* edge_list, Edge e) {
     struct EdgeListItem* current = head;
