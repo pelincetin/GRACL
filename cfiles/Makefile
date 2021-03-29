@@ -25,6 +25,14 @@ edgelist: edgelist.h
 edgelist-test: edgelist-test.c
 	$(CC) $(CFLAGS) -pthread -o edgelist-test edgelist-test.c
 
+.PHONY: nodelist
+nodelist: nodelist.h
+	$(CC) $(CFLAGS) -pthread -o nodelist nodelist.h
+
+.PHONY: nodelist-test
+nodelist-test: nodelist-test.c
+	$(CC) $(CFLAGS) -pthread -o nodelist-test nodelist-test.c
+
 .PHONY: clean
 clean:
-	rm -f *.o node node-test edge edge-test edgelist edgelist-test
+	rm -f *.o node node-test edge edge-test edgelist edgelist-test nodelist nodelist-test

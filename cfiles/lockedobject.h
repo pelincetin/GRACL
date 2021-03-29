@@ -33,6 +33,11 @@ struct EdgeList {
     struct EdgeListItem *tail;
 };
 
+struct NodeList {
+    pthread_mutex_t lock; 
+    struct NodeListItem *head;
+    struct NodeListItem *tail;
+};
 
 // struct LockedGraph
 // {
