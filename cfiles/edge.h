@@ -2,13 +2,6 @@
 #include <stdio.h>
 #include "node.h"
 
-// this function is not intended for the user, right?
-void printEdge(struct Edge* edge) {
-    printf("Start node: %s", edge->start->data);
-    printf("End node: %s", edge->end->data);
-    printf("Weight: %f", edge->weight);
-}
-
 // SHOULD GO IN GRAPH EVENTUALLY!
 struct Edge* addEdge(struct Node* start_node, struct Node* end_node, double edge_weight) {
     struct Edge* edge = malloc(sizeof(struct Edge));

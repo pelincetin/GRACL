@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include "../node.h"
 
-int main()
-{
+void printNode (struct Node* node) {
+    printf("%s\n", node->visited ? "true" : "false");
+    printf("%d\n", node->id);
+    printf("%s", node->data);
+}
+
+int main() {
     //this is for testing purposes for createNode
     char greeting[] = "Hello\n";
     struct Node* temp;

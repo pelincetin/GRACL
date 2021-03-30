@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: all
-all: node-test edge-test nodelist-test
+all: node-test edge-test nodelist-test edgelist-test
 
 .PHONY: node-test
 node-test: node-test.c

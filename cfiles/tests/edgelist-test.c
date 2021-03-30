@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "../edgelist.h"
 
-void printEdgeList(struct EdgeList* edge_list) {
+void printEdgeList (struct EdgeList* edge_list) {
     struct EdgeListItem *current;
     current = edge_list->head;
     while (current != NULL) {
@@ -11,8 +11,7 @@ void printEdgeList(struct EdgeList* edge_list) {
     }
 }
 
-int main()
-{
+int main() {
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";

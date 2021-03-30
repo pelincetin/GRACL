@@ -7,14 +7,6 @@ void incrementId(){
     id_num++;
 }
 
-// this function is not intended for the user, right?
-void printNode(struct Node* node) {
-    //node->data; pointer reference
-    printf("%s", node->visited ? "true\n" : "false\n");
-    printf("%d", node->id);
-    printf("%s", node->data);
-}
-
 // SHOULD GO IN GRAPH EVENTUALLY!
 struct Node* createNode(char* data) {
     struct Node* node = malloc(sizeof(struct Node));
