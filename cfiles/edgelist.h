@@ -13,13 +13,7 @@ struct EdgeList* createEdgeList() {
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
     edge_list->head = NULL;
     edge_list->tail = NULL;
-    if (pthread_mutex_init(&edge_list->lock, NULL) !=0) {
-        fprintf(stderr, "createEdgeList: Failure to initialize mutex\n");
-        exit(1); 
-    }
-    else {
-        return edge_list;
-    }
+    return edge_list;
 }
 
 struct EdgeListItem* createEdgeListItem(struct Edge* e) {
@@ -28,16 +22,6 @@ struct EdgeListItem* createEdgeListItem(struct Edge* e) {
     item->next = NULL;
     item->prev = NULL;
     return item;
-}
-
-// FOR TESTING ONLY
-void printEdgeList(struct EdgeList* edge_list) {
-    struct EdgeListItem *current;
-    current = edge_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->edge->start->data); // Check each start node's data
-        current = current->next;
-    }
 }
 
 int length(struct EdgeList* edge_list) {
@@ -138,5 +122,3 @@ void prependEdge(struct EdgeList* edge_list, struct Edge* e) {
     }
     return; 
 }
-
-// https://www.tutorialspoint.com/data_structures_algorithms/doubly_linked_list_program_in_c.htm

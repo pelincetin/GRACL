@@ -1,6 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "nodelist.h"
+#include "../nodelist.h"
+
+void printNodeList(struct NodeList* node_list) {
+    struct NodeListItem *current;
+    current = node_list->head;
+    while (current != NULL) {
+        printf("%s\n", current->node->data); 
+        current = current->next;
+    }
+}
 
 int main()
 {

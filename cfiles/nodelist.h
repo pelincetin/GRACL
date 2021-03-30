@@ -13,13 +13,7 @@ struct NodeList* createNodeList() {
     struct NodeList* node_list = malloc(sizeof(struct NodeList));
     node_list->head = NULL;
     node_list->tail = NULL;
-    if (pthread_mutex_init(&node_list->lock, NULL) !=0) {
-        fprintf(stderr, "createNodeList: Failure to initialize mutex\n");
-        exit(1); 
-    }
-    else {
-        return node_list;
-    }
+    return node_list;
 }
 
 struct NodeListItem* createNodeListItem(struct Node* e) {
@@ -28,16 +22,6 @@ struct NodeListItem* createNodeListItem(struct Node* e) {
     item->next = NULL;
     item->prev = NULL;
     return item;
-}
-
-// FOR TESTING ONLY
-void printNodeList(struct NodeList* node_list) {
-    struct NodeListItem *current;
-    current = node_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->node->data); 
-        current = current->next;
-    }
 }
 
 int length(struct NodeList* node_list) {
@@ -138,5 +122,3 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
     }
     return; 
 }
-
-// https://www.tutorialspoint.com/data_structures_algorithms/doubly_linked_list_program_in_c.htm

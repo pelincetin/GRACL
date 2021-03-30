@@ -1,6 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "edgelist.h"
+#include "../edgelist.h"
+
+void printEdgeList(struct EdgeList* edge_list) {
+    struct EdgeListItem *current;
+    current = edge_list->head;
+    while (current != NULL) {
+        printf("%s\n", current->edge->start->data); // Check each start node's data
+        current = current->next;
+    }
+}
 
 int main()
 {

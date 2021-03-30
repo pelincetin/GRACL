@@ -1,0 +1,25 @@
+CC = gcc
+CFLAGS = -g -Wall
+
+.PHONY: all
+all: node-test edge-test nodelist-test
+
+.PHONY: node-test
+node-test: node-test.c
+	$(CC) $(CFLAGS) -pthread -o node-test node-test.c
+
+.PHONY: edge-test
+edge-test: edge-test.c
+	$(CC) $(CFLAGS) -pthread -o edge-test edge-test.c
+
+.PHONY: edgelist-test
+edgelist-test: edgelist-test.c
+	$(CC) $(CFLAGS) -pthread -o edgelist-test edgelist-test.c
+
+.PHONY: nodelist-test
+nodelist-test: nodelist-test.c
+	$(CC) $(CFLAGS) -pthread -o nodelist-test nodelist-test.c
+
+.PHONY: clean
+clean:
+	rm -f *.o node-test edge-test edgelist-test nodelist-test

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "edge.h"
+#include "../edge.h"
 
 int main()
 {
