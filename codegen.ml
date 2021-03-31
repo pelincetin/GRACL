@@ -53,7 +53,7 @@ let translate (globals, functions) =
     | A.Double -> double_t
     | A.Void  -> void_t
     | A.String -> string_t
-    | A.Node -> node_t
+    | A.Node -> node_pointer
     | A.Edge -> edge_t
     | A.Edgelist -> edgelist_t
   in
@@ -138,6 +138,11 @@ let createNode_t : L.lltype =
   L.function_type node_pointer [| string_t |] in
 let createNode_func : L.llvalue = 
     L.declare_function "createNode" createNode_t the_module in
+
+  let printNode_t : L.lltype = 
+    L.function_type i32_t [| node_pointer |] in
+  let printNode_func : L.llvalue = 
+    L.declare_function "printNode" printNode_t the_module in
 
 (*
   let printbig_t : L.lltype =
@@ -261,6 +266,8 @@ let createNode_func : L.llvalue =
           "doubleToString" builder; arrptr
       | SCall ("createNode", [e]) ->
             L.build_call createNode_func [| (expr builder e) |] "createNode" builder
+      | SCall ("printNode", [e]) ->
+            L.build_call printNode_func [| (expr builder e) |] "printNode" builder
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in

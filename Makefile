@@ -8,7 +8,7 @@
 all : gracl.native node.o
 
 node : node.c
-	cc -o node -DBUILD_TEST -pthread node.c
+	cc -o node -pthread node.c
 
 gracl.native :
 	opam config exec -- \

@@ -1,4 +1,5 @@
 int main (){
     Node n = createNode("yo");
+    printNode(n);
     return 0;
 }

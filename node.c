@@ -25,6 +25,12 @@ struct Node* createNode(char* data) {
     }
 };
 
+void printNode (struct Node* node) {
+    printf("%s\n", node->visited ? "true" : "false");
+    printf("%d\n", node->id);
+    printf("%s\n", node->data);
+}
+
 const char* data(struct Node* node)
 {
     return node->data;
@@ -79,7 +85,10 @@ bool nodeEquals(struct Node* node1, struct Node* node2)
     }
     return false;
 }
-
+/*
 int main(){
+    struct Node* n = createNode("blah");
+    printNode(n);
     return 0;
 }
+*/

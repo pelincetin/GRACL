@@ -13,5 +13,6 @@ let function_decls =
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
         (String, "doubleToString", [Double, "d"]);    
-        (Node, "createNode", [String, "s"]);           
+        (Node, "createNode", [String, "s"]); 
+        (Void, "printNode", [Node, "n"]);          
 		(*("printbig", Int)*) ]
