@@ -31,7 +31,19 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and double_t   = L.double_type context
-  and void_t     = L.void_type   context in
+  and void_t     = L.void_type   context
+  and i64_t      = L.i64_type    context in
+  let mutex_t    = L.struct_type context [| i64_t; L.array_type i8_t 56 |] in
+  let edgelistitem_t = L.named_struct_type context "EdgeListItem" in
+  let node_t     = L.named_struct_type context "Node" in
+  let node_pointer = L.pointer_type node_t in
+  let edge_t     = L.struct_type context [|mutex_t; double_t; node_pointer; node_pointer|] in
+  let edge_pointer = L.pointer_type edge_t in
+  let edgelistitem_pointer = L.pointer_type edgelistitem_t in
+  let edgelist_t = L.struct_type context [| edgelistitem_pointer; edgelistitem_pointer|] in
+  let edgelist_pointer = L.pointer_type edgelist_t in 
+  let _ = L.struct_set_body edgelistitem_t [|edge_pointer; edgelistitem_pointer; edgelistitem_pointer|] false in
+  let _ = L.struct_set_body node_t [|mutex_t; i32_t; L.pointer_type i8_t; i8_t; edgelist_pointer|] false in
   let string_t   = L.pointer_type i8_t in
 
   (* Return the LLVM type for a GRACL type *)
@@ -41,6 +53,9 @@ let translate (globals, functions) =
     | A.Double -> double_t
     | A.Void  -> void_t
     | A.String -> string_t
+    | A.Node -> node_t
+    | A.Edge -> edge_t
+    | A.Edgelist -> edgelist_t
   in
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
@@ -118,6 +133,11 @@ let sprintf_t : L.lltype =
       L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
   let sprintf_func : L.llvalue = 
       L.declare_function "__sprintf_chk" sprintf_t the_module in
+
+let createNode_t : L.lltype = 
+  L.function_type node_pointer [| string_t |] in
+let createNode_func : L.llvalue = 
+    L.declare_function "createNode" createNode_t the_module in
 
 (*
   let printbig_t : L.lltype =
@@ -239,6 +259,8 @@ let sprintf_t : L.lltype =
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
         L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
           "doubleToString" builder; arrptr
+      | SCall ("createNode", [e]) ->
+            L.build_call createNode_func [| (expr builder e) |] "createNode" builder
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in

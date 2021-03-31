@@ -4,6 +4,11 @@
 # packages, enabling warnings
 #
 # See https://github.com/ocaml/ocamlbuild/blob/master/manual/manual.adoc
+.PHONY : all
+all : gracl.native node.o
+
+node : node.c
+	cc -o node -DBUILD_TEST -pthread node.c
 
 gracl.native :
 	opam config exec -- \
@@ -30,7 +35,7 @@ helloworld:
 .PHONY : clean
 clean :
 	ocamlbuild -clean
-	rm -rf testall.log ocamlllvm *.diff *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
+	rm -rf *.o testall.log ocamlllvm *.diff *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
 
 # removes some generated files while keeping those useful for debugging
 .PHONY : debugclean

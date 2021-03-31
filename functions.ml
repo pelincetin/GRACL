@@ -12,5 +12,6 @@ let function_decls =
       locals = []; body = [] } map in List.fold_left add_func StringMap.empty [ 
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
-        (String, "doubleToString", [Double, "d"]);             
+        (String, "doubleToString", [Double, "d"]);    
+        (Node, "createNode", [String, "s"]);           
 		(*("printbig", Int)*) ]

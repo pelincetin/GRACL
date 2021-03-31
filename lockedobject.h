@@ -32,6 +32,12 @@ struct Edge {
     struct Node* end;
 };
 
+struct EdgeListItem {
+    struct Edge* edge;
+    struct EdgeListItem* next;
+    struct EdgeListItem* prev;
+};
+
 struct EdgeList {
     struct EdgeListItem *head;
     struct EdgeListItem *tail;

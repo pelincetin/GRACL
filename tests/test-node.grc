@@ -1,0 +1,4 @@
+int main (){
+    Node n = createNode("yo");
+    return 0;
+}

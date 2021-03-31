@@ -2,12 +2,6 @@
 #include <string.h>
 #include "edge.h"
 
-struct EdgeListItem {
-    struct Edge* edge;
-    struct EdgeListItem* next;
-    struct EdgeListItem* prev;
-};
-
 // Move to general library eventually
 struct EdgeList* createEdgeList() {
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));

@@ -79,3 +79,7 @@ bool nodeEquals(struct Node* node1, struct Node* node2)
     }
     return false;
 }
+
+int main(){
+    return 0;
+}
