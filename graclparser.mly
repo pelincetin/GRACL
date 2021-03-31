@@ -138,14 +138,15 @@ expr:
   | NOT expr         { Unop(Not, $2)                     }
   | ID ASSIGN expr   { Assign($1, $3)                    }
   | ID LPAREN args_opt RPAREN { Call($1, $3)             }
-  | ID DOT call_chain    { Method($1, List.rev $3)       }
+  | call_train ID LPAREN args_opt RPAREN { Call($2, $1 @ $4)}
   | ID LBRACK ID RBRACK { Access($1, $3)                 }
   | ID LBRACK ID RBRACK ASSIGN expr { Insert($1, $3, $6) }
   | LPAREN expr RPAREN { $2                              }
 
-call_chain:
-    ID LPAREN args_opt RPAREN                { [($1, $3)]     }
-  | call_chain DOT ID LPAREN args_opt RPAREN { ($3, $5) :: $1 }
+call_train:
+    call_train ID LPAREN args_opt RPAREN DOT { [Call($2, $1 @ $4)] }
+  | ID DOT { [Id($1)] }
+  | ID LPAREN args_opt RPAREN DOT { [Call($1, $3)]}
 
 args_opt:
     /* nothing */ { [] }

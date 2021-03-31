@@ -20,7 +20,6 @@ type expr =
   | Call of string * expr list
   | Access of string * string
   | Insert of string * string * expr
-  | Method of string * (string * expr list) list
   | Noexpr
 
 type bind =  (* Consider OPT type *)
@@ -92,8 +91,6 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Access(t, n) -> t ^ "[" ^ n ^ "]"
   | Insert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_expr e
-  | Method(obj, calls) -> obj ^ "." ^ String.concat "." 
-    (List.map  (fun (f, el) -> f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")") calls)
   | Noexpr -> ""
 
 let rec string_of_stmt = function

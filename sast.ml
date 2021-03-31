@@ -15,7 +15,6 @@ and sx =
   | SCall of string * sexpr list
   | SAccess of string * string
   | SInsert of string * string * sexpr
-  | SMethod of string * (string * sexpr list) list
   | SNoexpr
 
 type sstmt =
@@ -66,8 +65,6 @@ let rec string_of_sexpr (t, e) =
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SAccess(t, n) -> t ^ "[" ^ n ^ "]"
   | SInsert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_sexpr e
-  | SMethod(obj, calls) -> obj ^ "." ^ String.concat "." 
-   (List.map  (fun (f, el) -> f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")") calls)
   | SNoexpr -> ""
 				  ) ^ ")"				     
 
