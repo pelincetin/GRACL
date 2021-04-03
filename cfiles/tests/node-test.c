@@ -11,9 +11,9 @@ void printNode (struct Node* node) {
 int main() {
     //this is for testing purposes for createNode
     char greeting[] = "Hello\n";
-    struct Node* temp= NULL;
+    struct Node* temp= malloc(sizeof(struct Node));
     bool temporary;
-    struct Node* temp2= NULL;
+    struct Node* temp2= malloc(sizeof(struct Node));
 
     temp->data = greeting;
     temp->visited = false;

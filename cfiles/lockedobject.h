@@ -40,8 +40,8 @@ struct EdgeListItem {
 };
 
 struct EdgeList {
-    struct EdgeListItem *head;
-    struct EdgeListItem *tail;
+    struct EdgeListItem* head;
+    struct EdgeListItem* tail;
 };
 
 struct NodeListItem {
@@ -51,8 +51,8 @@ struct NodeListItem {
 };
 
 struct NodeList {
-    struct NodeListItem *head;
-    struct NodeListItem *tail;
+    struct NodeListItem* head;
+    struct NodeListItem* tail;
 };
 
 struct DataItem {

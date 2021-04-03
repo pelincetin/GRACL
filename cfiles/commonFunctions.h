@@ -16,7 +16,7 @@ bool edgeEquals(struct Edge* e1, struct Edge* e2) {
 }
 
 bool empty_NL(struct NodeList* node_list) {
-    struct NodeListItem *current;
+    struct NodeListItem* current = malloc(sizeof(struct NodeListItem));
     current = node_list->head;
     return (current == NULL);
 }
@@ -57,12 +57,12 @@ struct NodeListItem* createNodeListItem(struct Node* e) {
     return item;
 }
 
-void appendNode(struct NodeList* node_list, struct Node* e) {
-    struct NodeListItem* new_last = createNodeListItem(e);
+void appendNode(struct NodeList* node_list, struct Node* n) {
+    struct NodeListItem* new_last = createNodeListItem(n);
     if (!empty_NL(node_list)) {
         // if list not empty;
         new_last->prev = node_list->tail;
-        struct NodeListItem *old_last = malloc(sizeof(struct NodeListItem));
+        struct NodeListItem* old_last = malloc(sizeof(struct NodeListItem));
         old_last = node_list->tail;
         old_last->next = new_last;
         node_list->tail = new_last;

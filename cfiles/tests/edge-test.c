@@ -18,8 +18,8 @@ int main() {
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1 = NULL;
-    struct Node* n2 = NULL;
+    struct Node* n1 = malloc(sizeof(struct Node));
+    struct Node* n2 = malloc(sizeof(struct Node));
     n1->data = hello;
     n1->visited = false;
     n1->id=id_num;

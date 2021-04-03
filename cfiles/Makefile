@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: all
-all: node edge edgelist nodelist 
+all: node edge edgelist nodelist graph
 
 .PHONY: node
 node: node.h
@@ -20,6 +20,10 @@ edgelist: edgelist.h
 nodelist: nodelist.h
 	$(CC) $(CFLAGS) -pthread -o nodelist nodelist.h
 
+.PHONY: graph
+graph: graph.h
+	$(CC) $(CFLAGS) -pthread -o graph graph.h
+
 .PHONY: clean
 clean:
-	rm -f *.o node edge edgelist nodelist
+	rm -f *.o node edge edgelist nodelist graph

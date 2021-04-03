@@ -3,7 +3,7 @@
 #include "../edgelist.h"
 
 void printEdgeList (struct EdgeList* edge_list) {
-    struct EdgeListItem *current;
+    struct EdgeListItem* current;
     current = edge_list->head;
     while (current != NULL) {
         printf("%s\n", current->edge->start->data); // Check each start node's data
@@ -14,7 +14,6 @@ void printEdgeList (struct EdgeList* edge_list) {
 
 int main() {
     //Make two nodes to be start and end for edge
-    printf("yo\n");
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     struct Node* n1 = malloc(sizeof(struct Node));
