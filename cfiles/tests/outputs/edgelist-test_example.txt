@@ -1,0 +1,19 @@
+Should be true: true
+Append edge with start 'hello'
+Prepend edge with start 'goodbye'
+List should be goodbye hello: Goodbye
+
+Hello
+
+Length should be 2: 2
+After remove first (list should be hello): Hello
+
+
+Prepend edge with start 'goodbye'
+After remove last (list should be goodbye): Goodbye
+
+
+Append edge with start 'hello'
+After remove edge with start hello (list should be goodbye): Goodbye
+
+

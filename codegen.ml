@@ -14,6 +14,7 @@ http://llvm.moe/ocaml/
 
 module L = Llvm
 module A = Ast
+module F = Functions
 open Sast 
 
 module StringMap = Map.Make(String)
@@ -31,7 +32,19 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and double_t   = L.double_type context
-  and void_t     = L.void_type   context in
+  and void_t     = L.void_type   context
+  and i64_t      = L.i64_type    context in
+  let mutex_t    = L.struct_type context [| i64_t; L.array_type i8_t 56 |] in
+  let edgelistitem_t = L.named_struct_type context "EdgeListItem" in
+  let node_t     = L.named_struct_type context "Node" in
+  let node_pointer = L.pointer_type node_t in
+  let edge_t     = L.struct_type context [|mutex_t; double_t; node_pointer; node_pointer|] in
+  let edge_pointer = L.pointer_type edge_t in
+  let edgelistitem_pointer = L.pointer_type edgelistitem_t in
+  let edgelist_t = L.struct_type context [| edgelistitem_pointer; edgelistitem_pointer|] in
+  let edgelist_pointer = L.pointer_type edgelist_t in 
+  let _ = L.struct_set_body edgelistitem_t [|edge_pointer; edgelistitem_pointer; edgelistitem_pointer|] false in
+  let _ = L.struct_set_body node_t [|mutex_t; i32_t; L.pointer_type i8_t; i8_t; edgelist_pointer|] false in
   let string_t   = L.pointer_type i8_t in
 
   (* Return the LLVM type for a GRACL type *)
@@ -41,6 +54,9 @@ let translate (globals, functions) =
     | A.Double -> double_t
     | A.Void  -> void_t
     | A.String -> string_t
+    | A.Node -> node_pointer
+    | A.Edge -> edge_pointer
+    | A.Edgelist -> edgelist_pointer
   in
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
@@ -54,8 +70,7 @@ let translate (globals, functions) =
       let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
-        | A.Int -> L.const_int (ltype_of_typ t) 0
-        | A.Bool -> L.const_int (ltype_of_typ t) 0
+        | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
@@ -114,17 +129,12 @@ let translate (globals, functions) =
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
 
-let sprintf_t : L.lltype = 
+  let sprintf_t : L.lltype = 
       L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
   let sprintf_func : L.llvalue = 
       L.declare_function "__sprintf_chk" sprintf_t the_module in
 
-(*
-  let printbig_t : L.lltype =
-      L.function_type i32_t [| i32_t |] in
-  let printbig_func : L.llvalue =
-      L.declare_function "printbig" printbig_t the_module in
-*)
+
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
   let function_decls : (L.llvalue * sfunc_decl) StringMap.t =
@@ -220,25 +230,29 @@ let sprintf_t : L.lltype =
           let e' = expr builder e in
 	  (match op with
 	    A.Neg when t = A.Double -> L.build_fneg 
-	  | A.Neg                  -> L.build_neg
-          | A.Not                  -> L.build_not) e' "tmp" builder
-      (*| SCall ("print", [e])  ->
-	  L.build_call printf_func [| int_format_str ; (expr builder e) |]     (* Handle print function call *)
-	    "printf" builder
-      | SCall ("printbig", [e]) ->
-	  L.build_call printbig_func [| (expr builder e) |] "printbig" builder
-      | SCall ("printf", [e]) -> 
-	  L.build_call printf_func [| float_format_str ; (expr builder e) |]
-	    "printf" builder *)
-      | SCall("print", [e]) ->  (* New line when printing *)
-         L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
-      | SCall("printi", [e]) ->  (* New line when printing *)
-         L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+	  | A.Neg                   -> L.build_neg
+    | A.Not                   -> L.build_not) e' "tmp" builder
+
+      
+      (* Special built in functions *)
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
         L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
           "doubleToString" builder; arrptr
+      | SCall("print", [e]) ->  
+        L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
+      | SCall("printi", [e]) ->  
+        L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      (* General built in function call *)
+      | SCall(fname, args) when StringMap.mem fname F.function_decls -> 
+        let fdecl = StringMap.find fname F.function_decls in 
+        let rettype = function A.Void -> i32_t | _ as typ -> ltype_of_typ typ in  (* Deals with void function calls *)
+        let func_t : L.lltype = L.function_type (rettype fdecl.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.formals))) in
+        let func_value : L.llvalue = L.declare_function fname func_t the_module 
+        and llargs = List.rev (List.map (expr builder) (List.rev args)) in
+        L.build_call func_value (Array.of_list llargs) (fname ^ "_result") builder
+      (* User defined functions *)
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
