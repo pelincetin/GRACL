@@ -32,7 +32,14 @@ int main() {
     temp3 = nodes(g);
     printNodeList(temp3);
 
+    // merge all files into one
+    // edit the makefiles
+    // implement removeNode
+    // test removeNode
+    // implement addEdge
+    // test addEdge
+    // implement removeEdge
+    // test removeEdge
     
-
     return 0;
 }

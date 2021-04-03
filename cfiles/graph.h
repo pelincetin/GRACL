@@ -46,6 +46,7 @@ struct Node* createNode(struct Graph* g, char* data) {
     incrementId();
     g->hashArray[hashCode(node)].key = node;
     g->hashArray[hashCode(node)].value = nl;
+    //TODO: rn there's no implementation of collision/double size
     if (pthread_mutex_init(&node->lock, NULL) !=0) {
         fprintf(stderr, "createNode: Failure to initialize mutex\n");
         exit(1); 
