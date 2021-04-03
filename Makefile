@@ -18,13 +18,15 @@ gracl.native :
 codegen: 
 	ocamlc ast.ml
 	ocamlc -c sast.ml ast.cmo
+	ocamlfind ocamlc -c -w +a-4 -package llvm -package llvm.analysis -o functions.cmo functions.ml
 	ocamlfind ocamlc -c -w +a-4 -package llvm -package llvm.analysis -o codegen.cmo codegen.ml
 
 .PHONY : semant
 semant:
 	ocamlc ast.ml
 	ocamlc -c sast.ml ast.cmo
-	ocamlc -c semant.ml ast.cmo sast.cmo
+	ocamlfind ocamlc -c -w +a-4 -package llvm -package llvm.analysis -o functions.cmo functions.ml
+	ocamlc -c semant.ml ast.cmo sast.cmo functions.cmo
 
 .PHONY : helloworld
 helloworld:

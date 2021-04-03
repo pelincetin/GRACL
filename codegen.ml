@@ -14,6 +14,7 @@ http://llvm.moe/ocaml/
 
 module L = Llvm
 module A = Ast
+module F = Functions
 open Sast 
 
 module StringMap = Map.Make(String)
@@ -69,8 +70,7 @@ let translate (globals, functions) =
       let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
-        | A.Int -> L.const_int (ltype_of_typ t) 0
-        | A.Bool -> L.const_int (ltype_of_typ t) 0
+        | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
@@ -129,50 +129,11 @@ let translate (globals, functions) =
   let printf_func : L.llvalue = 
       L.declare_function "printf" printf_t the_module in
 
-let sprintf_t : L.lltype = 
+  let sprintf_t : L.lltype = 
       L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
   let sprintf_func : L.llvalue = 
       L.declare_function "__sprintf_chk" sprintf_t the_module in
 
-let createNode_t : L.lltype = 
-  L.function_type node_pointer [| string_t |] in
-let createNode_func : L.llvalue = 
-    L.declare_function "createNode" createNode_t the_module in
-
-  let printNode_t : L.lltype =                                     (* TODO: REMOVE PRINTNODE *)
-    L.function_type i32_t [| node_pointer |] in
-  let printNode_func : L.llvalue = 
-    L.declare_function "printNode" printNode_t the_module in
-
-    let data_t : L.lltype =                                     
-    L.function_type string_t [| node_pointer |] in
-    let data_func : L.llvalue = 
-    L.declare_function "data" data_t the_module in
-
-    let edges_t : L.lltype =                                     
-    L.function_type edgelist_pointer [| node_pointer |] in
-    let edges_func : L.llvalue = 
-    L.declare_function "edges" edges_t the_module in
-
-    let visited_t : L.lltype =                                     
-    L.function_type i1_t [| node_pointer |] in
-    let visited_func : L.llvalue = 
-    L.declare_function "visited" visited_t the_module in
-
-    let updateData_t : L.lltype =                                     
-    L.function_type node_pointer [| node_pointer; string_t |] in
-    let updateData_func : L.llvalue = 
-    L.declare_function "updateData" updateData_t the_module in
-
-    let updateVisited_t : L.lltype =                                     
-    L.function_type node_pointer [| node_pointer; i1_t |] in
-    let updateVisited_func : L.llvalue = 
-    L.declare_function "updateVisited" updateVisited_t the_module in
-
-    let nodeEquals_t : L.lltype =                                     
-    L.function_type i1_t [| node_pointer; node_pointer |] in
-    let nodeEquals_func : L.llvalue = 
-    L.declare_function "nodeEquals" nodeEquals_t the_module in
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -269,34 +230,29 @@ let createNode_func : L.llvalue =
           let e' = expr builder e in
 	  (match op with
 	    A.Neg when t = A.Double -> L.build_fneg 
-	  | A.Neg                  -> L.build_neg
-          | A.Not                  -> L.build_not) e' "tmp" builder
+	  | A.Neg                   -> L.build_neg
+    | A.Not                   -> L.build_not) e' "tmp" builder
 
-      | SCall("print", [e]) ->  
-         L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
-      | SCall("printi", [e]) ->  
-         L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      
+      (* Special built in functions *)
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
         L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
           "doubleToString" builder; arrptr
-      | SCall ("createNode", [e]) ->
-            L.build_call createNode_func [| (expr builder e) |] "createNode" builder
-      | SCall ("printNode", [e]) ->
-            L.build_call printNode_func [| (expr builder e) |] "printNode" builder
-      | SCall ("data", [e]) ->
-            L.build_call data_func [| (expr builder e) |] "data" builder
-      | SCall ("edges", [e]) ->
-            L.build_call edges_func [| (expr builder e) |] "edges" builder
-      | SCall ("visited", [e]) ->
-            L.build_call visited_func [| (expr builder e) |] "visited" builder
-      | SCall ("updateData", [n; s]) ->
-            L.build_call updateData_func [| (expr builder n); (expr builder s) |] "updateData" builder
-      | SCall ("updateVisited", [n; b]) ->
-            L.build_call updateVisited_func [| (expr builder n); (expr builder b) |] "updateVisited" builder
-      | SCall ("nodeEquals", [n1; n2]) ->
-            L.build_call nodeEquals_func [| (expr builder n1); (expr builder n2) |] "nodeEquals" builder
+      | SCall("print", [e]) ->  
+        L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
+      | SCall("printi", [e]) ->  
+        L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      (* General built in function call *)
+      | SCall(fname, args) when StringMap.mem fname F.function_decls -> 
+        let fdecl = StringMap.find fname F.function_decls in 
+        let rettype = function A.Void -> i32_t | _ as typ -> ltype_of_typ typ in  (* Deals with void function calls *)
+        let func_t : L.lltype = L.function_type (rettype fdecl.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.formals))) in
+        let func_value : L.llvalue = L.declare_function fname func_t the_module 
+        and llargs = List.rev (List.map (expr builder) (List.rev args)) in
+        L.build_call func_value (Array.of_list llargs) (fname ^ "_result") builder
+      (* User defined functions *)
       | SCall (f, args) ->
          let (fdef, fdecl) = StringMap.find f function_decls in
 	 let llargs = List.rev (List.map (expr builder) (List.rev args)) in
