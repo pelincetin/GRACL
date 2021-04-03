@@ -1,12 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "node.h"
-
-struct NodeListItem {
-    struct Node* node;
-    struct NodeListItem* next;
-    struct NodeListItem* prev;
-};
+#include "commonFunctions.h"
 
 // Move to general library eventually
 struct NodeList* createNodeList() {
@@ -14,31 +8,6 @@ struct NodeList* createNodeList() {
     node_list->head = NULL;
     node_list->tail = NULL;
     return node_list;
-}
-
-struct NodeListItem* createNodeListItem(struct Node* e) {
-    struct NodeListItem* item = malloc(sizeof(struct NodeListItem));
-    item->node = e;
-    item->next = NULL;
-    item->prev = NULL;
-    return item;
-}
-
-int length(struct NodeList* node_list) {
-    int length = 0;
-    struct NodeListItem *current;
-    current = node_list->head;
-    while (current != NULL) {
-        length++;
-        current = current->next;
-    }
-    return length;
-}
-
-bool empty(struct NodeList* node_list) {
-    struct NodeListItem *current;
-    current = node_list->head;
-    return (current == NULL);
 }
 
 struct Node* removeFirst(struct NodeList* node_list) {
@@ -49,8 +18,7 @@ struct Node* removeFirst(struct NodeList* node_list) {
         node_list->head->prev = NULL;
         return head->node;
     } else { 
-        // NEED TO HANDLE THE CASE WHERE HEAD DOESNT EXIST, EMPTY LIST 
-        exit(1); // ?
+        exit(1); 
     }
 }
 
@@ -88,26 +56,6 @@ int removeNode(struct NodeList* node_list, struct Node* e) {
         head = head->next;
     }
     return -1;
-}
-
-// WHY WAS APPEND ORIGINALLY AN INT TYPE IF PREPEND WAS VOID?
-// Changed names since stdio.h has append and prepend
-// What about error handling? What if e is null?
-void appendNode(struct NodeList* node_list, struct Node* e) {
-    struct NodeListItem* new_last = createNodeListItem(e);
-    if (!empty(node_list)) {
-        // if list not empty;
-        new_last->prev = node_list->tail;
-        struct NodeListItem *old_last = malloc(sizeof(struct NodeListItem));
-        old_last = node_list->tail;
-        old_last->next = new_last;
-        node_list->tail = new_last;
-    } else {
-        // if list is empty;
-        node_list->head = new_last;
-        node_list->tail = new_last;
-    }
-    return;
 }
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
