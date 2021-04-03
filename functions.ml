@@ -1,7 +1,5 @@
 (* Built in function library helpers *)
 
-module L = Llvm
-open Sast 
 open Ast
 module StringMap = Map.Make(String)
 let function_decls = 
@@ -10,12 +8,14 @@ let function_decls =
       fname = name; 
       formals = formallist;
       locals = []; body = [] } map in List.fold_left add_func StringMap.empty [ 
+        (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
+
+        (* Casting Functions *)
         (String, "doubleToString", [Double, "d"]);    
         
         (* Node Functions *)
-        
         (Node, "createNode", [String, "s"]);  (* Should be moved to graph functions *)
         (Void, "printNode", [Node, "n"]);     (* Should be removed *)
         (String, "data", [Node, "n"]);     
