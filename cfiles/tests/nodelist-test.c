@@ -16,21 +16,26 @@ int main()
     //Make two nodes 
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1;
-    struct Node* n2;
-    n1 = createNode(hello);
-    n2 = createNode(goodbye);
-
+    struct Node* n1 = NULL;
+    struct Node* n2 = NULL;
+    n1->data = hello;
+    n1->visited = false;
+    n1->id=id_num;
+    id_num++;
+    n2->data = goodbye;
+    n2->visited = false;
+    n2->id=id_num;
+    id_num++;
     
     struct NodeList* nl = createNodeList();
-    printf("Should be true: %s", empty(nl) ? "true\n" : "false\n");
+    printf("Should be true: %s", empty_NL(nl) ? "true\n" : "false\n");
     printf("Append node 'hello'\n");
     appendNode(nl, n1);
     printf("Prepend node 'goodbye'\n");
     prependNode(nl, n2);
     printf("List should be goodbye hello: ");
     printNodeList(nl);
-    printf("Length should be 2: %d\n", length(nl));
+    printf("Length should be 2: %d\n", length_NL(nl));
 
     removeFirst(nl);
     printf("After remove first (list should be hello): ");

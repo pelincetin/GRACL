@@ -18,11 +18,17 @@ int main() {
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1;
-    struct Node* n2;
-    n1 = createNode(hello);
-    n2 = createNode(goodbye);
-
+    struct Node* n1 = NULL;
+    struct Node* n2 = NULL;
+    n1->data = hello;
+    n1->visited = false;
+    n1->id=id_num;
+    id_num++;
+    n2->data = goodbye;
+    n2->visited = false;
+    n2->id=id_num;
+    id_num++;
+    
     struct Edge* e;
     e = addEdge(n1, n2, 15.3);
     printEdge(e);
