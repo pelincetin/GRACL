@@ -14,11 +14,11 @@ void printEdgeList (struct EdgeList* edge_list) {
 
 int main() {
     //Make two nodes to be start and end for edge
-    printf("yo");
+    printf("yo\n");
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1 = malloc(sizeof(struct Node*));
-    struct Node* n2 = malloc(sizeof(struct Node*));
+    struct Node* n1 = malloc(sizeof(struct Node));
+    struct Node* n2 = malloc(sizeof(struct Node));
     n1->data = hello;
     n1->visited = false;
     n1->id=id_num;
@@ -39,10 +39,11 @@ int main() {
     printf("Append edge with start 'hello'\n");
     appendEdge(el, e1);
     printf("Prepend edge with start 'goodbye'\n");
-    //prependEdge(el, e2);
-    printf("List should be goodbye hello: ");
+    prependEdge(el, e2);
+    printf("List should be goodbye hello: \n");
     printEdgeList(el);
     printf("Length should be 2: %d\n", length_EL(el));
+    
 
     removeFirst(el);
     printf("After remove first (list should be hello): ");

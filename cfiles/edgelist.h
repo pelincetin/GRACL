@@ -27,7 +27,7 @@ struct Edge* removeFirst(struct EdgeList* edge_list) {
         return head->edge;
     } else { 
         // NEED TO HANDLE THE CASE WHERE HEAD DOESNT EXIST, EMPTY LIST 
-        exit(1); // ?
+       return NULL;
     }
 }
 
@@ -40,7 +40,7 @@ struct Edge* removeLast(struct EdgeList* edge_list) {
         return last->edge;
     } else { 
         // NEED TO HANDLE THE CASE WHERE LAST DOESNT EXIST, EMPTY LIST 
-        exit(1); // ?
+        return NULL;
     }
 }
 
