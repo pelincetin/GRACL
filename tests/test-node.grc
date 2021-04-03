@@ -1,5 +1,34 @@
 int main (){
-    Node n = createNode("yo");
-    printNode(n);
+    //this is for testing createNode
+    String greeting = "Hello";
+    Node temp;
+    Node temp2;
+
+    temp = createNode(greeting);
+    printNode(temp);    
+
+    //this is for testing updateData
+    String hsm_forever = "zac efron";
+    temp.updateData(hsm_forever);
+    printNode(temp);
+
+    //this is for testing visited
+    if (temp.visited()) print("Visited");
+    else print("Not Visited");
+
+    //this is for testing updateVisited
+    temp.updateVisited(True);
+    if (temp.visited()) print("Visited");
+    else print("Not Visited");
+
+    // this is for testing equals
+    temp.updateData(greeting);
+    temp2 = createNode(greeting);
+    printNode(temp2);    
+    if (temp.nodeEquals(temp2)) print("Equal");
+    else print("Not Equal");
+    if (temp.nodeEquals(temp)) print("Equal");
+    else print("Not Equal");
+
     return 0;
 }

@@ -13,6 +13,15 @@ let function_decls =
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
         (String, "doubleToString", [Double, "d"]);    
-        (Node, "createNode", [String, "s"]); 
-        (Void, "printNode", [Node, "n"]);          
-		(*("printbig", Int)*) ]
+        
+        (* Node Functions *)
+        
+        (Node, "createNode", [String, "s"]);  (* Should be moved to graph functions *)
+        (Void, "printNode", [Node, "n"]);     (* Should be removed *)
+        (String, "data", [Node, "n"]);     
+        (Edgelist, "edges", [Node, "n"]);
+        (Bool, "visited", [Node, "n"]);    
+        (Node, "updateData", [(Node, "n"); (String, "s")]); 
+        (Node, "updateVisited", [(Node, "n"); (Bool, "b")]);
+        (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")])
+		]
