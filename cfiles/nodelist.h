@@ -16,4 +16,4 @@ int removeNode(struct NodeList* node_list, struct Node* e);
 
 void prependNode(struct NodeList* node_list, struct Node* e);
 
-#endif NODE_LIST_H
+#endif
