@@ -19,20 +19,22 @@ struct Node* removeFirst(struct NodeList* node_list) {
         node_list->head->prev = NULL;
         return head->node;
     } else { 
-        exit(1); 
+        return NULL; 
     }
 }
 
 struct Node* removeLast(struct NodeList* node_list) {
-    if (node_list->tail) {
-        struct NodeListItem *last = node_list->tail;
-        struct NodeListItem *prev = last->prev;
+    struct NodeListItem *last = node_list->tail;
+    struct NodeListItem *prev = NULL;
+    if (last) {
+        prev = last->prev;
         node_list->tail = prev;
-        prev->next = NULL;
+        if (prev) {
+            prev->next = NULL;
+        }
         return last->node;
     } else { 
-        // NEED TO HANDLE THE CASE WHERE LAST DOESNT EXIST, EMPTY LIST 
-        exit(1); // ?
+        return NULL;
     }
 }
 
@@ -42,29 +44,34 @@ int removeNode(struct NodeList* node_list, struct Node* e) {
     if(head == NULL) {
         // list is empty 
         return -1;
-    }
-    while (head) {
-        if (nodeEquals(e, head->node)) {
-            if (prev) {
-                next = head->next;
-                prev->next = next;
-                if (next) {
-                    next->prev = prev;
+    } else {
+        prev = head->prev;
+        while (head) {
+            if (nodeEquals(e, head->node)) {
+                if (prev) {
+                    next = head->next;
+                    prev->next = next;
+                    if (next) {
+                        next->prev = prev;
+                    }
+                } else {
+                    next = head->next;
+                    node_list->head = next;
+                    if (next) {
+                        next->prev = NULL;
+                    }
                 }
-            } else {
-                next = head->next;
-                node_list->head = next;
-                if (next) {
-                    next->prev = NULL;
-                }
+                return 0;
             }
-            return 0;
+            prev = head;
+            head = head->next;
         }
-        prev = head;
-        head = head->next;
+        return -1;
     }
-    return -1;
 }
+
+
+       
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
     struct NodeListItem *prepend_item = createNodeListItem(e);
