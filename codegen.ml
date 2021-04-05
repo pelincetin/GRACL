@@ -36,16 +36,25 @@ let translate (globals, functions) =
   and i64_t      = L.i64_type    context in
   let mutex_t    = L.struct_type context [| i64_t; L.array_type i8_t 56 |] in
   let edgelistitem_t = L.named_struct_type context "EdgeListItem" in
+  let nodelistitem_t = L.named_struct_type context "NodeListItem" in
   let node_t     = L.named_struct_type context "Node" in
   let node_pointer = L.pointer_type node_t in
   let edge_t     = L.struct_type context [|mutex_t; double_t; node_pointer; node_pointer|] in
   let edge_pointer = L.pointer_type edge_t in
   let edgelistitem_pointer = L.pointer_type edgelistitem_t in
+  let nodelistitem_pointer = L.pointer_type nodelistitem_t in
   let edgelist_t = L.struct_type context [| edgelistitem_pointer; edgelistitem_pointer|] in
+  let nodelist_t = L.struct_type context [| nodelistitem_pointer; nodelistitem_pointer|] in
   let edgelist_pointer = L.pointer_type edgelist_t in 
+  let nodelist_pointer = L.pointer_type nodelist_t in 
   let _ = L.struct_set_body edgelistitem_t [|edge_pointer; edgelistitem_pointer; edgelistitem_pointer|] false in
+  let _ = L.struct_set_body nodelistitem_t [|node_pointer; nodelistitem_pointer; nodelistitem_pointer|] false in
   let _ = L.struct_set_body node_t [|mutex_t; i32_t; L.pointer_type i8_t; i8_t; edgelist_pointer|] false in
   let string_t   = L.pointer_type i8_t in
+  let dataitem_t = L.struct_type context [|node_pointer; nodelist_pointer|] in
+  let dataitem_pointer = L.pointer_type dataitem_t in
+  let graph_t = L.struct_type context [|dataitem_pointer|] in
+  let graph_pointer = L.pointer_type graph_t in
 
   (* Return the LLVM type for a GRACL type *)
   let ltype_of_typ = function
@@ -57,6 +66,8 @@ let translate (globals, functions) =
     | A.Node -> node_pointer
     | A.Edge -> edge_pointer
     | A.Edgelist -> edgelist_pointer
+    | A.Nodelist -> nodelist_pointer
+    | A.Graph -> graph_pointer
   in
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  

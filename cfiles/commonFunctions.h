@@ -1,7 +1,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lockedobject.h"
+#include "../lockedobject.h"
 
 bool nodeEquals(struct Node* node1, struct Node* node2);
 

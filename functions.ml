@@ -11,17 +11,21 @@ let function_decls =
         (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
+        (Graph, "createGraph", []);
 
         (* Casting Functions *)
         (String, "doubleToString", [Double, "d"]);    
         
         (* Node Functions *)
-        (Node, "createNode", [String, "s"]);  (* Should be moved to graph functions *)
         (Void, "printNode", [Node, "n"]);     (* Should be removed *)
         (String, "data", [Node, "n"]);     
         (Edgelist, "edges", [Node, "n"]);
         (Bool, "visited", [Node, "n"]);    
         (Node, "updateData", [(Node, "n"); (String, "s")]); 
         (Node, "updateVisited", [(Node, "n"); (Bool, "b")]);
-        (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")])
-		]
+        (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")]);
+
+        (* Graph Functions *)
+        (Node, "createNode", [(Graph, "g"); (String, "s")]);
+    ]
+    

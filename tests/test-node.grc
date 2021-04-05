@@ -1,10 +1,9 @@
 int main (){
     //this is for testing createNode
+    Graph g = createGraph();
     String greeting = "Hello";
-    Node temp;
-    Node temp2;
 
-    temp = createNode(greeting);
+    Node temp = g.createNode(greeting);
     printNode(temp);    
 
     //this is for testing updateData
@@ -23,7 +22,7 @@ int main (){
 
     // this is for testing equals
     temp.updateData(greeting);
-    temp2 = createNode(greeting);
+    Node temp2 = g.createNode(greeting);
     printNode(temp2);    
     if (temp.nodeEquals(temp2)) print("Equal");
     else print("Not Equal");
