@@ -77,25 +77,38 @@ void prependEdge(struct EdgeList* edge_list, struct Edge* e) {
     return; 
 }
 
-// Changed name from remove because stdio.h has its own remove
 int removeEdge(struct EdgeList* edge_list, struct Edge* e) {
     struct EdgeListItem* head = edge_list->head;
     struct EdgeListItem* prev = NULL;
     if(head == NULL) {
         // list is empty 
         return -1;
-    }
-    while (head) {
-        if (edgeEquals(e, head->edge)) {
-            if (prev) {
-                prev->next = head->next;
-            } else {
-                edge_list->head = head->next;
+    } else {
+        prev = head->prev;
+        while (head) {
+            if (edgeEquals(e, head->edge)) {
+                if (prev) {
+                    next = head->next;
+                    prev->next = next;
+                    if (next) {
+                        next->prev = prev;
+                    }
+                } else {
+                    next = head->next;
+                    edge_list->head = next;
+                    if (next) {
+                        next->prev = NULL;
+                    }
+                }
+                return 0;
             }
-            return 0;
+            prev = head;
+            head = head->next;
         }
-        prev = head;
-        head = head->next;
+        return -1;
     }
-    return -1;
 }
+
+
+
+

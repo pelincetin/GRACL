@@ -68,10 +68,7 @@ int removeNode(struct NodeList* node_list, struct Node* e) {
         }
         return -1;
     }
-}
-
-
-       
+}  
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
     struct NodeListItem *prepend_item = createNodeListItem(e);
