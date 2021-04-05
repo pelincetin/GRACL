@@ -17,9 +17,9 @@ struct NodeList* nodes(struct Graph* g);
 
 struct Node* createNode(struct Graph* g, char* data);
 
-int removeNode(struct Graph* g, struct Node* e);
+int removeNodeGraph(struct Graph* g, struct Node* e);
 
-int removeEdge(struct Graph* g, struct Edge* e);
+int removeEdgeGraph(struct Graph* g, struct Edge* e);
 
 struct Edge* addEdge(struct Node* start_node, struct Node* end_node, double edge_weight);
 

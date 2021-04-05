@@ -7,7 +7,7 @@
  * All objects should look like lockednode -- no need for plain node
  * Need a cast operation to make llvm types happy */
 int id_num=1;
-int SIZE = 100;
+int SIZE = 500;
 
 struct Object {
     pthread_mutex_t lock;

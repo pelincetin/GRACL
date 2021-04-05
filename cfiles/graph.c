@@ -3,12 +3,15 @@
 #include <string.h>
 #include "commonFunctions.h"
 #include "graph.h"
+#include "nodelist.h"
+#include "node.h"
 
-// the key is going to be node
-// the value would a nodelist whose edges  point to the key
+/* The key is going to be a node
+ * The value will be a nodelist whose edges point to the key
+ */
 struct Graph* createGraph(){
     struct DataItem* d = malloc(sizeof(struct DataItem) * SIZE);
-    for(int i =0; i<SIZE; i++){
+    for (int i = 0; i < SIZE; i++) {
         d[i].key = NULL;
         d[i].value = NULL;
     }
@@ -26,10 +29,12 @@ void incrementId(){
     id_num++;
 }
 
+/* Returns a nodelist of nodes in the graph
+ * sorted by hashed id */
 struct NodeList* nodes(struct Graph* g){
     struct NodeList* nodes = malloc(sizeof(struct NodeList));
-    for(int i=0; i<SIZE; i++){
-        if(g->hashArray[i].key != NULL){
+    for (int i = 0; i < SIZE; i++){
+        if (g->hashArray[i].key != NULL){
             appendNode(nodes, g->hashArray[i].key);
         }
     }
@@ -47,63 +52,56 @@ struct Node* createNode(struct Graph* g, char* data) {
     incrementId();
     g->hashArray[hashCode(node)].key = node;
     g->hashArray[hashCode(node)].value = nl;
-    //TODO: rn there's no implementation of collision/double size
     if (pthread_mutex_init(&node->lock, NULL) !=0) {
         fprintf(stderr, "createNode: Failure to initialize mutex\n");
         exit(1); 
     } else {
+        //TODO: rn there's no implementation of collision/double size
+
+        // iterate through the list of edges and add
+        // a node to the nl in value for each node destination 
+        // in the graph structure    
         return node;
     }
 }
 
-/*
-int removeNode(struct Graph* g, struct Node* e) {
-    struct NodeList* node_list = malloc(sizeof(struct NodeList));
-    node_list = 
-    struct NodeListItem* head = node_list->head;
-    struct NodeListItem* prev = NULL;
-    if(head == NULL) {
-        // list is empty 
-        return -1;
-    }
-    while (head) {
-        if (nodeEquals(e, head->node)) {
-            if (prev) {
-                prev->next = head->next;
-            } else {
-                node_list->head = head->next;
-            }
-            return 0;
-        }
-        prev = head;
-        head = head->next;
-    }
-    return -1;
+int removeNodeGraph(struct Graph* g, struct Node* n) {
+    // go through edgelist and 
+    // delete node from all the nodes' values specified in edge list
+    // change hashtbl list 
+    values = g->hashArray[hashCode(n)].value 
+
 }
 
-int removeEdge(struct Graph* g, struct Edge* e) {
-    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
-    struct EdgeListItem* head = malloc(sizeof(struct EdgeListItem));
-    struct EdgeListItem* prev = malloc(sizeof(struct EdgeListItem));
+int removeEdgeGraph(struct Graph* g, struct Edge* e) {
+    // remove edge from list 
+    struct EdgeList* edge_list;
     edge_list = g->hashArray[hashCode(e->start)].key->edges;
-    head = edge_list->head;
-    prev = NULL;
-    if(head == NULL) {
-        // list is empty 
-        return -1;
-    }
-    while (head) {
-        if (edgeEquals(e, head->edge)) {
-            if (prev) {
-                prev->next = head->next;
-            } else {
-                edge_list->head = head->next;
-            }
-            return 0;
-        }
-        prev = head;
-        head = head->next;
-    }
-    return -1;
+    removeEdge(edge_list, e)
+
+    // remove start node from end node's value list
+    struct NodeList* values;
+    struct Node* end_node = end(e);
+    struct Node* start_node = start(e);
+    values = g->hashArray[hashCode(end_node)].value;
+    removeNode(values, start_node);
+    return 0;
 }
-*/
+
+struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_node, double edge_weight) {
+    struct Edge* edge = malloc(sizeof(struct Edge));
+    edge->start = start_node;
+    edge->end = end_node;
+    edge->weight = edge_weight;
+    if (pthread_mutex_init(&edge->lock, NULL) !=0) {
+        fprintf(stderr, "addEdge: Failure to initialize mutex\n");
+        exit(1); 
+    }
+    else {
+        appendEdge(start_node->edges, edge);
+        struct NodeList* values;
+        values = g->hashArray[hashCode(end_node)].value;
+        appendNode(values, start_node);
+        return edge;
+    }
+};
