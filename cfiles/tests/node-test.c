@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../node.h"
+#include "../node.c"
 
 void printNode (struct Node* node) {
     printf("%s\n", node->visited ? "true" : "false");
@@ -11,12 +11,15 @@ void printNode (struct Node* node) {
 int main() {
     //this is for testing purposes for createNode
     char greeting[] = "Hello\n";
-    struct Node* temp;
+    struct Node* temp= malloc(sizeof(struct Node));
     bool temporary;
-    struct Node* temp2;
+    struct Node* temp2= malloc(sizeof(struct Node));
 
-    temp = createNode(greeting);
-    printNode(temp);    
+    temp->data = greeting;
+    temp->visited = false;
+    temp->id=id_num;
+    id_num++;
+    printNode(temp); 
 
     //this is for testing updateData
     char hsm_forever[] = "zac efron\n";
@@ -34,7 +37,10 @@ int main() {
 
     // this is for testing equals()
     temp = updateData(greeting, temp);
-    temp2 = createNode(greeting);
+    temp2->data = greeting;
+    temp2->visited = false;
+    temp2->id=id_num;
+    id_num++;
     printNode(temp2);    
     temporary = nodeEquals(temp, temp2);
     printf("%s", temporary ? "true\n" : "false\n");

@@ -7,6 +7,7 @@
  * All objects should look like lockednode -- no need for plain node
  * Need a cast operation to make llvm types happy */
 int id_num=1;
+int SIZE = 500;
 
 struct Object {
     pthread_mutex_t lock;
@@ -39,21 +40,30 @@ struct EdgeListItem {
 };
 
 struct EdgeList {
-    struct EdgeListItem *head;
-    struct EdgeListItem *tail;
+    struct EdgeListItem* head;
+    struct EdgeListItem* tail;
+};
+
+struct NodeListItem {
+    struct Node* node;
+    struct NodeListItem* next;
+    struct NodeListItem* prev;
 };
 
 struct NodeList {
-    struct NodeListItem *head;
-    struct NodeListItem *tail;
+    struct NodeListItem* head;
+    struct NodeListItem* tail;
 };
 
-// struct Graph
-// {
-//     pthread_mutex_t lock;
-//     struct NodeList nodes; // Should these be pointers?
-//     struct EdgeList edges; 
-// };
+struct DataItem {
+    struct Node* key;
+    struct NodeList* value;
+};
+
+struct Graph
+{
+    struct DataItem* hashArray; 
+};
 
 // struct DoubleTable
 // {

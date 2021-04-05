@@ -1,7 +1,8 @@
 Should be true: true
 Append edge with start 'hello'
 Prepend edge with start 'goodbye'
-List should be goodbye hello: Goodbye
+List should be goodbye hello: 
+Goodbye
 
 Hello
 

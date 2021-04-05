@@ -1,49 +1,61 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../edgelist.h"
+#include "../edgelist.c"
 
 void printEdgeList (struct EdgeList* edge_list) {
-    struct EdgeListItem *current;
+    struct EdgeListItem* current;
     current = edge_list->head;
     while (current != NULL) {
         printf("%s\n", current->edge->start->data); // Check each start node's data
         current = current->next;
     }
+    return;
 }
 
 int main() {
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1;
-    struct Node* n2;
-    n1 = createNode(hello);
-    n2 = createNode(goodbye);
+    struct Node* n1 = malloc(sizeof(struct Node));
+    struct Node* n2 = malloc(sizeof(struct Node));
+    struct Edge* e1 = malloc(sizeof(struct Edge));
+    struct Edge* e2 = malloc(sizeof(struct Edge));
+    n1->data = hello;
+    n1->visited = false;
+    n1->id=id_num;
+    id_num++;
+    n2->data = goodbye;
+    n2->visited = false;
+    n2->id=id_num;
+    id_num++;
 
-    struct Edge* e1;
-    e1 = addEdge(n1, n2, 15.3);
-    struct Edge* e2;
-    e2 = addEdge(n2, n1, 3.7);
+    e1->weight = 15.3;
+    e1->start = n1;
+    e1->end = n2;
+    
+    e2->weight = 3.7;
+    e2->start = n2;
+    e2->end = n1;
 
     struct EdgeList* el = createEdgeList();
-    printf("Should be true: %s", empty(el) ? "true\n" : "false\n");
+    printf("Should be true: %s", empty_EL(el) ? "true\n" : "false\n");
 
     printf("Append edge with start 'hello'\n");
     appendEdge(el, e1);
     printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
-    printf("List should be goodbye hello: ");
+    printf("List should be goodbye hello: \n");
     printEdgeList(el);
-    printf("Length should be 2: %d\n", length(el));
-
-    removeFirst(el);
+    printf("Length should be 2: %d\n", length_EL(el));
+    
+    removeFirst_EL(el);
     printf("After remove first (list should be hello): ");
     printEdgeList(el);
     printf("\n");
 
     printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
-    removeLast(el);
+    removeLast_EL(el);
     printf("After remove last (list should be goodbye): ");
     printEdgeList(el);
     printf("\n");
