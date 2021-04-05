@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../nodelist.h"
+#include "../nodelist.c"
 
 void printNodeList(struct NodeList* node_list) {
     struct NodeListItem *current;
@@ -37,14 +37,14 @@ int main()
     printNodeList(nl);
     printf("Length should be 2: %d\n", length_NL(nl));
 
-    removeFirst(nl);
+    removeFirst_NL(nl);
     printf("After remove first (list should be hello): ");
     printNodeList(nl);
     printf("\n");
 
     printf("Prepend Node 'goodbye'\n");
     prependNode(nl, n2);
-    removeLast(nl);
+    removeLast_NL(nl);
     printf("After remove last (list should be goodbye): ");
     printNodeList(nl);
     printf("\n");

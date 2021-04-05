@@ -105,6 +105,8 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
     }
 }
 
+/*
 int main(){
     return 0;
 }
+*/

@@ -50,6 +50,8 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
     return; 
 }
 
+/*
 int main(){
     return 0;
 }
+*/

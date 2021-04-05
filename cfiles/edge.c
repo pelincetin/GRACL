@@ -11,6 +11,8 @@ double weight(struct Edge* edge) {
     return edge->weight;
 }
 
+/*
 int main(){
     return 0;
 }
+*/

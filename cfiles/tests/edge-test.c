@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../edge.h"
+#include "../edge.c"
 
 void printEdge (struct Edge* edge) {
     printf("Start node: %s", edge->start->data);
@@ -20,6 +20,7 @@ int main() {
     char goodbye[] = "Goodbye\n";
     struct Node* n1 = malloc(sizeof(struct Node));
     struct Node* n2 = malloc(sizeof(struct Node));
+    struct Edge* e = malloc(sizeof(struct Edge));
     n1->data = hello;
     n1->visited = false;
     n1->id=id_num;
@@ -29,8 +30,9 @@ int main() {
     n2->id=id_num;
     id_num++;
     
-    struct Edge* e;
-    e = addEdge(n1, n2, 15.3);
+    e->weight = 15.3;
+    e->start = n1;
+    e->end=n2;
     printEdge(e);
 
     printNode(start(e));

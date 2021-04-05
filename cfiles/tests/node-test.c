@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../node.h"
+#include "../node.c"
 
 void printNode (struct Node* node) {
     printf("%s\n", node->visited ? "true" : "false");
