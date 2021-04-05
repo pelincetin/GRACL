@@ -5,24 +5,24 @@ CFLAGS = -g -Wall
 all: node edge edgelist nodelist graph
 
 .PHONY: node
-node: node.h
-	$(CC) $(CFLAGS) -pthread -o node node.h
+node: node.c
+	$(CC) $(CFLAGS) -pthread -o node node.c
 
 .PHONY: edge
-edge: edge.h
-	$(CC) $(CFLAGS) -pthread -o edge edge.h
+edge: edge.c
+	$(CC) $(CFLAGS) -pthread -o edge edge.c
 
 .PHONY: edgelist
-edgelist: edgelist.h
-	$(CC) $(CFLAGS) -pthread -o edgelist edgelist.h
+edgelist: edgelist.c
+	$(CC) $(CFLAGS) -pthread -o edgelist edgelist.c
 
 .PHONY: nodelist
-nodelist: nodelist.h
-	$(CC) $(CFLAGS) -pthread -o nodelist nodelist.h
+nodelist: nodelist.c
+	$(CC) $(CFLAGS) -pthread -o nodelist nodelist.c
 
 .PHONY: graph
-graph: graph.h
-	$(CC) $(CFLAGS) -pthread -o graph graph.h
+graph: graph.c
+	$(CC) $(CFLAGS) -pthread -o graph graph.c
 
 .PHONY: clean
 clean:

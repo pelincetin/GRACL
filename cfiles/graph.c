@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "commonFunctions.h"
-#include "graph.h"
-#include "nodelist.h"
-#include "node.h"
 
 /* The key is going to be a node
  * The value will be a nodelist whose edges point to the key
@@ -66,18 +63,19 @@ struct Node* createNode(struct Graph* g, char* data) {
 }
 
 int removeNodeGraph(struct Graph* g, struct Node* n) {
-    // go through edgelist and 
+    // go through nodelist and 
     // delete node from all the nodes' values specified in edge list
     // change hashtbl list 
-    values = g->hashArray[hashCode(n)].value 
-
+    struct NodeList* values;
+    values = g->hashArray[hashCode(n)].value;
+    return 0;
 }
 
 int removeEdgeGraph(struct Graph* g, struct Edge* e) {
     // remove edge from list 
     struct EdgeList* edge_list;
     edge_list = g->hashArray[hashCode(e->start)].key->edges;
-    removeEdge(edge_list, e)
+    removeEdge(edge_list, e);
 
     // remove start node from end node's value list
     struct NodeList* values;
@@ -85,6 +83,7 @@ int removeEdgeGraph(struct Graph* g, struct Edge* e) {
     struct Node* start_node = start(e);
     values = g->hashArray[hashCode(end_node)].value;
     removeNode(values, start_node);
+    
     return 0;
 }
 
@@ -104,4 +103,8 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         appendNode(values, start_node);
         return edge;
     }
-};
+}
+
+int main(){
+    return 0;
+}

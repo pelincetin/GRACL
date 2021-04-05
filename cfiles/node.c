@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "commonFunctions.h"
-#include "node.h"
 
 const char* data(struct Node* node)
 {
     return node->data;
 }
 
-/* Neturn the node neighbors of a node
+/* Return the node neighbors of a node
  * Meaning every node it contains an edge to */ 
 struct NodeList* neighbors(struct Node* node)
 {
@@ -48,4 +47,8 @@ struct Node* updateVisited(bool tf, struct Node* node)
 {
     node->visited = tf;
     return node;
+}
+
+int main(){
+    return 0;
 }

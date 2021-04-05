@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "commonFunctions.h"
-#include "nodelist.h"
 
 /* Move to general library eventually */
 struct NodeList* createNodeList() {
@@ -11,8 +10,8 @@ struct NodeList* createNodeList() {
     return node_list;
 }
 
-struct Node* removeFirst(struct NodeList* node_list) {
-    struct NodeListItem *head;
+struct Node* removeFirst_NL(struct NodeList* node_list) {
+    struct NodeListItem* head;
     head = node_list->head;
     if (head) {
         node_list->head = head->next;
@@ -23,9 +22,9 @@ struct Node* removeFirst(struct NodeList* node_list) {
     }
 }
 
-struct Node* removeLast(struct NodeList* node_list) {
-    struct NodeListItem *last = node_list->tail;
-    struct NodeListItem *prev = NULL;
+struct Node* removeLast_NL(struct NodeList* node_list) {
+    struct NodeListItem* last = node_list->tail;
+    struct NodeListItem* prev = NULL;
     if (last) {
         prev = last->prev;
         node_list->tail = prev;
@@ -36,43 +35,11 @@ struct Node* removeLast(struct NodeList* node_list) {
     } else { 
         return NULL;
     }
-}
-
-int removeNode(struct NodeList* node_list, struct Node* e) {
-    struct NodeListItem* head = node_list->head;
-    struct NodeListItem* prev = NULL;
-    if(head == NULL) {
-        // list is empty 
-        return -1;
-    } else {
-        prev = head->prev;
-        while (head) {
-            if (nodeEquals(e, head->node)) {
-                if (prev) {
-                    next = head->next;
-                    prev->next = next;
-                    if (next) {
-                        next->prev = prev;
-                    }
-                } else {
-                    next = head->next;
-                    node_list->head = next;
-                    if (next) {
-                        next->prev = NULL;
-                    }
-                }
-                return 0;
-            }
-            prev = head;
-            head = head->next;
-        }
-        return -1;
-    }
-}  
+} 
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
-    struct NodeListItem *prepend_item = createNodeListItem(e);
-    struct NodeListItem *head = node_list->head;
+    struct NodeListItem* prepend_item = createNodeListItem(e);
+    struct NodeListItem* head = node_list->head;
     prepend_item->next = head;
     head->prev = prepend_item;
     node_list->head = prepend_item;
@@ -83,19 +50,6 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
     return; 
 }
 
-void appendNode(struct NodeList* node_list, struct Node* n) {
-    struct NodeListItem* new_last = createNodeListItem(n);
-    if (!empty_NL(node_list)) {
-        // if list not empty;
-        new_last->prev = node_list->tail;
-        struct NodeListItem* old_last = malloc(sizeof(struct NodeListItem));
-        old_last = node_list->tail;
-        old_last->next = new_last;
-        node_list->tail = new_last;
-    } else {
-        // if list is empty;
-        node_list->head = new_last;
-        node_list->tail = new_last;
-    }
-    return;
+int main(){
+    return 0;
 }
