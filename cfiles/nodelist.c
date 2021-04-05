@@ -83,4 +83,19 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
     return; 
 }
 
-/* appendNode moved to common ?? */
+void appendNode(struct NodeList* node_list, struct Node* n) {
+    struct NodeListItem* new_last = createNodeListItem(n);
+    if (!empty_NL(node_list)) {
+        // if list not empty;
+        new_last->prev = node_list->tail;
+        struct NodeListItem* old_last = malloc(sizeof(struct NodeListItem));
+        old_last = node_list->tail;
+        old_last->next = new_last;
+        node_list->tail = new_last;
+    } else {
+        // if list is empty;
+        node_list->head = new_last;
+        node_list->tail = new_last;
+    }
+    return;
+}
