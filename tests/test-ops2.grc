@@ -1,17 +1,25 @@
+void printb(bool b){
+  if (b){
+    printi(1);
+  }
+  else {
+    printi(0);
+  }
+}
 int main()
 {
-  printb(true);
-  printb(false);
-  printb(true && true);
-  printb(true && false);
-  printb(false && true);
-  printb(false && false);
-  printb(true || true);
-  printb(true || false);
-  printb(false || true);
-  printb(false || false);
-  printb(!false);
-  printb(!true);
+  printb(True);
+  printb(False);
+  printb(True && True);
+  printb(True && False);
+  printb(False && True);
+  printb(False && False);
+  printb(True || True);
+  printb(True || False);
+  printb(False || True);
+  printb(False || False);
+  printb(!False);
+  printb(!True);
   printi(-10);
   printi(--42);
 }

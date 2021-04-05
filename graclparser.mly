@@ -2,10 +2,27 @@
 
 %{
 open Ast
+
+(*
+let parse_error s =
+      begin
+        try
+          let start_pos = Parsing.symbol_start_pos ()
+          and end_pos = Parsing.symbol_end_pos () in
+          Printf.printf "File \"%s\", line %d, characters %d-%d: \n"
+            start_pos.pos_fname
+            start_pos.pos_lnum
+            (start_pos.pos_cnum - start_pos.pos_bol)
+            (end_pos.pos_cnum - start_pos.pos_bol)
+        with Invalid_argument(_) -> ()
+      end;
+      Printf.printf "Syntax error: %s\n" s;
+      raise Parsing.Parse_error *)
+
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
-%token NOT EQ LT LEQ AND OR
+%token NOT EQ LT LEQ GT GEQ AND OR NEQ
 %token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
 %token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
@@ -21,8 +38,8 @@ open Ast
 %right ASSIGN
 %left OR
 %left AND
-%left EQ 
-%left LT LEQ
+%left EQ NEQ
+%left LT LEQ GT GEQ
 %nonassoc HATCH SYNCH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
@@ -110,22 +127,26 @@ expr:
   | expr DIVIDE expr { Binop($1, Div,   $3)              }
   | expr MODULO expr { Binop($1, Mod,   $3)              }
   | expr EQ     expr { Binop($1, Equal, $3)              }
+  | expr NEQ    expr { Binop($1, Neq,   $3)              }
   | expr LT     expr { Binop($1, Less,  $3)              }
+  | expr GT     expr { Binop($1, Great, $3)              } 
   | expr LEQ    expr { Binop($1, Leq,   $3)              }
+  | expr GEQ    expr { Binop($1, Geq,   $3)              }
   | expr AND    expr { Binop($1, And,   $3)              }
   | expr OR     expr { Binop($1, Or,    $3)              }
   | MINUS expr %prec NOT { Unop(Neg, $2)                 }
   | NOT expr         { Unop(Not, $2)                     }
   | ID ASSIGN expr   { Assign($1, $3)                    }
   | ID LPAREN args_opt RPAREN { Call($1, $3)             }
-  | ID DOT call_chain    { Method($1, List.rev $3)       }
+  | call_train ID LPAREN args_opt RPAREN { Call($2, $1 @ $4)}
   | ID LBRACK ID RBRACK { Access($1, $3)                 }
   | ID LBRACK ID RBRACK ASSIGN expr { Insert($1, $3, $6) }
   | LPAREN expr RPAREN { $2                              }
 
-call_chain:
-    ID LPAREN args_opt RPAREN                { [($1, $3)]     }
-  | call_chain DOT ID LPAREN args_opt RPAREN { ($3, $5) :: $1 }
+call_train:
+    call_train ID LPAREN args_opt RPAREN DOT { [Call($2, $1 @ $4)] }
+  | ID DOT { [Id($1)] }
+  | ID LPAREN args_opt RPAREN DOT { [Call($1, $3)]}
 
 args_opt:
     /* nothing */ { [] }

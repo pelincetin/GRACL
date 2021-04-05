@@ -2,7 +2,7 @@
 
 open Ast
 open Sast
-
+module F = Functions
 module StringMap = Map.Make(String)
 
 (* Semantic checking of the AST. Returns an SAST if successful,
@@ -34,18 +34,7 @@ let check (globals, functions) =
   (**** Check functions ****)
 
   (* Collect function declarations for built-in functions: no bodies *) (*BUILTIN FUNCTIONS*)
-  let built_in_decls = 
-    let add_bind map (name, ty) = StringMap.add name {
-      typ = Void; (*TODO: ALLOW FOR NONVOID RETURNS/MORE VARIETY IN FORMALS FOR STANDARD FUNCTIONS, HARD CODE?*)
-      fname = name; 
-      formals = [(ty, "x")];
-      locals = []; body = [] } map
-    in List.fold_left add_bind StringMap.empty [ ("print", String);
-                               ("printi", Int);
-			                         (*("printb", Bool); DELETED *)
-			                         (*("printf", Float); DELETED *)
-			                         ("printbig", Int) ]
-  in
+  let built_in_decls = F.function_decls in 
 
   (* Add function name to symbol table *)
   let add_func map fd = 
@@ -70,6 +59,53 @@ let check (globals, functions) =
   in
 
   let _ = find_func "main" in (* Ensure "main" is defined *)
+
+  let check_global_decs =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAULT *)
+    let rec constexpr = function
+        Literal  l -> (Int, SLiteral l)
+      | Fliteral l -> (Double, SFliteral l)
+      | Sliteral l -> (String, SSliteral l)
+      | BoolLit l  -> (Bool, SBoolLit l)
+      | Unop(op, e) as ex -> 
+          let (t, e') = constexpr e in
+          let ty = match op with
+            Neg when t = Int || t = Double -> t
+          | Not when t = Bool -> Bool
+          | _ -> raise (Failure ("illegal unary operator " ^ 
+                                 string_of_uop op ^ string_of_typ t ^
+                                 " in " ^ string_of_expr ex))
+          in (ty, SUnop(op, (t, e')))
+      | Binop(e1, op, e2) as e -> 
+          let (t1, e1') = constexpr e1 
+          and (t2, e2') = constexpr e2 in
+          (* All binary operators require operands of the same type *)
+          let same = t1 = t2 in
+          (* Determine expression type based on operator and operand types *)
+          let ty = match op with
+            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
+          | Add | Sub | Mult | Div when same && t1 = Double -> Double
+          | Equal | Neq          when same               -> Bool
+          | Less | Leq | Great | Geq
+                     when same && (t1 = Int || t1 = Double) -> Bool
+          | And | Or when same && t1 = Bool -> Bool
+          | _ -> raise (
+	      Failure ("illegal binary operator " ^
+                       string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
+                       string_of_typ t2 ^ " in " ^ string_of_expr e))
+          in (ty, SBinop((t1, e1'), op, (t2, e2')))
+      | _ as ex -> raise (Failure ("initializer element " ^ string_of_expr ex ^ " is not a compile time constant"))
+    in function
+  | Decinit(t, n, e) as di -> 
+        let (rt, ex) = constexpr e 
+        and check_assign lvaluet rvaluet err =
+       if lvaluet = rvaluet then lvaluet else raise (Failure err)
+        in 
+          let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_vdecl di
+            in let _ = check_assign t rt err
+          in SDecinit(t, n, (rt, ex))
+  | Dec(t,n) -> SDec(t,n)  
+  in
 
   let check_function func =
     (* Make sure no formals or locals are void or duplicates *)
@@ -135,8 +171,8 @@ let check (globals, functions) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal           when same               -> Bool
-          | Less | Leq 
+          | Equal | Neq          when same               -> Bool
+          | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
           | _ -> raise (
@@ -158,9 +194,8 @@ let check (globals, functions) =
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
-     (* | Access(table, key)
-      | Insert(table, key, ex)
-      | Method(obj, calls) *)
+     (* TODO: | Access(table, key)
+      | Insert(table, key, ex)*)
     in
 
     let check_bool_expr e = 
@@ -169,6 +204,16 @@ let check (globals, functions) =
       in if t' != Bool then raise (Failure err) else (t', e') 
     in
 
+    (* Check declaration/initializations *)
+    let check_local_decs = function
+      | Decinit(t, n, e) as di -> 
+        let (rt, ex) = expr e in
+          let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_vdecl di
+          in let _ = check_assign t rt err 
+            in SDecinit(t, n, (rt, ex))
+      | Dec(t,n) -> SDec(t,n)
+    in
     (* Return a semantically-checked statement i.e. containing sexprs *)
     let rec check_stmt = function
         Expr e -> SExpr (expr e)
@@ -190,7 +235,7 @@ let check (globals, functions) =
             | s :: ss         -> check_stmt s :: check_stmt_list ss
             | []              -> []
           in SBlock(check_stmt_list sl)
-      (*
+      (* TODO:
       | NodeFor 
       | EdgeFor
       | Hatch 
@@ -201,9 +246,9 @@ let check (globals, functions) =
     { styp = func.typ;
       sfname = func.fname;
       sformals = func.formals; 
-      slocals  = func.locals;
+      slocals  = List.map check_local_decs func.locals;
       sbody = match check_stmt (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
     }
-  in (globals, List.map check_function functions)
+  in (List.map check_global_decs globals, List.map check_function functions)

@@ -25,8 +25,11 @@ rule token = parse
 | '%'      { MODULO }
 | '='      { ASSIGN }
 | "=="     { EQ }
+| "!="     { NEQ }
 | '<'      { LT }
+| '>'      { GT }
 | "<="     { LEQ }
+| ">="     { GEQ }
 | "&&"     { AND }
 | "||"     { OR }
 | "!"      { NOT }

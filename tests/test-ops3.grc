@@ -1,0 +1,52 @@
+void printb(bool b){
+  if (b){
+    printi(1);
+  }
+  else {
+    printi(0);
+  }
+}
+int main()
+{
+  printi(1 + 2);
+  printi(1 - 2);
+  printi(1 * 2);
+  printi(100 / 2);
+  printi(99);
+  printb(1 == 2);
+  printb(1 == 1);
+  printi(99);
+  printb(1 != 2);
+  printb(1 != 1);
+  printi(99);
+  printb(1 < 2);
+  printb(2 < 1);
+  printi(99);
+  printb(1 <= 2);
+  printb(1 <= 1);
+  printb(2 <= 1);
+  printi(99);
+  printb(2 < 1);
+  printb(1 < 2);
+  printi(99);
+  printb(2 <= 1);
+  printb(1 <= 1);
+  printb(1 <= 2); 
+
+  printb(1.0 == 3.0);
+  printb(1.0 == 1.00);
+  printb(1.0 != 1.00);
+  printb(1.0 != 3.0);
+  printb(1 != -1);
+  printb(1.0 != -1.0);
+
+  printb(1 > 4);
+  printb(4 > 1);
+  printb(4.0 > 1.0);
+  printb(1.0 > 4.0); 
+  printb(1 > -1); 
+  printb(1.0 > 1.0);
+  printb(4.0 > -4.0);   
+
+  return 0;
+}
