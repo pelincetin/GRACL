@@ -103,8 +103,8 @@ let translate (globals, functions) =
 	  | A.Great   -> L.const_fcmp L.Fcmp.Ogt
 	  | A.Leq     -> L.const_fcmp L.Fcmp.Ole
     | A.Geq     -> L.const_fcmp L.Fcmp.Oge
-	  | A.And | A.Or ->
-	      raise (Failure "internal error: semant should have rejected and/or on float")
+	  | _ ->
+	      raise (Failure "internal error: semant should have rejected illegal float operation")
 	  ) e1' e2' 
       | SBinop (e1, op, e2) ->
 	  let e1' = constexpr e1
@@ -227,8 +227,8 @@ let translate (globals, functions) =
 	  | A.Great   -> L.build_fcmp L.Fcmp.Ogt    
 	  | A.Leq     -> L.build_fcmp L.Fcmp.Ole
     | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-	  | A.And | A.Or ->
-	      raise (Failure "internal error: semant should have rejected and/or on float")
+	  | _ ->
+	      raise (Failure "internal error: semant should have rejected illegal float operation")
 	  ) e1' e2' "tmp" builder
       | SBinop (e1, op, e2) ->
 	  let e1' = expr builder e1
@@ -260,8 +260,8 @@ let translate (globals, functions) =
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
-        L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
-          "doubleToString" builder; arrptr
+        ignore(L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
+          "doubleToString" builder); arrptr
       | SCall("intToDouble", [e]) -> L.build_sitofp (expr builder e) double_t "intToDouble" builder
       | SCall("print", [e]) ->  
         L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
@@ -277,7 +277,7 @@ let translate (globals, functions) =
       | SCall(fname, args) when StringMap.mem fname F.function_decls -> 
         let fdecl = StringMap.find fname F.function_decls in 
         let rettype = function A.Void -> i32_t | _ as typ -> ltype_of_typ typ in  (* Deals with void function calls *)
-        let func_t : L.lltype = L.function_type (rettype fdecl.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.formals))) in
+        let func_t : L.lltype = L.function_type (rettype fdecl.A.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.A.formals))) in
         let func_value : L.llvalue = L.declare_function fname func_t the_module 
         and llargs = List.rev (List.map (expr builder) (List.rev args)) in
         L.build_call func_value (Array.of_list llargs) (fname ^ "_result") builder
