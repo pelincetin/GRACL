@@ -15,7 +15,8 @@ int main (){
 
     //this is for testing updateData
     String hsm_forever = "zac efron";
-    temp.updateData(hsm_forever);
+
+    temp.updateData(hsm_forever); 
     printNode(temp);
 
     //this is for testing visited
@@ -28,7 +29,7 @@ int main (){
     else print("Not Visited");
 
     // this is for testing equals
-    temp.updateData(greeting);
+    temp.updateData(greeting); 
     Node temp2 = g.createNode(greeting);
     printNode(temp2);    
     if (temp.nodeEquals(temp2)) print("Equal");

@@ -1,12 +1,15 @@
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
+#include "commonFunctions.h"
+#endif
 
 struct IntTable
 {
     struct DataItem* hashArray[SIZE]; 
     struct DataItem* dummyItem;
     struct DataItem* item;
-}
+};
 
 struct DataItem {
     int data;   

@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
+#endif
 
 void updateEdge(double new_weight, struct Edge* edge) {
     edge->weight = new_weight;
