@@ -26,7 +26,7 @@ let function_decls =
         (* Node Functions *)
         (String, "data", [Node, "n"]);   
         (Nodelist, "neighbors", [Node, "n"]); (* TODO: NEEDS TESTING *)  
-        (Edgelist, "edges", [Node, "n"]);
+        (Edgelist, "edges", [Node, "n"]);     (* TODO: NEEDS TESTING *)  
         (Bool, "visited", [Node, "n"]);    
         (Node, "updateData", [(Node, "n"); (String, "s")]); 
         (Node, "updateVisited", [(Node, "n"); (Bool, "b")]);
