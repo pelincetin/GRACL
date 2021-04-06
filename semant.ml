@@ -38,7 +38,7 @@ let check (globals, functions) =
 
   (* Add function name to symbol table *)
   let add_func map fd = 
-    let built_in_err = "function " ^ fd.fname ^ " may not be defined"
+    let built_in_err = "function " ^ fd.fname ^ " may not be redefined"
     and dup_err = "duplicate function " ^ fd.fname
     and make_err er = raise (Failure er)
     and n = fd.fname (* Name of the function *)

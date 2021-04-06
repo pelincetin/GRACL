@@ -1,8 +1,9 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
-
+#endif
 /* The key is going to be a node
  * The value will be a nodelist whose edges point to the key
  */

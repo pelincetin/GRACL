@@ -17,8 +17,8 @@ let function_decls =
         (String, "doubleToString", [Double, "d"]);    
         
         (* Node Functions *)
-        (Void, "printNode", [Node, "n"]);     (* Should be removed *)
-        (String, "data", [Node, "n"]);     
+        (String, "data", [Node, "n"]);   
+        (Nodelist, "neighbors", [Node, "n"]); (* TODO: NEEDS TESTING *)  
         (Edgelist, "edges", [Node, "n"]);
         (Bool, "visited", [Node, "n"]);    
         (Node, "updateData", [(Node, "n"); (String, "s")]); 
@@ -26,6 +26,10 @@ let function_decls =
         (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")]);
 
         (* Graph Functions *)
+        (Nodelist, "nodes", [Graph, "g"]);
         (Node, "createNode", [(Graph, "g"); (String, "s")]);
+        (Int, "removeNodeGraph", [(Graph, "g"); (Node, "n")]);
+        (Edge, "addEdge", [(Graph, "g"); (Node, "start"); (Node, "end"); (Double, "weight")]);
+        (Int,  "removeEdgeGraph", [(Graph, "g"); (Edge, "e")])
     ]
     

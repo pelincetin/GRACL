@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
+#endif
 
 // Move to general library eventually
 struct EdgeList* createEdgeList() {

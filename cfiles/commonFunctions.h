@@ -1,7 +1,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../lockedobject.h"
+#include "lockedobject.h"
 
 bool nodeEquals(struct Node* node1, struct Node* node2);
 
@@ -41,10 +41,10 @@ struct Node* end(struct Edge* edge);
 
 struct Node* createNode(struct Graph* g, char* data);
 
-struct Node* updateData(char* new_data, struct Node* node);
+struct Node* updateData(struct Node* node, char* new_data);
 
 /* Updates the visited field on the node to be the inputted bool */
-struct Node* updateVisited(bool tf, struct Node* node);
+struct Node* updateVisited(struct Node* node, bool tf);
 
 struct Node* removeFirst_NL(struct NodeList* node_list);
 
