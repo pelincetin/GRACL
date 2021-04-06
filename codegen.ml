@@ -135,6 +135,7 @@ let translate (globals, functions) =
     in
     List.fold_left global_var StringMap.empty globals in
 
+  (* Standard C/LLVM Functions *)
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| string_t |] in
   let printf_func : L.llvalue = 
@@ -144,6 +145,16 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
   let sprintf_func : L.llvalue = 
       L.declare_function "__sprintf_chk" sprintf_t the_module in
+
+  let strlen_t : L.lltype = 
+      L.function_type i64_t [| string_t |] in
+  let strlen_func : L.llvalue = 
+      L.declare_function "strlen" strlen_t the_module in
+
+  let strcmp_t : L.lltype = 
+      L.function_type i32_t [| string_t; string_t |] in
+  let strcmp_func : L.llvalue = 
+      L.declare_function "strcmp" strcmp_t the_module in
 
 
   (* Define each function (arguments and return type) so we can 
@@ -251,10 +262,17 @@ let translate (globals, functions) =
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
         L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
           "doubleToString" builder; arrptr
+      | SCall("intToDouble", [e]) -> L.build_sitofp (expr builder e) double_t "intToDouble" builder
       | SCall("print", [e]) ->  
         L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
       | SCall("printi", [e]) ->  
         L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      | SCall("stringLength", [e]) ->
+        let len = L.build_call strlen_func [| (expr builder e) |] "stringLength" builder in
+        L.build_trunc len i32_t "length" builder
+      | SCall("stringEquals", [s1 ; s2]) -> 
+        let compval = L.build_call strcmp_func [| (expr builder s1); (expr builder s2) |] "stringEquals" builder in
+        L.build_icmp L.Icmp.Eq (L.const_int i32_t 0) compval "equals" builder 
       (* General built in function call *)
       | SCall(fname, args) when StringMap.mem fname F.function_decls -> 
         let fdecl = StringMap.find fname F.function_decls in 

@@ -16,7 +16,12 @@ let function_decls =
         (Edgelist, "createEdgeList", []);
 
         (* Casting Functions *)
-        (String, "doubleToString", [Double, "d"]);    
+        (String, "doubleToString", [Double, "d"]);
+        (Double, "intToDouble", [Int, "i"]);
+
+        (* String Functions *)
+        (Int, "stringLength", [String, "s"]);
+        (Bool, "stringEquals", [(String, "s1"); (String, "s2")]);    
         
         (* Node Functions *)
         (String, "data", [Node, "n"]);   

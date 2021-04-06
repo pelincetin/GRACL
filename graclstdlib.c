@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <string.h>
 #define BUILDSTDLIB
 #include "./cfiles/commonFunctions.h"
 #include "./cfiles/graph.c"
