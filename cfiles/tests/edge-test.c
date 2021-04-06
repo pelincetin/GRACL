@@ -39,7 +39,7 @@ int main() {
     printNode(end(e));
     printf("%f\n", weight(e));
 
-    updateEdge(1.2, e);
+    updateEdge(e, 1.2);
     printf("New weight: %f\n", weight(e));
 
     return 0;

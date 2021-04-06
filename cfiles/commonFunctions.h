@@ -86,7 +86,7 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e);
 
 void prependEdge(struct EdgeList* edge_list, struct Edge* e);
 
-void updateEdge(double new_weight, struct Edge* edge);
+void updateEdge(struct Edge* edge, double new_weight);
 
 bool nodeEquals(struct Node* node1, struct Node* node2)
 {
