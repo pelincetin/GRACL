@@ -181,6 +181,7 @@ struct Node* end(struct Edge* edge) {
 }
 
 
+
 void incrementId(){
     id_num++;
 }
@@ -232,6 +233,49 @@ struct Node* createNode(struct Graph* g, char* data) {
         // a node to the nl in value for each node destination 
         // in the graph structure    
         return node;
+    }
+}
+
+int removeNodeGraph(struct Graph* g, struct Node* n) {
+    // go through nodelist and 
+    // delete node from all the nodes' values specified in edge list
+    // change hashtbl list 
+    struct NodeList* values;
+    values = g->hashArray[hashCode(n)].value;
+    return 0;
+}
+
+int removeEdgeGraph(struct Graph* g, struct Edge* e) {
+    // remove edge from list 
+    struct EdgeList* edge_list;
+    edge_list = g->hashArray[hashCode(e->start)].key->edges;
+    removeEdge(edge_list, e);
+
+    // remove start node from end node's value list
+    struct NodeList* values;
+    struct Node* end_node = end(e);
+    struct Node* start_node = start(e);
+    values = g->hashArray[hashCode(end_node)].value;
+    removeNode(values, start_node);
+    
+    return 0;
+}
+
+struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_node, double edge_weight) {
+    struct Edge* edge = malloc(sizeof(struct Edge));
+    edge->start = start_node;
+    edge->end = end_node;
+    edge->weight = edge_weight;
+    if (pthread_mutex_init(&edge->lock, NULL) !=0) {
+        fprintf(stderr, "addEdge: Failure to initialize mutex\n");
+        exit(1); 
+    }
+    else {
+        appendEdge(start_node->edges, edge);
+        struct NodeList* values;
+        values = g->hashArray[hashCode(end_node)].value;
+        appendNode(values, start_node);
+        return edge;
     }
 }
 

@@ -27,7 +27,9 @@ let function_decls =
 
         (* Graph Functions *)
         (Nodelist, "nodes", [Graph, "g"]);
-        (Node, "createNode", [(Graph, "g"); (String, "s")])
-        
+        (Node, "createNode", [(Graph, "g"); (String, "s")]);
+        (Int, "removeNodeGraph", [(Graph, "g"); (Node, "n")]);
+        (Edge, "addEdge", [(Graph, "g"); (Node, "start"); (Node, "end"); (Double, "weight")]);
+        (Int,  "removeEdgeGraph", [(Graph, "g"); (Edge, "e")])
     ]
     
