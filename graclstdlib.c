@@ -3,5 +3,10 @@
 #include <pthread.h>
 #define BUILDSTDLIB
 #include "./cfiles/commonFunctions.h"
-#include "./cfiles/node.c"
 #include "./cfiles/graph.c"
+#include "./cfiles/node.c"
+#include "./cfiles/nodelist.c"
+#include "./cfiles/edge.c"
+#include "./cfiles/edgelist.c"
+//#include "./cfiles/doubletable.c"
+//#include "./cfiles/inttable.c"
