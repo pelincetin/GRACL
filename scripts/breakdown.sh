@@ -29,7 +29,7 @@ Run "$GRACL" "-c" "${filename}" ">> $1.breakdown"&&
 echo "\n" >> "$1.breakdown" &&
 Run "$GRACL" "${filename}" ">" "${basename}.ll" &&
 Run "$LLC" "-relocation-model=pic" "${basename}.ll" ">" "${basename}.s" &&
-Run "$CC" "-o" "${basename}.exe" "${basename}.s" "node.o"&& #link in standard library in C
+Run "$CC" "-o" "${basename}.exe" "${basename}.s" "graclstdlib.o"&& #link in standard library in C
 echo "\n" >> "$1.breakdown" &&
 Run "./${basename}.exe" ">> $1.breakdown" &&
 echo "Please look at ${name}.breakdown"

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "lockedobject.h"
 #include <pthread.h>
+#include "lockedobject.h"
 
 bool nodeEquals(struct Node* node1, struct Node* node2)
 {
@@ -171,6 +171,7 @@ int removeNode(struct NodeList* node_list, struct Node* e) {
 } 
 
 /* New start and end accessors */
+
 struct Node* start(struct Edge* edge) {
     return edge->start;
 }
@@ -182,6 +183,32 @@ struct Node* end(struct Edge* edge) {
 
 void incrementId(){
     id_num++;
+}
+
+
+
+struct Graph* createGraph(){
+    struct DataItem* d = malloc(sizeof(struct DataItem) * SIZE);
+    for (int i = 0; i < SIZE; i++) {
+        d[i].key = NULL;
+        d[i].value = NULL;
+    }
+    struct Graph* graph = malloc(sizeof(struct Graph));
+    graph->hashArray = d;
+    return graph;
+}
+
+/* Returns a nodelist of nodes in the graph
+ * sorted by hashed id */
+
+struct NodeList* nodes(struct Graph* g){
+    struct NodeList* nodes = malloc(sizeof(struct NodeList));
+    for (int i = 0; i < SIZE; i++){
+        if (g->hashArray[i].key != NULL){
+            appendNode(nodes, g->hashArray[i].key);
+        }
+    }
+    return nodes;
 }
 
 struct Node* createNode(struct Graph* g, char* data) {
@@ -208,40 +235,25 @@ struct Node* createNode(struct Graph* g, char* data) {
     }
 }
 
-struct Graph* createGraph(){
-    struct DataItem* d = malloc(sizeof(struct DataItem) * SIZE);
-    for (int i = 0; i < SIZE; i++) {
-        d[i].key = NULL;
-        d[i].value = NULL;
-    }
-    struct Graph* graph = malloc(sizeof(struct Graph));
-    graph->hashArray = d;
-    return graph;
-}
-
-void printNode (struct Node* node) {
-    printf("%s\n", node->visited ? "true" : "false");
-    printf("%d\n", node->id);
-    printf("%s\n", node->data);
-}
-
 const char* data(struct Node* node)
 {
     return node->data;
 }
 
 /* Return the NodeList of surrounding neighbors 
- * NodeList type not defined yet though
-NodeList neighbors(struct Node* node)
+ * NodeList type not defined yet though*/
+struct NodeList* neighbors(struct Node* node)
 {
     struct EdgeList* edges = node->edges;
+    int length_of_edgelist = length_EL(edges);
+    struct NodeList* neighbors = NULL;
+    int i;
 
-    for (edge in edges) {
-
+    for (i = 0; i < length_of_edgelist; i++) {
+        appendNode(neighbors, edges->head->edge->end);
     }
     return neighbors; 
 }
-*/
 
 /* Return the edgelist of surrounding edges */
 struct EdgeList* edges(struct Node* node)

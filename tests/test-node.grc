@@ -1,3 +1,10 @@
+void printNode(Node n){
+    print(n.data());
+    if (n.visited()){
+        print("Visited");
+    }
+    else print("Not visited");
+}
 int main (){
     //this is for testing createNode
     Graph g = createGraph();

@@ -17,6 +17,6 @@ Run "make clean > discard.out" &&
 Run "make > discard.out" &&
 Run "$GRACL" "${filename}" ">" "${basename}.ll" &&
 Run "$LLC" "-relocation-model=pic" "${basename}.ll" ">" "${basename}.s" &&
-Run "$CC" "-o" "${basename}.exe" "${basename}.s" "node.o" &&#link in standard library in C
+Run "$CC" "-o" "${basename}.exe" "${basename}.s" "graclstdlib.o" &&#link in standard library in C
 Run "./${basename}.exe" &&
 rm discard.out "${basename}.exe" "${basename}.s" "${basename}.ll" 
