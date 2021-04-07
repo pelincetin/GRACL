@@ -47,6 +47,8 @@ let function_decls =
         (Int,  "removeEdgeGraph", [(Graph, "g"); (Edge, "e")]);
 
         (* Nodelist Functions *)             (* TODO: TEST ALL OF THIS *)
+        (Node, "head_NL", [Nodelist, "n"]);
+        (Node, "tail_NL", [Nodelist, "n"]);
         (Int, "length_NL", [Nodelist, "n"]);
         (Bool, "empty_NL", [Nodelist, "n"]);
         (Int, "removeNode", [(Nodelist, "nl"); (Node, "n")]);
@@ -56,6 +58,8 @@ let function_decls =
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
 
         (* Edgelist Functions *)                  (* TODO: TEST ALL OF THIS *)
+        (Edge, "head_EL", [Edgelist, "n"]);
+        (Edge, "tail_EL", [Edgelist, "n"]);
         (Int, "length_EL", [Edgelist, "e"]);
         (Bool, "empty_EL", [Edgelist, "e"]);
         (Int, "removeEdge", [(Edgelist, "el"); (Edge, "e")]);
