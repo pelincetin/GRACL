@@ -26,7 +26,7 @@ int main()
     n2->visited = false;
     n2->id=id_num;
     id_num++;
-    
+
     struct NodeList* nl = createNodeList();
     printf("Should be true: %s", empty_NL(nl) ? "true\n" : "false\n");
     printf("Append node 'hello'\n");
@@ -35,6 +35,7 @@ int main()
     prependNode(nl, n2);
     printf("List should be goodbye hello: ");
     printNodeList(nl);
+    printf("Data of head should be goodbye: %s\n", head(nl)->data);
     printf("Length should be 2: %d\n", length_NL(nl));
 
     removeFirst_NL(nl);

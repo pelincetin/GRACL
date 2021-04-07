@@ -46,6 +46,7 @@ int main() {
     prependEdge(el, e2);
     printf("List should be goodbye hello: \n");
     printEdgeList(el);
+    printf("Weight of head should be 3.7: %f\n", head(el)->weight);
     printf("Length should be 2: %d\n", length_EL(el));
     
     removeFirst_EL(el);

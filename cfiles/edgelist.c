@@ -12,6 +12,26 @@ struct EdgeList* createEdgeList() {
     return edge_list;
 }
 
+struct Edge* head(struct EdgeList* edge_list) {
+    struct Edge* head;
+    head = edge_list->head->edge;
+    if (head) {
+        return head;
+    } else {
+        return NULL;
+    }
+}
+
+struct Edge* tail(struct EdgeList* edge_list) {
+    struct Edge* tail;
+    tail = edge_list->tail->edge;
+    if (tail) {
+        return tail;
+    } else {
+        return NULL;
+    }
+}
+
 struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
     struct EdgeListItem *head;
     head = edge_list->head;
@@ -20,7 +40,7 @@ struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
         edge_list->head->prev = NULL;
         return head->edge;
     } else { 
-       return NULL;
+        return NULL;
     }
 }
 

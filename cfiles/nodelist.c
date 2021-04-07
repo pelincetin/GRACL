@@ -12,6 +12,26 @@ struct NodeList* createNodeList() {
     return node_list;
 }
 
+struct Node* head(struct NodeList* node_list) {
+    struct Node* head;
+    head = node_list->head->node;
+    if (head) {
+        return head;
+    } else {
+        return NULL;
+    }
+}
+
+struct Node* tail(struct NodeList* node_list) {
+    struct Node* tail;
+    tail = node_list->tail->node;
+    if (tail) {
+        return tail;
+    } else {
+        return NULL;
+    }
+}
+
 struct Node* removeFirst_NL(struct NodeList* node_list) {
     struct NodeListItem* head;
     head = node_list->head;

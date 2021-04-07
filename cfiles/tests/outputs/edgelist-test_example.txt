@@ -6,6 +6,7 @@ Goodbye
 
 Hello
 
+Weight of head should be 3.7: 3.700000
 Length should be 2: 2
 After remove first (list should be hello): Hello
 
