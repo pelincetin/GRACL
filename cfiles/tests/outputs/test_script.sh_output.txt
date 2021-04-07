@@ -1,3 +1,0 @@
-rm -f *.o node-test edge-test edgelist-test nodelist-test graph-test
-gcc -g -Wall -pthread -o node-test node-test.c
-gcc -g -Wall -pthread -o edge-test edge-test.c
