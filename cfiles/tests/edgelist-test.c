@@ -1,16 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../edgelist.c"
-
-void printEdgeList (struct EdgeList* edge_list) {
-    struct EdgeListItem* current;
-    current = edge_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->edge->start->data); // Check each start node's data
-        current = current->next;
-    }
-    return;
-}
+#include "print-functions.c"
 
 int main() {
     //Make two nodes to be start and end for edge
