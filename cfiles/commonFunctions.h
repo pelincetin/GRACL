@@ -122,6 +122,12 @@ int length_EL(struct EdgeList* edge_list) {
     }
     return length;
 }
+struct EdgeList* createEdgeList() {
+    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
+    edge_list->head = NULL;
+    edge_list->tail = NULL;
+    return edge_list;
+}
 
 int length_NL(struct NodeList* node_list) {
     int length = 0;
@@ -140,6 +146,25 @@ struct NodeListItem* createNodeListItem(struct Node* e) {
     item->next = NULL;
     item->prev = NULL;
     return item;
+}
+
+struct NodeList* createNodeList() {
+    struct NodeList* node_list = malloc(sizeof(struct NodeList));
+    node_list->head = NULL;
+    node_list->tail = NULL;
+    return node_list;
+}
+
+struct NodeList* neighbors(struct Node* node){
+    struct EdgeList* edges = node->edges;
+    int length_of_edgelist = length_EL(edges);
+    struct NodeList* neighbors = createNodeList();
+    int i;
+
+    for (i = 0; i < length_of_edgelist; i++) {
+        appendNode(neighbors, edges->head->edge->end);
+    }
+    return neighbors; 
 }
 
 void appendNode(struct NodeList* node_list, struct Node* n) {
@@ -172,8 +197,8 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
     if (!empty_EL(edge_list)) {
         // if list not empty;
         new_last->prev = edge_list->tail;
-        struct EdgeListItem *old_last;
-        old_last = edge_list->tail;
+        struct EdgeListItem *old_last = malloc(sizeof(struct EdgeListItem));
+        old_last = edge_list->tail; 
         old_last->next = new_last;
         edge_list->tail = new_last;
     } else {

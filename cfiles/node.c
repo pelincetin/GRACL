@@ -8,21 +8,6 @@ const char* data(struct Node* node)
     return node->data;
 }
 
-/* Return the node neighbors of a node
- * Meaning every node it contains an edge to */ 
-struct NodeList* neighbors(struct Node* node)
-{
-    struct EdgeList* edges = node->edges;
-    int length_of_edgelist = length_EL(edges);
-    struct NodeList* neighbors = NULL;
-    int i;
-
-    for (i = 0; i < length_of_edgelist; i++) {
-        appendNode(neighbors, edges->head->edge->end);
-    }
-    return neighbors; 
-}
-
 /* Return the edgelist of surrounding edges */
 struct EdgeList* edges(struct Node* node)
 {
