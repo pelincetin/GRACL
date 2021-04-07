@@ -26,8 +26,9 @@ int main() {
     printEdgeList(temp->edges);
 
     //testing neighbors()
+    addEdge(g, temp, createNode(g, "Another"), 3);
     struct NodeList* neigh = malloc(sizeof(struct NodeList));
-    neigh = neighbors(temp);
+    neigh = neighbors(temp);   
     printNodeList(neigh);
 
     // merge all files into one

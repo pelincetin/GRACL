@@ -157,12 +157,11 @@ struct NodeList* createNodeList() {
 
 struct NodeList* neighbors(struct Node* node){
     struct EdgeList* edges = node->edges;
-    int length_of_edgelist = length_EL(edges);
     struct NodeList* neighbors = createNodeList();
-    int i;
-
-    for (i = 0; i < length_of_edgelist; i++) {
-        appendNode(neighbors, edges->head->edge->end);
+    struct EdgeListItem* current = edges->head;
+    while (current != NULL) {
+        appendNode(neighbors, current->edge->end);
+        current = current->next;
     }
     return neighbors; 
 }
