@@ -18,12 +18,12 @@ struct DoubleTable* createDoubleTable(int size){
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
     dt->hashArray = d;
     dt->size = size;
+    dt->keys = createNodeList();
     if (pthread_mutex_init(&dt->lock, NULL) !=0) {
         fprintf(stderr, "createDoubleTable: Failure to initialize mutex\n");
         exit(1); 
-    } else {
-        return dt;
     }
+    return dt;
 }
 
 int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
@@ -39,32 +39,45 @@ double search(struct DoubleTable* dt, struct Node* n) {
     exit(1);      
 }
 
-
 // DONE WITH OPERATOR
 void insert(struct DoubleTable* dt, struct Node* n, double data) {
     int hashIndex = hashCode_dt(dt, n);
     dt->hashArray[hashIndex].key = n;
     dt->hashArray[hashIndex].value = data;
+    appendNode(dt->keys, n);
     incrementId();
     return;
 }
 
-/*
-struct DoubleTableItem* delete(struct DoubleTable* dt, struct DataItem* item) {
-    int key = item->key;
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key) {
-            struct DoubleTableItem* temp = hashArray[hashIndex];
-            hashArray[hashIndex] = dummyItem; // why set it to null instead of dummy item?
-            return temp;
-        }
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }      
-    return NULL;        
+struct NodeList* keys(struct DoubleTable* dt){
+    return dt->keys;
 }
-*/
+
+bool includes(struct DoubleTable* dt, struct Node* n){
+    struct NodeList* nl = malloc(sizeof(struct NodeList));
+    nl = keys(dt);
+    int ret = includesNode(nl, n);
+    if (ret){
+        return true;
+    }
+    return false;
+}
+
+
+int delete(struct DoubleTable* dt, struct Node* n) {
+    //remove it from keys
+    struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
+    all_nodes = keys(dt);
+    removeNode(all_nodes, n);
+
+    if(dt->hashArray[hashCode_dt(dt, n)].key){
+        dt->hashArray[hashCode_dt(dt, n)].value = 0.0;
+        dt->hashArray[hashCode_dt(dt, n)].key = NULL;
+        return 1;
+    }
+    return 0;
+}
+
 
 int main(){
     return 0;

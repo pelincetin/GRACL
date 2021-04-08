@@ -82,6 +82,7 @@ struct IntTable
 {
     pthread_mutex_t lock;
     struct IntTableItem* hashArray; 
+    struct NodeList* keys;
     int size;
 };
 
@@ -89,5 +90,6 @@ struct DoubleTable
 {
     pthread_mutex_t lock;
     struct DoubleTableItem* hashArray; 
+    struct NodeList* keys;
     int size;
 };
