@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #ifndef BUILDSTDLIB
-#include "commonFunctions.h"
+#include "nodelist.c"
+#include "edgelist.c"
+#include "edge.c"
 #endif
 
 /* 
@@ -55,6 +57,22 @@ struct Node* createNode(struct Graph* g, char* data) {
     appendNode(g->nodes, node);
     return node; 
 }
+
+int removeEdgeGraph(struct Graph* g, struct Edge* e) {
+    // remove edge from value list of end_node
+    struct EdgeList* values;
+    struct Node* end_node = end(e);
+    values = g->hashArray[hashCode(g, end_node)].value;
+    removeEdge(values, e);
+
+    // remove edge from node internal edgelist of start
+    struct EdgeList* edge_list;
+    struct Node* start_node = start(e);
+    edge_list = start_node->edges;
+    removeEdge(edge_list, e);
+    return 0;
+}
+
 
 /* 
  * Go through nodelist and delete node from:
@@ -111,21 +129,6 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     // free the node memory? 
     free(n);
 
-    return 0;
-}
-
-int removeEdgeGraph(struct Graph* g, struct Edge* e) {
-    // remove edge from value list of end_node
-    struct EdgeList* values;
-    struct Node* end_node = end(e);
-    values = g->hashArray[hashCode(g, end_node)].value;
-    removeEdge(values, e);
-
-    // remove edge from node internal edgelist of start
-    struct EdgeList* edge_list;
-    struct Node* start_node = start(e);
-    edge_list = start_node->edges;
-    removeEdge(edge_list, e);
     return 0;
 }
 

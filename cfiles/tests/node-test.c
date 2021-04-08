@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../node.c"
+#include "../../graclstdlib.c"
 #include "print-functions.c"
-
 
 int main() {
     //this is for testing purposes for createNode

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../nodelist.c"
+#include "../../graclstdlib.c"
 #include "print-functions.c"
 
 int main()

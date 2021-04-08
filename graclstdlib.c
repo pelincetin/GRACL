@@ -3,11 +3,11 @@
 #include <pthread.h>
 #include <string.h>
 #define BUILDSTDLIB
-#include "./cfiles/commonFunctions.h"
-#include "./cfiles/graph.c"
+#include "./cfiles/lockedobject.h"
 #include "./cfiles/node.c"
-#include "./cfiles/nodelist.c"
 #include "./cfiles/edge.c"
+#include "./cfiles/nodelist.c"
 #include "./cfiles/edgelist.c"
+#include "./cfiles/graph.c"
 //#include "./cfiles/doubletable.c"
 //#include "./cfiles/inttable.c"

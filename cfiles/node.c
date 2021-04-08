@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #ifndef BUILDSTDLIB
-#include "commonFunctions.h"
+#include "lockedobject.h"
 #endif
 
 const char* data(struct Node* node)
@@ -68,4 +68,12 @@ struct Node* set_prec(struct Node* node, struct Node* precursor)
 {
     node->precursor = precursor;
     return node->precursor;
+}
+
+bool nodeEquals(struct Node* node1, struct Node* node2)
+{
+    if (node1->id == node2->id) {
+        return true;
+    }
+    return false;
 }

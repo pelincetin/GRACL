@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../graph.c"
+#include "../../graclstdlib.c"
 #include "print-functions.c"
 
 
