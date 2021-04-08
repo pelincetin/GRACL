@@ -26,10 +26,10 @@ int main() {
         print("false");
     }
     
-    //print("Append edge with start 'hello'");
-    //el.appendEdge(e1);
-    print("Prepend edge with start 'goodbye'");
-    el.prependEdge(e2);
+    print("Append edge with start 'hello'");
+    el.appendEdge(e1);
+    //print("Prepend edge with start 'goodbye'");
+    //el.prependEdge(e2);
     /*
     print("List should be goodbye hello:");
     printEdgeList(el);

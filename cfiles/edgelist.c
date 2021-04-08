@@ -5,11 +5,12 @@
 #endif
 
 struct Edge* head_EL(struct EdgeList* edge_list) {
+    // ONLY FOR TESTING PARSER
     if (edge_list == NULL) {
-        fprintf(stderr, "null EL");
+        fprintf(stderr, "null EL\n");
     }
     if (edge_list->head == NULL) {
-        fprintf(stderr, "null edge");
+        fprintf(stderr, "null EL head\n");
     }
     return edge_list->head->edge;
 }

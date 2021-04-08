@@ -29,21 +29,21 @@ int main()
     print("Prepend node 'goodbye'");
     nl.prependNode(n2);
     /*
-    print("List should be goodbye hello: ");
+    print("List should be goodbye hello:");
     printNodeList(nl);
     */
 
-    print("Data of head should be goodbye: ");
+    print("Data of head should be goodbye:");
     print(nl.head().data());
-    print("Data of tail should be hello: ");
+    print("Data of tail should be hello:");
     print(nl.tail().data());
 
-    print("Length should be 2: ");
+    print("Length should be 2:");
     printi(nl.length());
 
     nl.removeFirst();
     /*
-    print("After remove first (list should be hello): ");
+    print("After remove first (list should be hello):");
     printNodeList(nl);
     */
 
@@ -51,7 +51,7 @@ int main()
     nl.prependNode(n2);
     nl.removeLast();
     /*
-    print("After remove last (list should be goodbye): ");
+    print("After remove last (list should be goodbye):");
     printNodeList(nl);
     */
 
@@ -59,7 +59,7 @@ int main()
     nl.appendNode(n1);
     nl.removeNode(n1);
     /*
-    print("After remove node hello (list should be goodbye): ");
+    print("After remove node hello (list should be goodbye):");
     printNodeList(nl); 
     */
 

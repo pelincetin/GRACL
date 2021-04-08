@@ -194,14 +194,12 @@ struct EdgeListItem* createEdgeListItem(struct Edge* e) {
 void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
     struct EdgeListItem* new_last = createEdgeListItem(e);
     if (!empty_EL(edge_list)) {
-        // if list not empty;
+        // list is not empty
         new_last->prev = edge_list->tail;
-        struct EdgeListItem *old_last = malloc(sizeof(struct EdgeListItem));
-        old_last = edge_list->tail; 
-        old_last->next = new_last;
+        edge_list->tail->next = new_last;
         edge_list->tail = new_last;
     } else {
-        // if list is empty;
+        // list is empty
         edge_list->head = new_last;
         edge_list->tail = new_last;
     }
