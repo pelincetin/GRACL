@@ -1,12 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../node.c"
+#include "print-functions.c"
 
-void printNode (struct Node* node) {
-    printf("%s\n", node->visited ? "true" : "false");
-    printf("%d\n", node->id);
-    printf("%s", node->data);
-}
 
 int main() {
     //this is for testing purposes for createNode

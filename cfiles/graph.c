@@ -1,9 +1,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
-#endif
 /* The key is going to be a node
  * The value will be a nodelist whose edges point to the key
  */
@@ -52,12 +50,12 @@ struct NodeList* nodes(struct Graph* g){
 
 struct Node* createNode(struct Graph* g, char* data) {
     struct Node* node = malloc(sizeof(struct Node));
-    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
+    //struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
     struct NodeList* nl = malloc(sizeof(struct NodeList));
     node->data = data;
     node->visited = false;
     node->id = id_num;
-    node->edges = edge_list;
+    node->edges = createEdgeList();
     incrementId();
     g->hashArray[hashCode(node)].key = node;
     g->hashArray[hashCode(node)].value = nl;
@@ -133,6 +131,7 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         exit(1); 
     }
     else {
+        //are we only adding to start edge?
         appendEdge(start_node->edges, edge);
         struct NodeList* values = malloc(sizeof(struct NodeList));
         values = g->hashArray[hashCode(end_node)].value;
