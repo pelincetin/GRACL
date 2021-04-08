@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
+#endif
 
 struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
     struct EdgeListItem *head;

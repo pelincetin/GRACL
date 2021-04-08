@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
+#endif
 
 struct Node* removeFirst_NL(struct NodeList* node_list) {
     struct NodeListItem* head;
