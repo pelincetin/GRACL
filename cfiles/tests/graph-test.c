@@ -11,7 +11,6 @@ int main() {
     struct Edge* e2 = malloc(sizeof(struct Edge));
     struct NodeList* temp3 = malloc(sizeof(struct NodeList));
     struct Graph* g = malloc(sizeof(struct Graph));
-    struct Edge* e = malloc(sizeof(struct Edge));
     struct NodeList* neigh = malloc(sizeof(struct NodeList));
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";

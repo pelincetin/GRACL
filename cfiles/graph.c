@@ -25,17 +25,6 @@ void incrementId(){
     id_num++;
 }
 
-void printNodeList(struct NodeList* node_list) {
-    struct NodeListItem *current;
-    current = node_list->head;
-    if(current == NULL)
-        fprintf(stderr, "yo this is null\n");
-    while (current != NULL) {
-        printf("%s\n", current->node->data); 
-        current = current->next;
-    }
-}
-
 /* Returns a nodelist of nodes in the graph
  * sorted by hashed id */
 struct NodeList* nodes(struct Graph* g){
@@ -136,7 +125,6 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         struct NodeList* values = malloc(sizeof(struct NodeList));
         values = g->hashArray[hashCode(end_node)].value;
         appendNode(values, start_node);
-        printNodeList(g->hashArray[hashCode(end_node)].value);
         return edge;
     }
 }

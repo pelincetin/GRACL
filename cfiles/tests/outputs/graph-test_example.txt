@@ -2,7 +2,11 @@ Hello
 
 Goodbye
 
-Hello
+Start node: Hello
+End node: Goodbye
+Weight: 14.000000Start node: Goodbye
+End node: Hello
+Weight: 13.000000Hello
 
 Goodbye
 
