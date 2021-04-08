@@ -5,10 +5,10 @@
 #
 # See https://github.com/ocaml/ocamlbuild/blob/master/manual/manual.adoc
 .PHONY : all
-all : gracl.native node.o
+all : gracl.native graclstdlib.o
 
-node : node.c
-	cc -o node -pthread node.c
+stdlib : graclstdlib.c
+	cc -o graclstdlib -pthread graclstdlib.c
 
 gracl.native :
 	opam config exec -- \

@@ -1,17 +1,9 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef BUILDSTDLIB
 #include "commonFunctions.h"
-
-void printNodeList(struct NodeList* node_list) {
-    struct NodeListItem *current = malloc(sizeof(struct NodeListItem));
-    current = node_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->node->data); 
-        current = current->next;
-    }
-}
-
+#endif
 /* The key is going to be a node
  * The value will be a nodelist whose edges point to the key
  */

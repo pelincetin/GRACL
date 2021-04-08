@@ -25,7 +25,7 @@ type sstmt =
   | SNodeFor of string * string * sstmt 
   | SEdgeFor of string * string * sstmt 
   | SWhile of sexpr * sstmt
-  (*| SHatch of string * string * expr list * stmt *)
+  | SHatch of string * string * expr list * stmt 
   | SSynch of string * sstmt list
 
 type sbind = 
