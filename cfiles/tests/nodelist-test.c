@@ -35,7 +35,8 @@ int main()
     prependNode(nl, n2);
     printf("List should be goodbye hello: ");
     printNodeList(nl);
-    printf("Data of head should be goodbye: %s\n", head(nl)->data);
+    printf("Data of head should be goodbye: %s\n", head_NL(nl)->data);
+    printf("Data of tail should be hello: %s\n", tail_NL(nl)->data);
     printf("Length should be 2: %d\n", length_NL(nl));
 
     removeFirst_NL(nl);

@@ -12,7 +12,7 @@ struct EdgeList* createEdgeList() {
     return edge_list;
 }
 
-struct Edge* head(struct EdgeList* edge_list) {
+struct Edge* head_EL(struct EdgeList* edge_list) {
     struct Edge* head;
     head = edge_list->head->edge;
     if (head) {
@@ -22,7 +22,7 @@ struct Edge* head(struct EdgeList* edge_list) {
     }
 }
 
-struct Edge* tail(struct EdgeList* edge_list) {
+struct Edge* tail_EL(struct EdgeList* edge_list) {
     struct Edge* tail;
     tail = edge_list->tail->edge;
     if (tail) {
