@@ -1,0 +1,69 @@
+/*
+void printEdgeList(EdgeList el) {
+    for (Edge e in el) {
+        print(e.data());
+    }
+}
+*/
+
+int main() {
+    Graph g = createGraph();
+
+    String hello = "Hello";
+    String goodbye = "Goodbye";
+
+    Node n1 = g.createNode(hello);
+    Node n2 = g.createNode(goodbye);
+
+    Edge e1 = g.addEdge(n1, n2, 15.3);
+    Edge e2 = g.addEdge(n2, n1, 3.7);
+
+    EdgeList el = createEdgeList();
+    print("Empty should be true:");
+    if (el.empty_EL()) {
+        print("true");
+    } else {
+        print("false");
+    }
+    
+    //print("Append edge with start 'hello'");
+    //el.appendEdge(e1);
+    print("Prepend edge with start 'goodbye'");
+    el.prependEdge(e2);
+    /*
+    print("List should be goodbye hello:");
+    printEdgeList(el);
+    */
+    
+    print("Weight of head should be 3.7:");
+    Edge h = el.head_EL();
+    //double hw = h.weight();
+    //print(doubleToString(hw));
+    /*
+    print("Weight of tail should be 15.3:");
+    Edge t = el.tail_EL();
+    double tw = t.weight();
+    print(doubleToString(tw));
+
+    print("Length should be 2:");
+    printi(el.length_EL());
+    
+    el.removeFirst_EL();
+    print("After remove first (list should be hello):");
+    printEdgeList(el);
+
+    print("Prepend edge with start 'goodbye'");
+    el.prependEdge(e2);
+    el.removeLast_EL();
+    print("After remove last (list should be goodbye):");
+    printEdgeList(el);
+
+    print("Append edge with start 'hello'");
+    el.appendEdge(e1);
+    el.removeEdge(e1);
+    print("After remove edge with start hello (list should be goodbye):");
+    printEdgeList(el);
+    */
+
+    return 0;
+}
