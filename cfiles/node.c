@@ -35,9 +35,3 @@ struct Node* updateVisited(bool tf, struct Node* node)
     node->visited = tf;
     return node;
 }
-
-/*
-int main(){
-    return 0;
-}
-*/

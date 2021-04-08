@@ -10,7 +10,7 @@
  * The value will be a nodelist of nodes having an edge to the key
  */
 struct Graph* createGraph(int size) {
-    struct DataItem* d = malloc(sizeof(struct DataItem) * size;
+    struct DataItem* d = malloc(sizeof(struct DataItem) * size);
     for (int i = 0; i < size; i++) {
         d[i].key = NULL;
         d[i].value = NULL;
@@ -78,7 +78,7 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     
     // iterate through values and removeEdgeGraph for each
     while (list_item) {
-        removeEdgeGraph(g, list_item->edge)
+        removeEdgeGraph(g, list_item->edge);
         list_item = list_item->next;
     }
     // null out the values
@@ -119,13 +119,13 @@ int removeEdgeGraph(struct Graph* g, struct Edge* e) {
     struct EdgeList* values;
     struct Node* end_node = end(e);
     values = g->hashArray[hashCode(g, end_node)].value;
-    removeEdge(edge_list, e);
+    removeEdge(values, e);
 
     // remove edge from node internal edgelist of start
     struct EdgeList* edge_list;
     struct Node* start_node = start(e);
     edge_list = start_node->edges;
-    removeEdge(edge_list, start_node);
+    removeEdge(edge_list, e);
     return 0;
 }
 
@@ -146,28 +146,3 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         return edge;
     }
 }
-
-/*
-int main(){
-    char hello[] = "Hello\n";
-    char goodbye[] = "Goodbye\n";
-    struct Node* n1 = malloc(sizeof(struct Node));
-    struct Node* n2 = malloc(sizeof(struct Node));
-    n1->data = hello;
-    n1->visited = false;
-    n1->id=id_num;
-    id_num++;
-
-    n2->data = goodbye;
-    n2->visited = false;
-    n2->id=id_num;
-    id_num++;
-    struct NodeList* nl = createNodeList();
-    appendNode(nl, n1);
-    appendNode(nl, n2);
-    int ret = includesNode(nl, n1);
-    printf("%d\n", ret);
-
-    return 0;
-}
-*/

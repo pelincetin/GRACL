@@ -3,17 +3,8 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-
-/* Can pass a pointer from a lockednode to a lockedobject safely
- * All objects should look like lockednode -- no need for plain node
- * Need a cast operation to make llvm types happy */
 int id_num = 1;
-int SIZE = 500;
-
-struct Object {
-    pthread_mutex_t lock;
-};
-
+    
 struct Node {
     pthread_mutex_t lock;
     int id; // Only used under the hood

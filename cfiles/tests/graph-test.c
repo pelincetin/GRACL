@@ -5,41 +5,41 @@
 
 
 int main() {
-    struct Node* temp = malloc(sizeof(struct Node));
-    struct Node* temp2 = malloc(sizeof(struct Node));
-    struct Edge* e1 = malloc(sizeof(struct Edge));
-    struct Edge* e2 = malloc(sizeof(struct Edge));
-    struct NodeList* temp3 = malloc(sizeof(struct NodeList));
-    struct Graph* g = malloc(sizeof(struct Graph));
-    struct NodeList* neigh = malloc(sizeof(struct NodeList));
+    struct Node* node1;
+    struct Node* node2;
+    struct Edge* e1;
+    struct Edge* e2;
+    struct NodeList* nl1;
+    struct Graph* g;
+    struct NodeList* nl2;
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     
-    g = createGraph();
-    temp = createNode(g, hello);
-    temp2 = createNode(g, goodbye);
+    g = createGraph(100);
+    node1 = createNode(g, hello);
+    node2 = createNode(g, goodbye);
 
-    temp3 = nodes(g);
-    printNodeList(temp3);
+    nl1 = nodes(g);
+    printNodeList(nl1);
 
-    e1 = addEdge(g, temp, temp2, 14.0);
-    e2 = addEdge(g, temp2, temp, 13.0);
+    e1 = addEdge(g, node1, node2, 14.0);
+    e2 = addEdge(g, node2, node1, 13.0);
 
     printEdge(e1);
     printEdge(e2);
-    printEdgeList(temp->edges);
+    printEdgeList(node1->edges);
 
-    neigh = neighbors(temp);   
-    printNodeList(neigh);
+    nl2 = neighbors(node1);   
+    printNodeList(nl2);
 
     int x = removeEdgeGraph(g, e1);
     printf("Now I should print 0\n");
     printf("%d\n", x);
 
-    x = removeNodeGraph(g, temp);
+    x = removeNodeGraph(g, node1);
     printf("%d\n", x);
 
-    x = removeNodeGraph(g, temp2);
+    x = removeNodeGraph(g, node2);
     printf("%d\n", x);
 
     return 0;
