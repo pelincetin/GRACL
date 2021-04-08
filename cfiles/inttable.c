@@ -5,6 +5,10 @@
 #include "commonFunctions.h"
 #endif
 
+void incrementId(){
+    id_num++;
+}
+
 struct IntTable* createIntTable(int size){
     struct IntTableItem* d = malloc(sizeof(struct IntTableItem) * size);
     for (int i = 0; i < size; i++) {
@@ -22,7 +26,6 @@ struct IntTable* createIntTable(int size){
     }
 }
 
-
 int hashCode_it(struct IntTable* it, struct Node* node) {
     int id_node = node->id;
     return id_node % it->size;
@@ -33,6 +36,15 @@ int search(struct IntTable* it, struct Node* n) {
     if(it->hashArray[hashIndex].key == n)
         return it->hashArray[hashIndex].value; 
     exit(1);        
+}
+
+// DONE WITH OPERATOR
+void insert(struct IntTable* it, struct Node* n, int data) {
+    int hashIndex = hashCode_it(it, n);
+    it->hashArray[hashIndex].key = n;
+    it->hashArray[hashIndex].value = data;
+    incrementId();
+    return;
 }
 
 /*
