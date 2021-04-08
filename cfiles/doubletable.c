@@ -63,7 +63,6 @@ bool includes(struct DoubleTable* dt, struct Node* n){
     return false;
 }
 
-
 int delete(struct DoubleTable* dt, struct Node* n) {
     //remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
