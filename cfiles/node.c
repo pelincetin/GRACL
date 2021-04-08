@@ -35,3 +35,37 @@ struct Node* updateVisited(bool tf, struct Node* node)
     node->visited = tf;
     return node;
 }
+
+int cost(struct Node* node)
+{
+    return node->cost;
+}
+
+int incrementCost(struct Node* node)
+{
+    node->cost = node->cost + 1;
+    return node->cost;
+}
+
+int decrementCost(struct Node* node)
+{
+    node->cost = node->cost - 1;
+    return node->cost;
+}
+
+int updateCost(struct Node* node, int new_cost)
+{
+    node->cost = new_cost;
+    return node->cost;
+}
+
+struct Node* prec(struct Node* node)
+{
+    return node->precursor;
+}
+
+struct Node* set_prec(struct Node* node, struct Node* precursor)
+{
+    node->precursor = precursor;
+    return node->precusor;
+}

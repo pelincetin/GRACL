@@ -11,6 +11,8 @@ struct Node {
     char *data;
     bool visited;
     struct EdgeList* edges;
+    struct Node* precursor;
+    int cost; 
 };
 
 struct Edge {
