@@ -1,8 +1,26 @@
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #ifndef BUILDSTDLIB
 #include "commonFunctions.h"
 #endif
+
+struct DoubleTable* createDoubleTable(int size){
+    struct DoubleTableItem* d = malloc(sizeof(struct DoubleTableItem) * size);
+    for (int i = 0; i < size; i++) {
+        d[i].key = NULL;
+        d[i].value = 0.0;
+    }
+    struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
+    dt->hashArray = d;
+    dt->size = size;
+    if (pthread_mutex_init(&dt->lock, NULL) !=0) {
+        fprintf(stderr, "createDoubleTable: Failure to initialize mutex\n");
+        exit(1); 
+    } else {
+        return dt;
+    }
+}
 
 int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
     int id_node = node->id;
@@ -10,11 +28,11 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
 }
 
 // DONE WITH OPERATOR
-double* search(struct DoubleTable* dt, struct Node* n) {
+double search(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     if(dt->hashArray[hashIndex].key == n)
         return dt->hashArray[hashIndex].value; 
-    return NULL;        
+    exit(1);      
 }
 
 /*

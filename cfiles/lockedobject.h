@@ -70,12 +70,12 @@ struct Graph
 
 struct IntTableItem {
     struct Node* key;
-    int* value;
+    int value;
 };
 
 struct DoubleTableItem {
     struct Node* key;
-    double* value;
+    double value;
 };
 
 struct IntTable
