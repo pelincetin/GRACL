@@ -63,8 +63,8 @@ let function_decls =
         (Int, "length_EL", [Edgelist, "el"]);
         (Bool, "empty_EL", [Edgelist, "el"]);
         (Int, "removeEdge", [(Edgelist, "el"); (Edge, "e")]);
-        (Node, "removeFirst_EL", [Edgelist, "el"]);
-        (Node, "removeLast_EL", [Edgelist, "el"]);
+        (Edge, "removeFirst_EL", [Edgelist, "el"]);
+        (Edge, "removeLast_EL", [Edgelist, "el"]);
         (Void, "appendEdge", [(Edgelist, "el"); (Edge, "e")]);
         (Void, "prependEdge", [(Edgelist, "el"); (Edge, "e")]);
 
