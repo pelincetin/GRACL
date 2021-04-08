@@ -2,14 +2,6 @@
 #include <stdio.h>
 #include "../graph.c"
 
-void printNodeList(struct NodeList* node_list) {
-    struct NodeListItem *current = malloc(sizeof(struct NodeListItem));
-    current = node_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->node->data); 
-        current = current->next;
-    }
-}
 
 void printNode (struct Node* node) {
     printf("%s\n", node->visited ? "true" : "false");
@@ -20,6 +12,7 @@ void printNode (struct Node* node) {
 int main() {
     struct Node* temp = malloc(sizeof(struct Node));
     struct Node* temp2 = malloc(sizeof(struct Node));
+    struct Edge* e1 = malloc(sizeof(struct Edge));
     struct NodeList* temp3 = malloc(sizeof(struct NodeList));
     struct Graph* g = malloc(sizeof(struct Graph));
     char hello[] = "Hello\n";
@@ -32,14 +25,22 @@ int main() {
     temp3 = nodes(g);
     printNodeList(temp3);
 
-    // merge all files into one
-    // edit the makefiles
+    e1 = addEdge(g, temp, temp2, 14.0);
+    int x = removeNodeGraph(g, temp);
+    printf("%d\n", x);
+
+    //int x = removeEdgeGraph(g, e1);
+    printf("Now I should print 0\n");
+    //printf("%d\n", x);
+
+    fprintf(stderr, "yo");
+    //printf("%d\n", x);
+    //x = removeNodeGraph(g, temp2);
+    //printf("%d\n", x);
+
+
     // implement removeNode
     // test removeNode
-    // implement addEdge
-    // test addEdge
-    // implement removeEdge
-    // test removeEdge
-    
+
     return 0;
 }

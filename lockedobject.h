@@ -6,7 +6,7 @@
 /* Can pass a pointer from a lockednode to a lockedobject safely
  * All objects should look like lockednode -- no need for plain node
  * Need a cast operation to make llvm types happy */
-int id_num=1;
+int id_num = 1;
 int SIZE = 500;
 
 struct Object {
