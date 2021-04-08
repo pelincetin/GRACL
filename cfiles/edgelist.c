@@ -4,14 +4,6 @@
 #include "commonFunctions.h"
 #endif
 
-// Move to general library eventually
-struct EdgeList* createEdgeList() {
-    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
-    edge_list->head = NULL;
-    edge_list->tail = NULL;
-    return edge_list;
-}
-
 struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
     struct EdgeListItem *head;
     head = edge_list->head;

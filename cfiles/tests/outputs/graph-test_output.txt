@@ -2,4 +2,11 @@ Hello
 
 Goodbye
 
+Hello
+
+Goodbye
+
+Now I should print 0
+0
+0
 0

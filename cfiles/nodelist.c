@@ -4,14 +4,6 @@
 #include "commonFunctions.h"
 #endif
 
-/* Move to general library eventually */
-struct NodeList* createNodeList() {
-    struct NodeList* node_list = malloc(sizeof(struct NodeList));
-    node_list->head = NULL;
-    node_list->tail = NULL;
-    return node_list;
-}
-
 struct Node* removeFirst_NL(struct NodeList* node_list) {
     struct NodeListItem* head;
     head = node_list->head;

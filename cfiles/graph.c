@@ -27,6 +27,17 @@ void incrementId(){
     id_num++;
 }
 
+void printNodeList(struct NodeList* node_list) {
+    struct NodeListItem *current;
+    current = node_list->head;
+    if(current == NULL)
+        fprintf(stderr, "yo this is null\n");
+    while (current != NULL) {
+        printf("%s\n", current->node->data); 
+        current = current->next;
+    }
+}
+
 /* Returns a nodelist of nodes in the graph
  * sorted by hashed id */
 struct NodeList* nodes(struct Graph* g){
@@ -63,35 +74,10 @@ struct Node* createNode(struct Graph* g, char* data) {
     }
 }
 
-int includesNode(struct NodeList* nl, struct Node* n){
-    fprintf(stderr, "yo7");
-    fprintf(stderr, "%s\n", n->data); 
-    struct NodeListItem* temp = malloc(sizeof(struct NodeListItem));
-    if (nl != NULL){
-        fprintf(stderr, "yo9");
-        fprintf(stderr, "%s\n", nl->head->node->data); 
-        temp = nl->head;
-    }else{
-        return 0;
-    }
-    fprintf(stderr, "yo10");
-    fprintf(stderr, "%s\n", temp->node->data); 
-    while(temp->node){
-        fprintf(stderr, "yo11");
-        if (n->id == temp->node->id){
-            fprintf(stderr, "yo8");
-            return 1;
-        }
-        temp = temp->next;
-    }
-    return 0;
-}
-
 int removeNodeGraph(struct Graph* g, struct Node* n) {
     // go through nodelist and 
     // delete node from all the nodes' values specified in edge list
     // change hashtbl list 
-    fprintf(stderr, "yo2");
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
     struct NodeList* values = malloc(sizeof(struct NodeList));
     struct NodeListItem* temp = malloc(sizeof(struct NodeListItem));
@@ -102,22 +88,15 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     }else{
         return -1;
     }
-    fprintf(stderr, "yo3");
 
-    while(temp->next){
-        fprintf(stderr, "swag");
-        if(g->hashArray[hashCode(temp->node)].value){
+    while(temp){
+        if(g->hashArray[hashCode(temp->node)].value->head){
             values = g->hashArray[hashCode(temp->node)].value;
-            printNodeList(values);
-            fprintf(stderr, "%s\n", values->head->node->data); 
             int ret = includesNode(values, temp->node);
             if (ret == 1){
-                fprintf(stderr, "yo5");
                 removeNode(values, temp->node);
-                fprintf(stderr, "yo6");
             }
         }
-        fprintf(stderr, "yo4");
         temp = temp->next;
     }
 
@@ -158,7 +137,6 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         struct NodeList* values = malloc(sizeof(struct NodeList));
         values = g->hashArray[hashCode(end_node)].value;
         appendNode(values, start_node);
-        fprintf(stderr, "here this is important/n");
         printNodeList(g->hashArray[hashCode(end_node)].value);
         return edge;
     }

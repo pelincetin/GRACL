@@ -13,8 +13,10 @@ int main() {
     struct Node* temp = malloc(sizeof(struct Node));
     struct Node* temp2 = malloc(sizeof(struct Node));
     struct Edge* e1 = malloc(sizeof(struct Edge));
+    struct Edge* e2 = malloc(sizeof(struct Edge));
     struct NodeList* temp3 = malloc(sizeof(struct NodeList));
     struct Graph* g = malloc(sizeof(struct Graph));
+
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     
@@ -26,21 +28,17 @@ int main() {
     printNodeList(temp3);
 
     e1 = addEdge(g, temp, temp2, 14.0);
-    int x = removeNodeGraph(g, temp);
+    e2 = addEdge(g, temp2, temp, 13.0);
+
+    int x = removeEdgeGraph(g, e1);
+    printf("Now I should print 0\n");
     printf("%d\n", x);
 
-    //int x = removeEdgeGraph(g, e1);
-    printf("Now I should print 0\n");
-    //printf("%d\n", x);
+    x = removeNodeGraph(g, temp);
+    printf("%d\n", x);
 
-    fprintf(stderr, "yo");
-    //printf("%d\n", x);
-    //x = removeNodeGraph(g, temp2);
-    //printf("%d\n", x);
-
-
-    // implement removeNode
-    // test removeNode
+    x = removeNodeGraph(g, temp2);
+    printf("%d\n", x);
 
     return 0;
 }

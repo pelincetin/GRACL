@@ -23,7 +23,7 @@ int main() {
 
     //this is for testing updateData
     char hsm_forever[] = "zac efron\n";
-    temp = updateData(temp, hsm_forever);
+    temp = updateData(hsm_forever, temp);
     printNode(temp);
 
     //this is for testing visited()
@@ -31,12 +31,12 @@ int main() {
     printf("%s", temporary ? "true\n" : "false\n");
 
     //this is for testing updateVisited()
-    temp = updateVisited(temp, true);
+    temp = updateVisited(true, temp);
     temporary = visited(temp);
     printf("%s", temporary ? "true\n" : "false\n");
 
     // this is for testing equals()
-    temp = updateData(temp, greeting);
+    temp = updateData(greeting, temp);
     temp2->data = greeting;
     temp2->visited = false;
     temp2->id=id_num;

@@ -4,7 +4,7 @@
 #include "commonFunctions.h"
 #endif
 
-void updateEdge(struct Edge* edge, double new_weight) {
+void updateEdge(double new_weight, struct Edge* edge) {
     edge->weight = new_weight;
     return;
 }
