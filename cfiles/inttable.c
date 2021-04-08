@@ -9,19 +9,14 @@ int hashCode_it(struct IntTable* it, struct Node* node) {
     return id_node % it->size;
 }
 
-/*
-
-// DONE WITH OPERATOR
-struct IntTableItem* search(struct IntTable* it, int key) {
-    int hashIndex = hashCode_it(it, key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key)
-            return hashArray[hashIndex]; 
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }
+int* search(struct IntTable* it, struct Node* n) {
+    int hashIndex = hashCode_it(it, n);
+    if(it->hashArray[hashIndex].key == n)
+        return it->hashArray[hashIndex].value; 
     return NULL;        
 }
+
+/*
 
 // DONE WITH OPERATOR
 void insert(struct IntTable* it, int key,int data) {

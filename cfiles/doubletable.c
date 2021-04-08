@@ -9,21 +9,17 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
     return id_node % dt->size;
 }
 
-/*
 // DONE WITH OPERATOR
-struct DataItem* search(int key) {
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key)
-            return hashArray[hashIndex]; 
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }
+double* search(struct DoubleTable* dt, struct Node* n) {
+    int hashIndex = hashCode_dt(dt, n);
+    if(dt->hashArray[hashIndex].key == n)
+        return dt->hashArray[hashIndex].value; 
     return NULL;        
 }
 
+/*
 // DONE WITH OPERATOR
-void insert(int key,int data) {
+void insert(struct DoubleTable* dt,int key,int data) {
     struct DoubleTableItem* item = (struct DoubleTableItem*) malloc(sizeof(struct DoubleTableItem));
     item->data = data;  
     item->key = key;
@@ -35,7 +31,7 @@ void insert(int key,int data) {
     hashArray[hashIndex] = item;
 }
 
-struct DoubleTableItem* delete(struct DataItem* item) {
+struct DoubleTableItem* delete(struct DoubleTable* dt, struct DataItem* item) {
     int key = item->key;
     int hashIndex = hashCode(key);
     while(hashArray[hashIndex] != NULL) {
