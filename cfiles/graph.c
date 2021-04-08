@@ -41,12 +41,12 @@ struct NodeList* nodes(struct Graph* g){
 
 struct Node* createNode(struct Graph* g, char* data) {
     struct Node* node = malloc(sizeof(struct Node));
-    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
+    //struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
     struct NodeList* nl = malloc(sizeof(struct NodeList));
     node->data = data;
     node->visited = false;
     node->id = id_num;
-    node->edges = edge_list;
+    node->edges = createEdgeList();
     incrementId();
     g->hashArray[hashCode(node)].key = node;
     g->hashArray[hashCode(node)].value = nl;
@@ -67,8 +67,32 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     // go through nodelist and 
     // delete node from all the nodes' values specified in edge list
     // change hashtbl list 
-    struct NodeList* values;
-    values = g->hashArray[hashCode(n)].value;
+    struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
+    struct NodeList* values = malloc(sizeof(struct NodeList));
+    struct NodeListItem* temp = malloc(sizeof(struct NodeListItem));
+
+    all_nodes = nodes(g);
+    if (all_nodes != NULL){
+        temp = all_nodes->head;
+    }else{
+        return -1;
+    }
+
+    while(temp){
+        if(g->hashArray[hashCode(temp->node)].value->head){
+            values = g->hashArray[hashCode(temp->node)].value;
+            int ret = includesNode(values, temp->node);
+            if (ret == 1){
+                removeNode(values, temp->node);
+            }
+        }
+        temp = temp->next;
+    }
+
+    if (g->hashArray[hashCode(n)].key != NULL){
+        g->hashArray[hashCode(n)].value = NULL;
+        g->hashArray[hashCode(n)].key = NULL;
+    }
     return 0;
 }
 
@@ -98,8 +122,9 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         exit(1); 
     }
     else {
+        //are we only adding to start edge?
         appendEdge(start_node->edges, edge);
-        struct NodeList* values;
+        struct NodeList* values = malloc(sizeof(struct NodeList));
         values = g->hashArray[hashCode(end_node)].value;
         appendNode(values, start_node);
         return edge;
@@ -108,6 +133,25 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
 
 /*
 int main(){
+    char hello[] = "Hello\n";
+    char goodbye[] = "Goodbye\n";
+    struct Node* n1 = malloc(sizeof(struct Node));
+    struct Node* n2 = malloc(sizeof(struct Node));
+    n1->data = hello;
+    n1->visited = false;
+    n1->id=id_num;
+    id_num++;
+
+    n2->data = goodbye;
+    n2->visited = false;
+    n2->id=id_num;
+    id_num++;
+    struct NodeList* nl = createNodeList();
+    appendNode(nl, n1);
+    appendNode(nl, n2);
+    int ret = includesNode(nl, n1);
+    printf("%d\n", ret);
+
     return 0;
 }
 */

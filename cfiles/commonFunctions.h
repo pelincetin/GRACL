@@ -41,10 +41,10 @@ struct Node* end(struct Edge* edge);
 
 struct Node* createNode(struct Graph* g, char* data);
 
-struct Node* updateData(struct Node* node, char* new_data);
+struct Node* updateData(char* new_data, struct Node* node);
 
 /* Updates the visited field on the node to be the inputted bool */
-struct Node* updateVisited(struct Node* node, bool tf);
+struct Node* updateVisited(bool tf, struct Node* node);
 
 struct Node* removeFirst_NL(struct NodeList* node_list);
 
@@ -86,7 +86,7 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e);
 
 void prependEdge(struct EdgeList* edge_list, struct Edge* e);
 
-void updateEdge(struct Edge* edge, double new_weight);
+void updateEdge(double new_weight, struct Edge* edge);
 
 bool nodeEquals(struct Node* node1, struct Node* node2)
 {
@@ -122,6 +122,12 @@ int length_EL(struct EdgeList* edge_list) {
     }
     return length;
 }
+struct EdgeList* createEdgeList() {
+    struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
+    edge_list->head = NULL;
+    edge_list->tail = NULL;
+    return edge_list;
+}
 
 int length_NL(struct NodeList* node_list) {
     int length = 0;
@@ -140,6 +146,24 @@ struct NodeListItem* createNodeListItem(struct Node* e) {
     item->next = NULL;
     item->prev = NULL;
     return item;
+}
+
+struct NodeList* createNodeList() {
+    struct NodeList* node_list = malloc(sizeof(struct NodeList));
+    node_list->head = NULL;
+    node_list->tail = NULL;
+    return node_list;
+}
+
+struct NodeList* neighbors(struct Node* node){
+    struct EdgeList* edges = node->edges;
+    struct NodeList* neighbors = createNodeList();
+    struct EdgeListItem* current = edges->head;
+    while (current != NULL) {
+        appendNode(neighbors, current->edge->end);
+        current = current->next;
+    }
+    return neighbors; 
 }
 
 void appendNode(struct NodeList* node_list, struct Node* n) {
@@ -172,8 +196,8 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
     if (!empty_EL(edge_list)) {
         // if list not empty;
         new_last->prev = edge_list->tail;
-        struct EdgeListItem *old_last;
-        old_last = edge_list->tail;
+        struct EdgeListItem *old_last = malloc(sizeof(struct EdgeListItem));
+        old_last = edge_list->tail; 
         old_last->next = new_last;
         edge_list->tail = new_last;
     } else {
@@ -257,4 +281,20 @@ struct Node* start(struct Edge* edge) {
 
 struct Node* end(struct Edge* edge) {
     return edge->end;
+}
+
+int includesNode(struct NodeList* nl, struct Node* n){
+    struct NodeListItem* temp = malloc(sizeof(struct NodeListItem));
+    if (nl != NULL){
+        temp = nl->head;
+    }else{
+        return 0;
+    }
+    while(temp){
+        if (n->id == temp->node->id){
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
 }

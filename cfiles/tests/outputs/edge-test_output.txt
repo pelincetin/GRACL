@@ -1,8 +1,10 @@
 Start node: Hello
 End node: Goodbye
 Weight: 15.300000false
-1Hello
+1
+Hello
 false
-2Goodbye
+2
+Goodbye
 15.300000
 New weight: 1.200000

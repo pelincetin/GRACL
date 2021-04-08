@@ -1,27 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../graph.c"
+#include "print-functions.c"
 
-void printNodeList(struct NodeList* node_list) {
-    struct NodeListItem *current = malloc(sizeof(struct NodeListItem));
-    current = node_list->head;
-    while (current != NULL) {
-        printf("%s\n", current->node->data); 
-        current = current->next;
-    }
-}
-
-void printNode (struct Node* node) {
-    printf("%s\n", node->visited ? "true" : "false");
-    printf("%d\n", node->id);
-    printf("%s", node->data);
-}
 
 int main() {
     struct Node* temp = malloc(sizeof(struct Node));
     struct Node* temp2 = malloc(sizeof(struct Node));
+    struct Edge* e1 = malloc(sizeof(struct Edge));
+    struct Edge* e2 = malloc(sizeof(struct Edge));
     struct NodeList* temp3 = malloc(sizeof(struct NodeList));
     struct Graph* g = malloc(sizeof(struct Graph));
+    struct NodeList* neigh = malloc(sizeof(struct NodeList));
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     
@@ -32,14 +22,25 @@ int main() {
     temp3 = nodes(g);
     printNodeList(temp3);
 
-    // merge all files into one
-    // edit the makefiles
-    // implement removeNode
-    // test removeNode
-    // implement addEdge
-    // test addEdge
-    // implement removeEdge
-    // test removeEdge
-    
+    e1 = addEdge(g, temp, temp2, 14.0);
+    e2 = addEdge(g, temp2, temp, 13.0);
+
+    printEdge(e1);
+    printEdge(e2);
+    printEdgeList(temp->edges);
+
+    neigh = neighbors(temp);   
+    printNodeList(neigh);
+
+    int x = removeEdgeGraph(g, e1);
+    printf("Now I should print 0\n");
+    printf("%d\n", x);
+
+    x = removeNodeGraph(g, temp);
+    printf("%d\n", x);
+
+    x = removeNodeGraph(g, temp2);
+    printf("%d\n", x);
+
     return 0;
 }
