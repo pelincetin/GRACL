@@ -1,0 +1,52 @@
+/*
+// tarjanStack = store nodes encountered in search but not yet placed into an SCC
+// Each node n given two variables:
+//      index = a sequence counter, corresponding to order in which nodes were encountered
+//      lowlink = smallest index of node n in stack reachable via descendents of n fully considered so far.
+
+NodeList controlStack = createNodeList();
+NodeList tarjanStack = createNodeList();
+
+DoubleTable indices = createDoubleTable();
+IntTable lowlink = createIntTable();
+
+int index = 0
+
+// Set node’s index, lowlink and search, and add it to the stacks
+void addNode(Node n) = {
+    indices[n] = index;
+    lowlink[n] = index;
+    index = index + 1;
+    n.search = thisSearch;
+    controlStack.append(n);
+    tarjanStack.append(n)
+}
+
+addNode(StartNode);
+
+while(!controlStack.empty()){
+    Node n = controlStack.head();
+    if(node has an unexplored edge to child ){
+        if( child previously unseen) addNode(child)
+        else if( child is in tarjanStack ) node.updateLowlink(child . index)
+        else if ( child is not complete) // child is in−progress in a different search
+            suspend waiting for child to complete
+            // otherwise, child is complete, nothing to do
+    }
+    else{ // backtrack from node
+        controlStack .pop
+        if( controlStack .nonEmpty) controlStack.top.updateLowlink(node.lowlink)
+            if(node. lowlink == node.index){
+                start new SCC
+                do{
+                    w = tarjanStack.pop; add w to SCC
+                    mark w as complete and unblock any searches suspended on it
+                } until(w == node)
+            }
+    }
+}
+*/
+
+int main() {
+    return 0;
+}
