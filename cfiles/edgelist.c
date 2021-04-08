@@ -5,23 +5,17 @@
 #endif
 
 struct Edge* head_EL(struct EdgeList* edge_list) {
-    struct Edge* head;
-    head = edge_list->head->edge;
-    if (head) {
-        return head;
-    } else {
-        return NULL;
+    if (edge_list == NULL) {
+        fprintf(stderr, "null EL");
     }
+    if (edge_list->head == NULL) {
+        fprintf(stderr, "null edge");
+    }
+    return edge_list->head->edge;
 }
 
 struct Edge* tail_EL(struct EdgeList* edge_list) {
-    struct Edge* tail;
-    tail = edge_list->tail->edge;
-    if (tail) {
-        return tail;
-    } else {
-        return NULL;
-    }
+    return edge_list->tail->edge;
 }
 
 struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
