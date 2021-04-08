@@ -77,6 +77,8 @@ int delete(struct IntTable* it, struct Node* n) {
     return 0;
 }
 
+/*
 int main(){
     return 0;
 }
+*/

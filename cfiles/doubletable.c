@@ -78,7 +78,8 @@ int delete(struct DoubleTable* dt, struct Node* n) {
     return 0;
 }
 
-
+/*
 int main(){
     return 0;
 }
+*/

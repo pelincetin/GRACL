@@ -45,7 +45,8 @@ void prependEdge(struct EdgeList* edge_list, struct Edge* e) {
     return; 
 }
 
-
+/*
 int main(){
     return 0;
 }
+*/
