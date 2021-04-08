@@ -131,7 +131,7 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
     }
 }
 
-/*
+
 int main(){
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
@@ -154,4 +154,3 @@ int main(){
 
     return 0;
 }
-*/

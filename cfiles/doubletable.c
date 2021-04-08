@@ -4,28 +4,14 @@
 #include "commonFunctions.h"
 #endif
 
-struct DoubleTable
-{
-    struct DataItem* hashArray[SIZE]; 
-    struct DataItem* dummyItem;
-    struct DataItem* item;
-};
-
-struct DataItem {
-    double data;   
-    int key;
-};
-
-struct DataItem* hashArray[SIZE]; 
-struct DataItem* dummyItem;
-struct DataItem* item;
-
-int hashCode(int key) {
-    return key % SIZE;
+int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
+    int id_node = node->id;
+    return id_node % dt->size;
 }
 
+/*
 // DONE WITH OPERATOR
-struct DataItem *search(int key) {
+struct DataItem* search(int key) {
     int hashIndex = hashCode(key);
     while(hashArray[hashIndex] != NULL) {
         if(hashArray[hashIndex]->key == key)
@@ -38,7 +24,7 @@ struct DataItem *search(int key) {
 
 // DONE WITH OPERATOR
 void insert(int key,int data) {
-    struct DataItem *item = (struct DataItem*) malloc(sizeof(struct DataItem));
+    struct DoubleTableItem* item = (struct DoubleTableItem*) malloc(sizeof(struct DoubleTableItem));
     item->data = data;  
     item->key = key;
     int hashIndex = hashCode(key);
@@ -49,12 +35,12 @@ void insert(int key,int data) {
     hashArray[hashIndex] = item;
 }
 
-struct DataItem* delete(struct DataItem* item) {
+struct DoubleTableItem* delete(struct DataItem* item) {
     int key = item->key;
     int hashIndex = hashCode(key);
     while(hashArray[hashIndex] != NULL) {
         if(hashArray[hashIndex]->key == key) {
-            struct DataItem* temp = hashArray[hashIndex];
+            struct DoubleTableItem* temp = hashArray[hashIndex];
             hashArray[hashIndex] = dummyItem; // why set it to null instead of dummy item?
             return temp;
         }
@@ -63,5 +49,8 @@ struct DataItem* delete(struct DataItem* item) {
     }      
     return NULL;        
 }
+*/
 
-//https://www.tutorialspoint.com/data_structures_algorithms/hash_table_program_in_c.htm
+int main(){
+    return 0;
+}

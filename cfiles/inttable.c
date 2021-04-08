@@ -4,29 +4,16 @@
 #include "commonFunctions.h"
 #endif
 
-struct IntTable
-{
-    struct DataItem* hashArray[SIZE]; 
-    struct DataItem* dummyItem;
-    struct DataItem* item;
-};
-
-struct DataItem {
-    int data;   
-    int key;
-};
-
-struct DataItem* hashArray[SIZE]; 
-struct DataItem* dummyItem;
-struct DataItem* item;
-
-int hashCode(int key) {
-    return key % SIZE;
+int hashCode_it(struct IntTable* it, struct Node* node) {
+    int id_node = node->id;
+    return id_node % it->size;
 }
 
+/*
+
 // DONE WITH OPERATOR
-struct DataItem *search(int key) {
-    int hashIndex = hashCode(key);
+struct IntTableItem* search(struct IntTable* it, int key) {
+    int hashIndex = hashCode_it(it, key);
     while(hashArray[hashIndex] != NULL) {
         if(hashArray[hashIndex]->key == key)
             return hashArray[hashIndex]; 
@@ -37,7 +24,7 @@ struct DataItem *search(int key) {
 }
 
 // DONE WITH OPERATOR
-void insert(int key,int data) {
+void insert(struct IntTable* it, int key,int data) {
     struct DataItem *item = (struct DataItem*) malloc(sizeof(struct DataItem));
     item->data = data;  
     item->key = key;
@@ -49,7 +36,7 @@ void insert(int key,int data) {
     hashArray[hashIndex] = item;
 }
 
-struct DataItem* delete(struct DataItem* item) {
+struct IntTableItem* delete(struct IntTableItem* item) {
     int key = item->key;
     int hashIndex = hashCode(key);
     while(hashArray[hashIndex] != NULL) {
@@ -63,5 +50,8 @@ struct DataItem* delete(struct DataItem* item) {
     }      
     return NULL;        
 }
+*/
 
-//https://www.tutorialspoint.com/data_structures_algorithms/hash_table_program_in_c.htm
+int main(){
+    return 0;
+}
