@@ -18,7 +18,7 @@ bool empty_EL(struct EdgeList* edge_list);
 // Return the data of the node
 const char* data(struct Node* node);
 
-int hashCode(struct Node* node);
+int hashCode(struct Graph* g, struct Node* node);
 
 int length_EL(struct EdgeList* edge_list);
 
@@ -78,7 +78,7 @@ struct EdgeList* edges(struct Node* node);
  * the value would a nodelist whose edges point to the key */
 struct Graph* createGraph();
 
-void prependNode(struct NodeList* node_list, struct Node* e);
+void prependNode(struct NodeList* node_list, struct Node* n);
 
 void appendNode(struct NodeList* node_list, struct Node* n);
 

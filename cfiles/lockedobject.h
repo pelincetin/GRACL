@@ -58,12 +58,14 @@ struct NodeList {
 
 struct DataItem {
     struct Node* key;
-    struct NodeList* value;
+    struct EdgeList* value;
 };
 
 struct Graph
 {
     struct DataItem* hashArray; 
+    struct NodeList* nodes;
+    int size;
 };
 
 // struct DoubleTable

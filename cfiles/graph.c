@@ -4,23 +4,27 @@
 #ifndef BUILDSTDLIB
 #include "commonFunctions.h"
 #endif
-/* The key is going to be a node
- * The value will be a nodelist whose edges point to the key
+
+/* 
+ * The key of the graph hashtbl is going to be a node
+ * The value will be a nodelist of nodes having an edge to the key
  */
-struct Graph* createGraph(){
-    struct DataItem* d = malloc(sizeof(struct DataItem) * SIZE);
-    for (int i = 0; i < SIZE; i++) {
+struct Graph* createGraph(int size) {
+    struct DataItem* d = malloc(sizeof(struct DataItem) * size;
+    for (int i = 0; i < size; i++) {
         d[i].key = NULL;
         d[i].value = NULL;
     }
     struct Graph* graph = malloc(sizeof(struct Graph));
     graph->hashArray = d;
+    graph->size = size;
+    graph->nodes = createNodeList();
     return graph;
 }
 
-int hashCode(struct Node* node) {
+int hashCode(struct Graph* g, struct Node* node) {
     int id_node = node->id;
-    return id_node % SIZE;
+    return id_node % g->size;
 }
 
 void incrementId(){
@@ -28,87 +32,100 @@ void incrementId(){
 }
 
 /* Returns a nodelist of nodes in the graph
- * sorted by hashed id */
+ * sorted by order of creation
+ */
 struct NodeList* nodes(struct Graph* g){
-    struct NodeList* nodes = malloc(sizeof(struct NodeList));
-    for (int i = 0; i < SIZE; i++){
-        if (g->hashArray[i].key != NULL){
-            appendNode(nodes, g->hashArray[i].key);
-        }
-    }
-    return nodes;
+    return g->nodes;
 }
 
 struct Node* createNode(struct Graph* g, char* data) {
     struct Node* node = malloc(sizeof(struct Node));
-    //struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
-    struct NodeList* nl = malloc(sizeof(struct NodeList));
+    struct EdgeList* el = createEdgeList();
     node->data = data;
     node->visited = false;
     node->id = id_num;
     node->edges = createEdgeList();
     incrementId();
-    g->hashArray[hashCode(node)].key = node;
-    g->hashArray[hashCode(node)].value = nl;
+    g->hashArray[hashCode(g, node)].key = node;
+    g->hashArray[hashCode(g, node)].value = el;
     if (pthread_mutex_init(&node->lock, NULL) !=0) {
         fprintf(stderr, "createNode: Failure to initialize mutex\n");
         exit(1); 
-    } else {
-        //TODO: rn there's no implementation of collision/double size
-
-        // iterate through the list of edges and add
-        // a node to the nl in value for each node destination 
-        // in the graph structure    
-        return node;
-    }
+    } 
+    appendNode(g->nodes, node);
+    return node; 
 }
 
+/* 
+ * Go through nodelist and delete node from:
+ * overall graph's nodelist
+ * and remove all edges from the value list
+ * for all edges of node to delete, delete these from other value lists
+ */
 int removeNodeGraph(struct Graph* g, struct Node* n) {
-    // go through nodelist and 
-    // delete node from all the nodes' values specified in edge list
-    // change hashtbl list 
-    struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
-    struct NodeList* values = malloc(sizeof(struct NodeList));
-    struct NodeListItem* temp = malloc(sizeof(struct NodeListItem));
+    struct NodeList* all_nodes;
+    struct EdgeList* values;
+    struct EdgeListItem* list_item = NULL; 
 
     all_nodes = nodes(g);
-    if (all_nodes != NULL){
-        temp = all_nodes->head;
-    }else{
-        return -1;
-    }
+    removeNode(all_nodes, n);
 
-    while(temp){
-        if(g->hashArray[hashCode(temp->node)].value->head){
-            values = g->hashArray[hashCode(temp->node)].value;
-            int ret = includesNode(values, temp->node);
-            if (ret == 1){
-                removeNode(values, temp->node);
-            }
+    // get values
+    values = g->hashArray[hashCode(g, n)].value;
+    if (values) {
+        list_item = values->head;
+    }
+    
+    // iterate through values and removeEdgeGraph for each
+    while (list_item) {
+        removeEdgeGraph(g, list_item->edge)
+        list_item = list_item->next;
+    }
+    // null out the values
+    g->hashArray[hashCode(g, n)].value = NULL;
+
+    // Now, take care of the key 
+    // iterate through edgelist and remove
+    // edge from every valuelist where it occurs
+    struct EdgeList* node_edges; 
+    node_edges = n->edges;
+
+    if (node_edges) {
+        list_item = node_edges->head;
+    }
+    
+    while (list_item) {
+        struct Edge* e = list_item->edge;
+        struct Node* end_n = end(e);
+        values = g->hashArray[hashCode(g, end_n)].value;
+        if (values) {
+            removeEdge(values, e);
         }
-        temp = temp->next;
+        free(e);
+        list_item = list_item->next;
     }
 
-    if (g->hashArray[hashCode(n)].key != NULL){
-        g->hashArray[hashCode(n)].value = NULL;
-        g->hashArray[hashCode(n)].key = NULL;
-    }
+    // null out key
+    g->hashArray[hashCode(g, n)].key = NULL;
+
+    // free the node memory? 
+    free(n);
+
     return 0;
 }
 
 int removeEdgeGraph(struct Graph* g, struct Edge* e) {
-    // remove edge from list 
-    struct EdgeList* edge_list;
-    edge_list = g->hashArray[hashCode(e->start)].key->edges;
+    // remove edge from value list of end_node
+    struct EdgeList* values;
+    struct Node* end_node = end(e);
+    values = g->hashArray[hashCode(g, end_node)].value;
     removeEdge(edge_list, e);
 
-    // remove start node from end node's value list
-    struct NodeList* values;
-    struct Node* end_node = end(e);
+    // remove edge from node internal edgelist of start
+    struct EdgeList* edge_list;
     struct Node* start_node = start(e);
-    values = g->hashArray[hashCode(end_node)].value;
-    removeNode(values, start_node);
-    
+    edge_list = start_node->edges;
+    removeEdge(edge_list, start_node);
     return 0;
 }
 
@@ -122,11 +139,10 @@ struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_
         exit(1); 
     }
     else {
-        //are we only adding to start edge?
         appendEdge(start_node->edges, edge);
-        struct NodeList* values = malloc(sizeof(struct NodeList));
-        values = g->hashArray[hashCode(end_node)].value;
-        appendNode(values, start_node);
+        struct EdgeList* values;
+        values = g->hashArray[hashCode(g, end_node)].value;
+        appendEdge(values, edge);
         return edge;
     }
 }
