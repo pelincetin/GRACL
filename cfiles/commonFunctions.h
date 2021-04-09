@@ -192,6 +192,7 @@ struct EdgeListItem* createEdgeListItem(struct Edge* e) {
 }
 
 void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
+    printf("Here\n");
     struct EdgeListItem* new_last = createEdgeListItem(e);
     if (!empty_EL(edge_list)) {
         // if list not empty;
@@ -204,6 +205,7 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
         // if list is empty;
         edge_list->head = new_last;
         edge_list->tail = new_last;
+        if (new_last == NULL) fprintf(stderr, "yikes");
     }
     return;
 }
