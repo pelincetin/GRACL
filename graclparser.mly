@@ -66,8 +66,7 @@ fdecl:
 
 func_body:
     /* nothing */     { ([], [])                 }
-  | func_body typ ID ASSIGN expr SEMI   { ((Dec($2, $3) :: fst $1), ( Expr(Assign($3, $5)):: snd $1)) }
-  | func_body typ ID SEMI   { ((Dec($2, $3) :: fst $1), snd $1) }
+  | func_body vdecl   { (($2 :: fst $1), snd $1) }
   | func_body stmt    { (fst $1, ($2 :: snd $1)) }
 
 formals_opt:
