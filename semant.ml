@@ -297,8 +297,7 @@ let check (program) =
   in
 
   let checkFunction func ft sl = 
-       (*TODO: DUH *)
-    let _ = check_symbol_table "global" sl in (* Checks globals when function is entered *)
+    let _ = check_symbol_table "global" sl; check_symbol_table "formal" func.formals in (* Checks globals when function is entered *)
     let symbols = StringHash.create 25 in
     let locals = StringHash.create 25 in
     let _ = List.iter (fun (ty, name) -> StringHash.replace symbols name ty) ( sl @ func.formals ) in (* globals and formals, local / formal / global order of prio *)
@@ -432,7 +431,9 @@ let check (program) =
     { styp = func.typ;
       sfname = func.fname;
       sformals = func.formals; 
-      slocals  = List.map check_local_decs (StringHash.fold (fun x b lt -> b::lt) locals []);
+      slocals  = begin let locallist = (StringHash.fold (fun _ b lt -> b::lt) locals []) in 
+      let _ = check_symbol_table "local" (List.map strip_val locallist) 
+        in List.map check_local_decs locallist end;
       sbody = match check_stmt (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
@@ -489,7 +490,7 @@ let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAUL
   let rec semant_check progparts ft (sl : symtable) (globs, funcs) = 
     match progparts with
     | [] -> ignore(find_func "main" ft); let _ = check_symbol_table "global" sl in (globs, funcs)
-    | FuncDecl(f)::ps -> semant_check ps (update_function_table ft f) sl (globs, List.rev (checkFunction f ft sl :: List.rev funcs))
+    | FuncDecl(f)::ps -> let new_funcs = (update_function_table ft f) in semant_check ps new_funcs sl (globs, List.rev (checkFunction f new_funcs sl :: List.rev funcs))
     | GlobBind(b)::ps -> semant_check ps ft (update_global_table sl b) (List.rev (checkGlobal b :: List.rev globs), funcs)
 
 in semant_check program F.function_decls [] ([], [])
