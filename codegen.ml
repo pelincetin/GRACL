@@ -290,16 +290,6 @@ let translate (globals, functions) =
                       | _ -> f ^ "_result") in
          L.build_call fdef (Array.of_list llargs) result builder
     in
-    
-
-      (* Initialize local variables *)
-    let _ = 
-      let init = function 
-    | SDecinit(_, n, e) -> ignore(L.build_store (expr builder e) (lookup n) builder)
-    | SDec _ -> ()
-      in (List.map init fdecl.slocals) 
-    in
-
 
     (* LLVM insists each basic block end with exactly one "terminator" 
        instruction that transfers control.  This function runs "instr builder"

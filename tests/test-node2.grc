@@ -1,0 +1,13 @@
+int main (){
+    //this is for testing createNode
+    Graph g = createGraph();
+    String greeting = "Hello";
+
+    Node n = g.createNode(greeting);
+    print(n.data());    
+
+    //this is for testing updateData
+    String hsm_forever = "zac efron";
+    n.updateData(hsm_forever); 
+    print(n.data());
+}

@@ -41,10 +41,10 @@ struct Node* end(struct Edge* edge);
 
 struct Node* createNode(struct Graph* g, char* data);
 
-struct Node* updateData(char* new_data, struct Node* node);
+struct Node* updateData(struct Node* node, char* new_data);
 
 /* Updates the visited field on the node to be the inputted bool */
-struct Node* updateVisited(bool tf, struct Node* node);
+struct Node* updateVisited(struct Node* node, bool tf);
 
 struct Node* removeFirst_NL(struct NodeList* node_list);
 
@@ -192,7 +192,6 @@ struct EdgeListItem* createEdgeListItem(struct Edge* e) {
 }
 
 void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
-    printf("Here\n");
     struct EdgeListItem* new_last = createEdgeListItem(e);
     if (!empty_EL(edge_list)) {
         // if list not empty;
@@ -205,7 +204,6 @@ void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
         // if list is empty;
         edge_list->head = new_last;
         edge_list->tail = new_last;
-        if (new_last == NULL) fprintf(stderr, "yikes");
     }
     return;
 }

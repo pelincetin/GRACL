@@ -1,13 +1,21 @@
-/*
+
 void printEdgeList(EdgeList el) {
-    for (Edge e in el) {
+    /*for (Edge e in el) {
         print(e.data());
+    }*/
+    
+    int i = el.length_EL();
+    while (i > 0){
+        Edge e = el.removeFirst_EL();  //This call segfaults
+        print(e.start().data());  
+        el.appendEdge(e);
+        i = i - 1;
     }
 }
-*/
+
 int main() {
     Graph g = createGraph();
-
+        
     String hello = "Hello";
     String goodbye = "Goodbye";
 
@@ -17,30 +25,27 @@ int main() {
     Edge e1 = g.addEdge(n1, n2, 15.3);
     Edge e2 = g.addEdge(n2, n1, 3.7);
     EdgeList el = createEdgeList();
-    print("Append edge with start 'hello'");
-    el.appendEdge(e1);
-    print("Weight of head should be 3.7:");
-    Edge h = el.head_EL();
-    /*
+    
     print("Empty should be true:");
     if (el.empty_EL()) {
         print("true");
     } else {
         print("false");
     }
-    */
     
-    //print("Prepend edge with start 'goodbye'");
-    //el.prependEdge(e2);
-    /*
+    print("Append edge with start 'hello'");
+    el.appendEdge(e1);
+    print("Prepend edge with start 'goodbye'");
+    el.prependEdge(e2);
     print("List should be goodbye hello:");
     printEdgeList(el);
-    */
+
     
-   
-    //double hw = h.weight();
-    //print(doubleToString(hw));
-    /*
+    print("Weight of head should be 3.7:");
+    Edge h = el.head_EL();
+    double hw = h.weight();
+    print(doubleToString(hw));
+
     print("Weight of tail should be 15.3:");
     Edge t = el.tail_EL();
     double tw = t.weight();
@@ -51,20 +56,20 @@ int main() {
     
     el.removeFirst_EL();
     print("After remove first (list should be hello):");
-    printEdgeList(el);
+    //printEdgeList(el);
 
     print("Prepend edge with start 'goodbye'");
     el.prependEdge(e2);
     el.removeLast_EL();
     print("After remove last (list should be goodbye):");
-    printEdgeList(el);
+    //printEdgeList(el);
 
     print("Append edge with start 'hello'");
     el.appendEdge(e1);
     el.removeEdge(e1);
     print("After remove edge with start hello (list should be goodbye):");
-    printEdgeList(el);
-    */
+    //printEdgeList(el);
+    
 
     return 0;
 }

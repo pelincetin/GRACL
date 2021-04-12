@@ -379,7 +379,7 @@ let check (program) =
       in if t' != Bool then raise (Failure err) else (t', e') 
     in
 
-    (* Check declaration/initializations *)
+    (* Check declaration/initializations, prob no longer necessary *)
     let check_local_decs = function
       | Decinit(t, n, e) as di -> 
         let (rt, ex) = expr  e in
