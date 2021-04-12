@@ -4,13 +4,18 @@ open Ast
 open Sast
 module F = Functions
 module StringMap = Map.Make(String)
+module StringHash = Hashtbl.Make(struct  (* Consider changing? *)
+  type t = string
+  let equal x y = x = y
+  let hash = Hashtbl.hash
+end)
+
 
 (* Semantic checking of the AST. Returns an SAST if successful,
    throws an exception if something is wrong.
-
-   Check each global variable, then check each function *)
-
-let check (globals, functions) =
+*)
+(*
+let checkl (globals, functions) =
 
   (* Verify a list of bindings has no void types or duplicate names *) (* TODO: INITIALIZATIONS?*)
   let check_binds (kind : string) (binds : bind list) =
@@ -251,4 +256,241 @@ let check (globals, functions) =
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
     }
-  in (List.map check_global_decs globals, List.map check_function functions)
+  in (List.map check_global_decs globals, List.map check_function functions) *)
+
+type symtable = (typ * string) list
+let check (program) = 
+ 
+  (* Verify a symbol table has no void types or duplicate names *)
+  let check_symbol_table (kind : string) (table : symtable) = 
+  List.iter 
+  (function (Void, b) -> raise (Failure ("illegal void " ^ kind ^ " " ^ b))
+      | _ -> ()) table;
+    let rec dups = function
+        [] -> ()
+      |	((_,n1) :: (_,n2) :: _) when n1 = n2 ->
+	  raise (Failure ("duplicate " ^ kind ^ " " ^ n1))
+      | _ :: t -> dups t
+    in dups (List.sort (fun (_,a) (_,b) -> compare a b) table)
+  in
+
+  (* Add function to the function map *)
+  let update_function_table ft fd  = 
+    let built_in_err = "function " ^ fd.fname ^ " may not be redefined"
+    and dup_err = "duplicate function " ^ fd.fname
+    and make_err er = raise (Failure er)
+    and n = fd.fname (* Name of the function *)
+    in match fd with (* No duplicate functions or redefinitions of built-ins *)
+         _ when StringMap.mem n F.function_decls -> make_err built_in_err
+       | _ when StringMap.mem n ft -> make_err dup_err  
+       | _ ->  StringMap.add n fd ft
+  in
+
+  (* Add declaration to the global symbol list *)
+  let update_global_table gt b = List.rev ((strip_val b):: List.rev gt)
+   
+  in
+
+  let find_func s ft = 
+    try StringMap.find s ft
+    with Not_found -> raise (Failure ("unrecognized function " ^ s))
+  in
+
+  let checkFunction func ft sl = 
+    let _ = check_symbol_table "global" sl; check_symbol_table "formal" func.formals in (* Checks globals when function is entered *)
+    let symbols = StringHash.create 25 in
+    let locals = StringHash.create 25 in
+    let _ = List.iter (fun (ty, name) -> StringHash.replace symbols name ty) ( sl @ func.formals ) in (* globals and formals, local / formal / global order of prio *)
+
+    (* Raise an exception if the given rvalue type cannot be assigned to
+       the given lvalue type *)
+    let check_assign lvaluet rvaluet err =
+       if lvaluet = rvaluet then lvaluet else raise (Failure err)
+    in  
+
+    (* Return a variable from our local symbol table *)
+    let type_of_identifier s =
+      try StringHash.find symbols s
+      with Not_found -> raise (Failure ("undeclared identifier " ^ s))
+    in
+
+    (* Return a semantically-checked expression, i.e., with a type *)
+    let rec expr = function
+        Literal  l -> (Int, SLiteral l)
+      | Fliteral l -> (Double, SFliteral l)
+      | Sliteral l -> (String, SSliteral l)
+      | BoolLit l  -> (Bool, SBoolLit l)
+      | Noexpr     -> (Void, SNoexpr)
+      | Id s       -> (type_of_identifier s, SId s)
+      | Assign(var, e) as ex -> 
+          let lt = type_of_identifier var 
+          and (rt, e') = expr e in
+          let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_expr ex
+          in (check_assign lt rt err, SAssign(var, (rt, e')))
+      | Unop(op, e) as ex -> 
+          let (t, e') = expr e in
+          let ty = match op with
+            Neg when t = Int || t = Double -> t
+          | Not when t = Bool -> Bool
+          | _ -> raise (Failure ("illegal unary operator " ^ 
+                                 string_of_uop op ^ string_of_typ t ^
+                                 " in " ^ string_of_expr ex))
+          in (ty, SUnop(op, (t, e')))
+      | Binop(e1, op, e2) as e -> 
+          let (t1, e1') = expr e1 
+          and (t2, e2') = expr e2 in
+          (* All binary operators require operands of the same type *)
+          let same = t1 = t2 in
+          (* Determine expression type based on operator and operand types *)
+          let ty = match op with
+            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
+          | Add | Sub | Mult | Div when same && t1 = Double -> Double
+          | Equal | Neq          when same               -> Bool
+          | Less | Leq | Great | Geq
+                     when same && (t1 = Int || t1 = Double) -> Bool
+          | And | Or when same && t1 = Bool -> Bool
+          | _ -> raise (
+	      Failure ("illegal binary operator " ^
+                       string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
+                       string_of_typ t2 ^ " in " ^ string_of_expr e))
+          in (ty, SBinop((t1, e1'), op, (t2, e2')))
+      | Call(fname, args) as call -> 
+          let fd = find_func fname ft in
+          let param_length = List.length fd.formals in
+          if List.length args != param_length then
+            raise (Failure ("expecting " ^ string_of_int param_length ^ 
+                            " arguments in " ^ string_of_expr call))
+          else let check_call (ft, _) e = 
+            let (et, e') = expr e in 
+            let err = "illegal argument found " ^ string_of_typ et ^
+              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
+            in (check_assign ft et err, e')
+          in 
+          let args' = List.map2 check_call fd.formals args
+          in (fd.typ, SCall(fname, args'))
+     (* TODO: | Access(table, key)
+      | Insert(table, key, ex)*)
+    in
+
+    let check_bool_expr e = 
+      let (t', e') = expr e
+      and err = "expected Boolean expression in " ^ string_of_expr e
+      in if t' != Bool then raise (Failure err) else (t', e') 
+    in
+
+    (* Check declaration/initializations, prob no longer necessary *)
+    let check_local_decs = function
+      | Decinit(t, n, e) as di -> 
+        let (rt, ex) = expr  e in
+          let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_vdecl di
+          in let _ = check_assign t rt err 
+            in SDecinit(t, n, (rt, ex))
+      | Dec(t,n) -> SDec(t,n) 
+    in
+    (* Return a semantically-checked statement i.e. containing sexprs *)
+    let rec check_stmt = function
+        Expr e -> SExpr (expr e)
+      | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
+      | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
+      | Return e -> let (t, e') = expr e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
+        if t = func.typ then SReturn (t, e') 
+        else raise (
+	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
+		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
+	    
+	    (* A block is correct if each statement is correct and nothing
+	       follows any Return statement.  Nested blocks are flattened. *)   (* TODO: HOW IS SCOPING HANDLED? *)
+      | Block sl -> 
+          let rec check_stmt_list = function
+              [Return _ as s] -> [check_stmt s]
+            | Return _ :: _   -> raise (Failure "nothing may follow a return")
+            | Block sl :: ss  -> check_stmt_list (sl @ ss) (* Flatten blocks *)
+            | s :: ss         -> let st = check_stmt s in st :: check_stmt_list ss (* st is VERY important here *)
+            | []              -> []
+          in SBlock(check_stmt_list sl)
+      
+      | LoclBind(b) -> match b with
+        | Dec(t,n) -> StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(Void, SNoexpr)
+        | Decinit(t,n,e) as di -> 
+        let (rt, ex) = expr e in
+          let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_vdecl di
+          in let _ = check_assign t rt err 
+            in  StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(t, SAssign(n, (rt, ex)))
+      
+      (* TODO:
+      | NodeFor 
+      | EdgeFor
+      | Hatch 
+      | Synch
+        *)
+
+    in (* body of check_function *)
+    { styp = func.typ;
+      sfname = func.fname;
+      sformals = func.formals; 
+      slocals  = begin let locallist = (StringHash.fold (fun _ b lt -> b::lt) locals []) in 
+      let _ = check_symbol_table "local" (List.map strip_val locallist) 
+        in List.map check_local_decs locallist end;
+      sbody = match check_stmt (Block func.body) with
+	SBlock(sl) -> sl
+      | _ -> raise (Failure ("internal error: block didn't become a block?"))
+    }
+in
+
+let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAULT *)
+    let rec constexpr = function
+        Literal  l -> (Int, SLiteral l)
+      | Fliteral l -> (Double, SFliteral l)
+      | Sliteral l -> (String, SSliteral l)
+      | BoolLit l  -> (Bool, SBoolLit l)
+      | Unop(op, e) as ex -> 
+          let (t, e') = constexpr e in
+          let ty = match op with
+            Neg when t = Int || t = Double -> t
+          | Not when t = Bool -> Bool
+          | _ -> raise (Failure ("illegal unary operator " ^ 
+                                 string_of_uop op ^ string_of_typ t ^
+                                 " in " ^ string_of_expr ex))
+          in (ty, SUnop(op, (t, e')))
+      | Binop(e1, op, e2) as e -> 
+          let (t1, e1') = constexpr e1 
+          and (t2, e2') = constexpr e2 in
+          (* All binary operators require operands of the same type *)
+          let same = t1 = t2 in
+          (* Determine expression type based on operator and operand types *)
+          let ty = match op with
+            Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
+          | Add | Sub | Mult | Div when same && t1 = Double -> Double
+          | Equal | Neq          when same               -> Bool
+          | Less | Leq | Great | Geq
+                     when same && (t1 = Int || t1 = Double) -> Bool
+          | And | Or when same && t1 = Bool -> Bool
+          | _ -> raise (
+	      Failure ("illegal binary operator " ^
+                       string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
+                       string_of_typ t2 ^ " in " ^ string_of_expr e))
+          in (ty, SBinop((t1, e1'), op, (t2, e2')))
+      | _ as ex -> raise (Failure ("initializer element " ^ string_of_expr ex ^ " is not a compile time constant"))
+    in function
+  | Decinit(t, n, e) as di -> 
+        let (rt, ex) = constexpr e 
+        and check_assign lvaluet rvaluet err =
+       if lvaluet = rvaluet then lvaluet else raise (Failure err)
+        in 
+          let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
+            string_of_typ rt ^ " in " ^ string_of_vdecl di
+            in let _ = check_assign t rt err
+          in SDecinit(t, n, (rt, ex))
+  | Dec(t,n) -> SDec(t,n)  
+  in
+
+  let rec semant_check progparts ft (sl : symtable) (globs, funcs) = 
+    match progparts with
+    | [] -> ignore(find_func "main" ft); let _ = check_symbol_table "global" sl in (globs, funcs)
+    | FuncDecl(f)::ps -> let new_funcs = (update_function_table ft f) in semant_check ps new_funcs sl (globs, List.rev (checkFunction f new_funcs sl :: List.rev funcs))
+    | GlobBind(b)::ps -> semant_check ps ft (update_global_table sl b) (List.rev (checkGlobal b :: List.rev globs), funcs)
+
+in semant_check program F.function_decls [] ([], [])

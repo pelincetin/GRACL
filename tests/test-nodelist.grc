@@ -1,10 +1,18 @@
-/*
+
 void printNodeList(NodeList nl) {
+    /*
     for (Node n in nl) {
         print(n.data());
+    }*/
+    int i = nl.length_NL();
+    while (i > 0){
+        Node n = nl.removeFirst_NL();
+        print(n.data());
+        nl.appendNode(n);
+        i = i - 1;
     }
 }
-*/
+
 
 int main()
 {
@@ -18,7 +26,7 @@ int main()
 
     NodeList nl = createNodeList();
     print("Should be true: ");
-    if (nl.empty()) {
+    if (nl.empty_NL()) {
         print("true");
     } else {
         print("false");
@@ -28,40 +36,32 @@ int main()
     nl.appendNode(n1);
     print("Prepend node 'goodbye'");
     nl.prependNode(n2);
-    /*
-    print("List should be goodbye hello:");
+    print("List should be goodbye hello: ");
     printNodeList(nl);
-    */
 
-    print("Data of head should be goodbye:");
-    print(nl.head().data());
-    print("Data of tail should be hello:");
-    print(nl.tail().data());
+    print("Data of head should be goodbye: ");
+    print(nl.head_NL().data());
+    print("Data of tail should be hello: ");
+    print(nl.tail_NL().data());
 
-    print("Length should be 2:");
-    printi(nl.length());
+    print("Length should be 2: ");
+    printi(nl.length_NL());
 
-    nl.removeFirst();
-    /*
-    print("After remove first (list should be hello):");
-    printNodeList(nl);
-    */
+    nl.removeFirst_NL();
+    print("After remove first (list should be hello): ");
+    //printNodeList(nl);  Causes a segfault here
 
     print("Prepend node 'goodbye'");
     nl.prependNode(n2);
-    nl.removeLast();
-    /*
-    print("After remove last (list should be goodbye):");
-    printNodeList(nl);
-    */
+    nl.removeLast_NL();
+    print("After remove last (list should be goodbye): ");
+    //printNodeList(nl);
 
     print("Append node 'hello'");
     nl.appendNode(n1);
     nl.removeNode(n1);
-    /*
-    print("After remove node hello (list should be goodbye):");
-    printNodeList(nl); 
-    */
+    print("After remove node hello (list should be goodbye): ");
+    //printNodeList(nl); 
 
     return 0;
 }
