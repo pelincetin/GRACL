@@ -262,7 +262,7 @@ type symtable = (typ * string) list
 let check (program) = 
  
   (* Verify a symbol table has no void types or duplicate names *)
-  let checkSymbolTable (kind : string) (table : symtable) = 
+  let check_symbol_table (kind : string) (table : symtable) = 
   List.iter 
   (function (Void, b) -> raise (Failure ("illegal void " ^ kind ^ " " ^ b))
       | _ -> ()) table;
@@ -275,7 +275,7 @@ let check (program) =
   in
 
   (* Add function to the function map *)
-  let updateFt ft fd  = 
+  let update_function_table ft fd  = 
     let built_in_err = "function " ^ fd.fname ^ " may not be redefined"
     and dup_err = "duplicate function " ^ fd.fname
     and make_err er = raise (Failure er)
@@ -286,14 +286,9 @@ let check (program) =
        | _ ->  StringMap.add n fd ft
   in
 
-  (* Add declaration to the symbol list, should just be one table when this is called, thus global scope *)
-  let updateSl pp = function
-  st::sl -> begin match pp with
-    | GlobBind(b) -> List.rev ((strip_val b):: List.rev st) :: sl
-    | FuncDecl(f) ->  checkSymbolTable "global" st; st::sl end
-  | [] -> match pp with
-    | GlobBind(b) -> [(strip_val b)]::[]
-    | FuncDecl(f) -> []
+  (* Add declaration to the global symbol list *)
+  let update_global_table gt b = List.rev ((strip_val b):: List.rev gt)
+   
   in
 
   let find_func s ft = 
@@ -303,7 +298,10 @@ let check (program) =
 
   let checkFunction func ft sl = 
        (*TODO: DUH *)
-    let symbols = StringHash.create 25 in(* ((List.map strip_val globals) @ func.formals @ (List.map strip_val func.locals) *)
+    let _ = check_symbol_table "global" sl in (* Checks globals when function is entered *)
+    let symbols = StringHash.create 25 in
+    let locals = StringHash.create 25 in
+    let _ = List.iter (fun (ty, name) -> StringHash.replace symbols name ty) ( sl @ func.formals ) in (* globals and formals, local / formal / global order of prio *)
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -312,9 +310,9 @@ let check (program) =
     in  
 
     (* Return a variable from our local symbol table *)
-    let rec type_of_identifier s = 
-        try StringHash.find symbols s 
-        with Not_found -> raise (Failure ("undeclared identifier " ^ s))
+    let type_of_identifier s =
+      try StringHash.find symbols s
+      with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
     (* Return a semantically-checked expression, i.e., with a type *)
@@ -385,12 +383,12 @@ let check (program) =
     (* Check declaration/initializations *)
     let check_local_decs = function
       | Decinit(t, n, e) as di -> 
-        let (rt, ex) = expr e in
+        let (rt, ex) = expr  e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
           in let _ = check_assign t rt err 
             in SDecinit(t, n, (rt, ex))
-      | Dec(t,n) -> SDec(t,n)
+      | Dec(t,n) -> SDec(t,n) 
     in
     (* Return a semantically-checked statement i.e. containing sexprs *)
     let rec check_stmt = function
@@ -410,18 +408,18 @@ let check (program) =
               [Return _ as s] -> [check_stmt s]
             | Return _ :: _   -> raise (Failure "nothing may follow a return")
             | Block sl :: ss  -> check_stmt_list (sl @ ss) (* Flatten blocks *)
-            | s :: ss         -> check_stmt s :: check_stmt_list ss
+            | s :: ss         -> let st = check_stmt s in st :: check_stmt_list ss (* st is VERY important here *)
             | []              -> []
           in SBlock(check_stmt_list sl)
       
       | LoclBind(b) -> match b with
-        | Dec(t,n) -> SDec(t,n)
+        | Dec(t,n) -> StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(Void, SNoexpr)
         | Decinit(t,n,e) as di -> 
         let (rt, ex) = expr e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
           in let _ = check_assign t rt err 
-            in SDecinit(t, n, (rt, ex))
+            in  StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(t, SAssign(n, (rt, ex)))
       
       (* TODO:
       | NodeFor 
@@ -434,7 +432,7 @@ let check (program) =
     { styp = func.typ;
       sfname = func.fname;
       sformals = func.formals; 
-      slocals  = List.map check_local_decs locals;
+      slocals  = List.map check_local_decs (StringHash.fold (fun x b lt -> b::lt) locals []);
       sbody = match check_stmt (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
@@ -488,10 +486,10 @@ let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAUL
   | Dec(t,n) -> SDec(t,n)  
   in
 
-  let rec semant_check progparts ft sl (globs, funcs) = 
+  let rec semant_check progparts ft (sl : symtable) (globs, funcs) = 
     match progparts with
-    | [] -> ignore(find_func "main" ft); let _ = checkSymbolTable "global" (List.hd sl) in (globs, funcs)
-    | (FuncDecl(f) as fd)::ps -> semant_check ps (updateFt ft f) (updateSl fd sl) (globs, List.rev (checkFunction f ft sl :: List.rev funcs))
-    | (GlobBind(b) as gb)::ps -> semant_check ps ft (updateSl gb sl) (List.rev (checkGlobal b :: List.rev globs), funcs)
+    | [] -> ignore(find_func "main" ft); let _ = check_symbol_table "global" sl in (globs, funcs)
+    | FuncDecl(f)::ps -> semant_check ps (update_function_table ft f) sl (globs, List.rev (checkFunction f ft sl :: List.rev funcs))
+    | GlobBind(b)::ps -> semant_check ps ft (update_global_table sl b) (List.rev (checkGlobal b :: List.rev globs), funcs)
 
 in semant_check program F.function_decls [] ([], [])
