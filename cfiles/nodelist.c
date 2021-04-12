@@ -25,7 +25,9 @@ struct Node* removeFirst_NL(struct NodeList* node_list) {
     head = node_list->head;
     if (head) {
         node_list->head = head->next;
-        node_list->head->prev = NULL;
+        if(node_list->head){
+            node_list->head->prev = NULL;
+        }
         return head->node;
     } else { 
         return NULL; 
