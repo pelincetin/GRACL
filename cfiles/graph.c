@@ -45,6 +45,8 @@ struct Node* createNode(struct Graph* g, char* data) {
     struct EdgeList* el = createEdgeList();
     node->data = data;
     node->visited = false;
+    node->cost = 0;
+    node->precursor = NULL;
     node->id = id_num;
     node->edges = createEdgeList();
     incrementId();
