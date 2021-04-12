@@ -24,7 +24,9 @@ struct Edge* removeFirst_EL(struct EdgeList* edge_list) {
     head = edge_list->head;
     if (head) {
         edge_list->head = head->next;
-        edge_list->head->prev = NULL;
+        if(edge_list->head){
+            edge_list->head->prev = NULL;
+        }
         return head->edge;
     } else { 
        return NULL;
