@@ -1,67 +1,84 @@
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #ifndef BUILDSTDLIB
 #include "commonFunctions.h"
 #endif
 
-struct IntTable
-{
-    struct DataItem* hashArray[SIZE]; 
-    struct DataItem* dummyItem;
-    struct DataItem* item;
-};
+void incrementId(){
+    id_num++;
+}
 
-struct DataItem {
-    int data;   
-    int key;
-};
+struct IntTable* createIntTable(int size){
+    struct IntTableItem* d = malloc(sizeof(struct IntTableItem) * size);
+    for (int i = 0; i < size; i++) {
+        d[i].key = NULL;
+        d[i].value = 0;
+    }
+    struct IntTable* it = malloc(sizeof(struct IntTable));
+    it->hashArray = d;
+    it->size = size;
+    it->keys = createNodeList();
+    if (pthread_mutex_init(&it->lock, NULL) !=0) {
+        fprintf(stderr, "createIntTable: Failure to initialize mutex\n");
+        exit(1); 
+    }
+    return it;
+}
 
-struct DataItem* hashArray[SIZE]; 
-struct DataItem* dummyItem;
-struct DataItem* item;
+int hashCode_it(struct IntTable* it, struct Node* node) {
+    int id_node = node->id;
+    return id_node % it->size;
+}
 
-int hashCode(int key) {
-    return key % SIZE;
+int search(struct IntTable* it, struct Node* n) {
+    int hashIndex = hashCode_it(it, n);
+    if(it->hashArray[hashIndex].key == n)
+        return it->hashArray[hashIndex].value; 
+    exit(1);        
 }
 
 // DONE WITH OPERATOR
-struct DataItem *search(int key) {
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key)
-            return hashArray[hashIndex]; 
-        ++hashIndex;
-        hashIndex %= SIZE;
+void insert(struct IntTable* it, struct Node* n, int data) {
+    int hashIndex = hashCode_it(it, n);
+    it->hashArray[hashIndex].key = n;
+    it->hashArray[hashIndex].value = data;
+    appendNode(it->keys, n);
+    incrementId();
+    return;
+}
+
+struct NodeList* keys(struct IntTable* it){
+    return it->keys;
+}
+
+bool includes(struct IntTable* it, struct Node* n){
+    struct NodeList* nl = malloc(sizeof(struct NodeList));
+    nl = keys(it);
+    int ret = includesNode(nl, n);
+    if (ret){
+        return true;
     }
-    return NULL;        
+    return false;
 }
 
-// DONE WITH OPERATOR
-void insert(int key,int data) {
-    struct DataItem *item = (struct DataItem*) malloc(sizeof(struct DataItem));
-    item->data = data;  
-    item->key = key;
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->key != -1) {
-        ++hashIndex;
-        hashIndex %= SIZE;
+int delete(struct IntTable* it, struct Node* n) {
+    //remove it from keys
+    struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
+    all_nodes = keys(it);
+    removeNode(all_nodes, n);
+
+    if(it->hashArray[hashCode_it(it, n)].key){
+        it->hashArray[hashCode_it(it, n)].value = 0;
+        it->hashArray[hashCode_it(it, n)].key = NULL;
+        return 1;
     }
-    hashArray[hashIndex] = item;
+    return 0;
 }
 
-struct DataItem* delete(struct DataItem* item) {
-    int key = item->key;
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key) {
-            struct DataItem* temp = hashArray[hashIndex];
-            hashArray[hashIndex] = dummyItem; // why set it to null instead of dummy item?
-            return temp;
-        }
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }      
-    return NULL;        
+/*
+int main(){
+    return 0;
 }
-
-//https://www.tutorialspoint.com/data_structures_algorithms/hash_table_program_in_c.htm
+*/

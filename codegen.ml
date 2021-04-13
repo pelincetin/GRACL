@@ -53,6 +53,14 @@ let translate (globals, functions) =
   let string_t   = L.pointer_type i8_t in
   let dataitem_t = L.struct_type context [|node_pointer; nodelist_pointer|] in
   let dataitem_pointer = L.pointer_type dataitem_t in
+  let doubletableitem_t = L.struct_type context [|node_pointer; double_t|] in
+  let doubletableitem_pointer = L.pointer_type doubletableitem_t in
+  let doubletable_t = L.struct_type context [|mutex_t; doubletableitem_pointer; nodelist_pointer; i32_t|] in
+  let doubletable_pointer = L.pointer_type doubletable_t in
+  let inttableitem_t = L.struct_type context [|node_pointer; i32_t|] in
+  let inttableitem_pointer = L.pointer_type inttableitem_t in
+  let inttable_t = L.struct_type context [|mutex_t; inttableitem_pointer; nodelist_pointer; i32_t|] in
+  let inttable_pointer = L.pointer_type inttable_t in
   let graph_t = L.struct_type context [|dataitem_pointer|] in
   let graph_pointer = L.pointer_type graph_t in
 
@@ -68,6 +76,8 @@ let translate (globals, functions) =
     | A.Edgelist -> edgelist_pointer
     | A.Nodelist -> nodelist_pointer
     | A.Graph -> graph_pointer
+    | A.Doubletable -> doubletable_pointer
+    | A.Inttable -> inttable_pointer
   in
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  

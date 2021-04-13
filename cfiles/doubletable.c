@@ -1,67 +1,84 @@
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #ifndef BUILDSTDLIB
 #include "commonFunctions.h"
 #endif
 
-struct DoubleTable
-{
-    struct DataItem* hashArray[SIZE]; 
-    struct DataItem* dummyItem;
-    struct DataItem* item;
-};
+void incrementId(){
+    id_num++;
+}
 
-struct DataItem {
-    double data;   
-    int key;
-};
+struct DoubleTable* createDoubleTable(int size){
+    struct DoubleTableItem* d = malloc(sizeof(struct DoubleTableItem) * size);
+    for (int i = 0; i < size; i++) {
+        d[i].key = NULL;
+        d[i].value = 0.0;
+    }
+    struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
+    dt->hashArray = d;
+    dt->size = size;
+    dt->keys = createNodeList();
+    if (pthread_mutex_init(&dt->lock, NULL) !=0) {
+        fprintf(stderr, "createDoubleTable: Failure to initialize mutex\n");
+        exit(1); 
+    }
+    return dt;
+}
 
-struct DataItem* hashArray[SIZE]; 
-struct DataItem* dummyItem;
-struct DataItem* item;
-
-int hashCode(int key) {
-    return key % SIZE;
+int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
+    int id_node = node->id;
+    return id_node % dt->size;
 }
 
 // DONE WITH OPERATOR
-struct DataItem *search(int key) {
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key)
-            return hashArray[hashIndex]; 
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }
-    return NULL;        
+double search(struct DoubleTable* dt, struct Node* n) {
+    int hashIndex = hashCode_dt(dt, n);
+    if(dt->hashArray[hashIndex].key == n)
+        return dt->hashArray[hashIndex].value; 
+    exit(1);      
 }
 
 // DONE WITH OPERATOR
-void insert(int key,int data) {
-    struct DataItem *item = (struct DataItem*) malloc(sizeof(struct DataItem));
-    item->data = data;  
-    item->key = key;
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->key != -1) {
-        ++hashIndex;
-        hashIndex %= SIZE;
+void insert(struct DoubleTable* dt, struct Node* n, double data) {
+    int hashIndex = hashCode_dt(dt, n);
+    dt->hashArray[hashIndex].key = n;
+    dt->hashArray[hashIndex].value = data;
+    appendNode(dt->keys, n);
+    incrementId();
+    return;
+}
+
+struct NodeList* keys(struct DoubleTable* dt){
+    return dt->keys;
+}
+
+bool includes(struct DoubleTable* dt, struct Node* n){
+    struct NodeList* nl = malloc(sizeof(struct NodeList));
+    nl = keys(dt);
+    int ret = includesNode(nl, n);
+    if (ret){
+        return true;
     }
-    hashArray[hashIndex] = item;
+    return false;
 }
 
-struct DataItem* delete(struct DataItem* item) {
-    int key = item->key;
-    int hashIndex = hashCode(key);
-    while(hashArray[hashIndex] != NULL) {
-        if(hashArray[hashIndex]->key == key) {
-            struct DataItem* temp = hashArray[hashIndex];
-            hashArray[hashIndex] = dummyItem; // why set it to null instead of dummy item?
-            return temp;
-        }
-        ++hashIndex;
-        hashIndex %= SIZE;
-    }      
-    return NULL;        
+int delete(struct DoubleTable* dt, struct Node* n) {
+    //remove it from keys
+    struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
+    all_nodes = keys(dt);
+    removeNode(all_nodes, n);
+
+    if(dt->hashArray[hashCode_dt(dt, n)].key){
+        dt->hashArray[hashCode_dt(dt, n)].value = 0.0;
+        dt->hashArray[hashCode_dt(dt, n)].key = NULL;
+        return 1;
+    }
+    return 0;
 }
 
-//https://www.tutorialspoint.com/data_structures_algorithms/hash_table_program_in_c.htm
+/*
+int main(){
+    return 0;
+}
+*/

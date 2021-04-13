@@ -63,18 +63,28 @@ struct Graph
     int graph_id_local;
 };
 
-// struct DoubleTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct IntTableItem {
+    struct Node* key;
+    int value;
+};
 
-// struct IntTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct DoubleTableItem {
+    struct Node* key;
+    double value;
+};
+
+struct IntTable
+{
+    pthread_mutex_t lock;
+    struct IntTableItem* hashArray; 
+    struct NodeList* keys;
+    int size;
+};
+
+struct DoubleTable
+{
+    pthread_mutex_t lock;
+    struct DoubleTableItem* hashArray; 
+    struct NodeList* keys;
+    int size;
+};
