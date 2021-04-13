@@ -94,6 +94,8 @@ int main() {
     printf("should print nothing\n");
     printEdgeList( g->hashArray[hashCode(g, node2)].value);
 
+    // test neighbors
+    // test edges
 
     return 0;
 }

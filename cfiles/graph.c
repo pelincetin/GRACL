@@ -21,6 +21,7 @@ struct Graph* createGraph(int size) {
     graph->hashArray = d;
     graph->size = size;
     graph->nodes = createNodeList();
+    g->id_num = 1;
     return graph;
 }
 
@@ -29,8 +30,8 @@ int hashCode(struct Graph* g, struct Node* node) {
     return id_node % g->size;
 }
 
-void incrementId(){
-    id_num++;
+void incrementId(struct Graph* g){
+    g->id_num++;
 }
 
 /* Returns a nodelist of nodes in the graph
@@ -47,9 +48,9 @@ struct Node* createNode(struct Graph* g, char* data) {
     node->visited = false;
     node->cost = 0;
     node->precursor = malloc(sizeof(struct Node));
-    node->id = id_num;
+    node->id = g->id_num;
     node->edges = createEdgeList();
-    incrementId();
+    incrementId(g);
     g->hashArray[hashCode(g, node)].key = node;
     g->hashArray[hashCode(g, node)].value = el;
     if (pthread_mutex_init(&node->lock, NULL) !=0) {
