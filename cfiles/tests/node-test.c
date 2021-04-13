@@ -19,7 +19,7 @@ int main() {
     }
 
     // test update data function 
-    node1 = updateData(greeting, node1);
+    node1 = updateData(node1, greeting);
     if ((strcmp(node1->data, "Hello\n") != 0)) {
         success = false; 
     }
@@ -30,7 +30,7 @@ int main() {
     }
 
     // test update visited 
-    if (!visited(updateVisited(true, node1))) {
+    if (!visited(updateVisited(node1, true))) {
         success = false;
     }
 

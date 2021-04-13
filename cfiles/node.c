@@ -23,14 +23,14 @@ bool visited(struct Node* node)
     return node->visited;
 }
 
-struct Node* updateData(char* new_data, struct Node* node)
+struct Node* updateData(struct Node* node, char* new_data)
 {
     node->data = new_data;
     return node;
 }
 
 /* Updates the visited field on the node to be the inputted bool */
-struct Node* updateVisited(bool tf, struct Node* node)
+struct Node* updateVisited(struct Node* node, bool tf)
 {
     node->visited = tf;
     return node;

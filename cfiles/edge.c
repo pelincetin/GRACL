@@ -4,7 +4,7 @@
 #include "node.c"
 #endif 
 
-void updateEdge(double new_weight, struct Edge* edge) {
+void updateEdge(struct Edge* edge, double new_weight) {
     edge->weight = new_weight;
     return;
 }
