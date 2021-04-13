@@ -24,6 +24,10 @@ nodelist: nodelist.c
 graph: graph.c
 	$(CC) $(CFLAGS) -pthread -o graph graph.c
 
+.PHONY: common
+graph: commonFunctions.c
+	$(CC) $(CFLAGS) -pthread -o graph graph.c
+
 .PHONY: clean
 clean:
 	rm -f *.o node edge edgelist nodelist graph
