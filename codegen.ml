@@ -53,7 +53,7 @@ let translate (globals, functions) =
   let string_t   = L.pointer_type i8_t in
   let dataitem_t = L.struct_type context [|node_pointer; nodelist_pointer|] in
   let dataitem_pointer = L.pointer_type dataitem_t in
-  let graph_t = L.struct_type context [|dataitem_pointer|] in
+  let graph_t = L.struct_type context [|dataitem_pointer; nodelist_pointer; i32_t; i32_t; i32_t|] in
   let graph_pointer = L.pointer_type graph_t in
 
   (* Return the LLVM type for a GRACL type *)

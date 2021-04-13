@@ -49,19 +49,19 @@ int main()
 
     nl.removeFirst_NL();
     print("After remove first (list should be hello): ");
-    //printNodeList(nl);  Causes a segfault here
+    printNodeList(nl); 
 
     print("Prepend node 'goodbye'");
     nl.prependNode(n2);
     nl.removeLast_NL();
     print("After remove last (list should be goodbye): ");
-    //printNodeList(nl);
+    printNodeList(nl);
 
     print("Append node 'hello'");
     nl.appendNode(n1);
     nl.removeNode(n1);
     print("After remove node hello (list should be goodbye): ");
-    //printNodeList(nl); 
+    printNodeList(nl); 
 
     return 0;
 }

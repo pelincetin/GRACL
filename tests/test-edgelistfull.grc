@@ -56,19 +56,19 @@ int main() {
     
     el.removeFirst_EL();
     print("After remove first (list should be hello):");
-    //printEdgeList(el);
+    printEdgeList(el);
 
     print("Prepend edge with start 'goodbye'");
     el.prependEdge(e2);
     el.removeLast_EL();
     print("After remove last (list should be goodbye):");
-    //printEdgeList(el);
+    printEdgeList(el);
 
     print("Append edge with start 'hello'");
     el.appendEdge(e1);
     el.removeEdge(e1);
     print("After remove edge with start hello (list should be goodbye):");
-    //printEdgeList(el);
+    printEdgeList(el);
     
 
     return 0;

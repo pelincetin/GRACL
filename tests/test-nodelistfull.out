@@ -1,0 +1,21 @@
+Should be true: 
+true
+Append node 'hello'
+Prepend node 'goodbye'
+List should be goodbye hello: 
+Goodbye
+Hello
+Data of head should be goodbye: 
+Goodbye
+Data of tail should be hello: 
+Hello
+Length should be 2: 
+2
+After remove first (list should be hello): 
+Hello
+Prepend node 'goodbye'
+After remove last (list should be goodbye): 
+Goodbye
+Append node 'hello'
+After remove node hello (list should be goodbye): 
+Goodbye
