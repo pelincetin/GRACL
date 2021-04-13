@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <pthread.h>
+
+int graph_id = 1;
     
 struct Node {
     pthread_mutex_t lock;
@@ -58,6 +60,7 @@ struct Graph
     struct NodeList* nodes;
     int size;
     int id_num;
+    int graph_id_local;
 };
 
 // struct DoubleTable

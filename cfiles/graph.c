@@ -34,6 +34,10 @@ void incrementId(struct Graph* g){
     g->id_num++;
 }
 
+void incrementGraphId() {
+    graph_id++;
+}
+
 /* Returns a nodelist of nodes in the graph
  * sorted by order of creation
  */
