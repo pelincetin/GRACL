@@ -23,6 +23,7 @@ int main() {
     }
     appendEdge(el, e1);
     prependEdge(el, e2);
+<<<<<<< HEAD
     if (!(length_EL(el)==2)) {
         success = false; 
     }
@@ -30,6 +31,13 @@ int main() {
     if (!(length_EL(el)==3)) {
         success = false; 
     }
+=======
+    printf("List should be goodbye hello: \n");
+    printEdgeList(el);
+    printf("Weight of head should be 3.7: %f\n", head_EL(el)->weight);
+    printf("Weight of tail should be 15.3: %f\n", tail_EL(el)->weight);
+    printf("Length should be 2: %d\n", length_EL(el));
+>>>>>>> graph-algos
     
     removeFirst_EL(el);
     printf("After remove first (list should be goodbye hello): ");

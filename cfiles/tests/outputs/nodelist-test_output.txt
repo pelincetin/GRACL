@@ -5,6 +5,10 @@ List should be goodbye hello: Goodbye
 
 Hello
 
+Data of head should be goodbye: Goodbye
+
+Data of tail should be hello: Hello
+
 Length should be 2: 2
 After remove first (list should be hello): Hello
 

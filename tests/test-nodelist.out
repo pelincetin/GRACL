@@ -1,0 +1,12 @@
+Should be true:
+true
+Append node 'hello'
+Prepend node 'goodbye'
+Data of head should be goodbye:
+Goodbye
+Data of tail should be hello:
+Hello
+Length should be 2:
+2
+Prepend node 'goodbye'
+Append node 'hello'

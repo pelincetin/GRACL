@@ -20,6 +20,20 @@ struct NodeList* createNodeList() {
     return node_list;
 }
 
+struct Node* head_NL(struct NodeList* node_list) {
+    if (!node_list->head) {
+        return NULL;
+    }
+    return node_list->head->node;
+}
+
+struct Node* tail_NL(struct NodeList* node_list) {
+    if (!node_list->tail) {
+        return NULL;
+    }
+    return node_list->tail->node;
+}
+
 struct Node* removeFirst_NL(struct NodeList* node_list) {
     struct NodeListItem* head;
     head = node_list->head;
