@@ -67,7 +67,7 @@ struct Node* prec(struct Node* node)
 struct Node* set_prec(struct Node* node, struct Node* precursor)
 {
     node->precursor = precursor;
-    return node->precursor;
+    return node;
 }
 
 bool nodeEquals(struct Node* node1, struct Node* node2)

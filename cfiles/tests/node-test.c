@@ -4,7 +4,6 @@
 #include "print-functions.c"
 
 int main() {
-    printf("enters main");
     // create graph with 2 nodes and test the functions 
     struct Graph* g = createGraph(100);
     char greeting[] = "Hello\n";
@@ -13,7 +12,6 @@ int main() {
     struct Node* node1 = createNode(g, nodedata1);
     struct Node* node2 = createNode(g, nodedata2);
     bool success = false;
-    printf("gets here 0");
 
     // test data function 
     if (!(strcmp(data(node1), "noded1") && strcmp(data(node2), "noded2"))) {
@@ -25,7 +23,6 @@ int main() {
     if ((strcmp(node1->data, "Hello\n") != 0)) {
         success = false; 
     }
-    printf("gets here 1");
 
     // test visited function, that nodes are initialized to false
     if (visited(node1)) {
@@ -45,7 +42,6 @@ int main() {
     if (nodeEquals(node1, node2)) {
         success = false; 
     }
-
     // test the 4 cost functions
     if (cost(node1) != 0) {
         success = false;
@@ -64,19 +60,30 @@ int main() {
     }
 
     // test the two precursors 
-    if (prec(node1)) { // should be null when inited
+    if (!prec(node1)) { // should be null when inited
         success = false;
     }
     node1 = set_prec(node1, node2);
-    if (strcmp(data(prec(node1)), "noded2")) {
+    if (prec(node1) == NULL) {
+        fprintf(stderr, "prec still null\n");
+    }
+    const char* data1;
+    if (prec(node1) == NULL) {
+        fprintf(stderr, "somehow still null\n");
+    }
+    data1 = data(prec(node1));
+    if (data1 == NULL) {
+        fprintf(stderr, "data null\n");
+    }
+    if (strcmp(data1, "noded2") != 0) {
+        fprintf(stderr, "inside strcmp\n");
         success = false;
     } 
 
     // test edges function 
-
     if (success) {
-        printf("SUCCESS");
+        printf("SUCCESS\n");
     } else {
-        printf("FAILURE");
+        printf("FAILURE\n");
     }
 }
