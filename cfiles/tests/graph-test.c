@@ -67,7 +67,7 @@ int main() {
     }  
 
     removeEdgeGraph(g, e1);
-    if (!(empty_EL(edges(node1)) == 1)) {
+    if (!empty_EL(edges(node1))) {
         success = false;
     }  
 
@@ -75,13 +75,17 @@ int main() {
     printNodeList(nodes(g)); // should print Hello
     printEdgeList(edges(node1)); // should print nothing
 
+    //addEdge(g, node1, node2, 5.0); // this line causes a segfault
+    removeNodeGraph(g, node1);
+    if (!(empty_NL(nodes(g)) == 1)) {
+        success = false;
+    }    
+
     if (success) {
         printf("SUCCESS\n");
     } else {
         printf("FAILURE\n");
     }
-
-    //addEdge(nod)
 /*
     printf("expecting hello goodbye \n");
     printEdge(e1);
