@@ -21,7 +21,7 @@ struct Graph* createGraph(int size) {
     graph->hashArray = d;
     graph->size = size;
     graph->nodes = createNodeList();
-    g->id_num = 1;
+    graph->id_num = 1;
     return graph;
 }
 
