@@ -80,6 +80,20 @@ int main() {
         success = false;
     } 
 
+    // test getEdge
+    struct Edge* edge1 = addEdge(g, node1, node2, 1.7);
+    struct Edge* edge2 = addEdge(g, node2, node1, 6.8);
+    if (!edgeEquals(edge1, getEdge(node1, node2))) {
+        success = false;
+    }
+    if (!edgeEquals(edge2, getEdge(node2, node1))) {
+        success = false;
+    }
+    if (getEdge(node1, node1)) {
+        success = false;
+    }
+
+
     if (success) {
         printf("SUCCESS\n");
     } else {

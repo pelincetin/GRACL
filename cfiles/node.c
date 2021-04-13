@@ -77,3 +77,19 @@ bool nodeEquals(struct Node* node1, struct Node* node2)
     }
     return false;
 }
+
+struct Edge* getEdge(struct Node* node1, struct Node* node2)
+{
+    struct EdgeListItem *current;
+    current = node1->edges->head;
+    while (current != NULL) {
+        struct Node* s_node = current->edge->start;
+        struct Node* e_node = current->edge->end;
+        if (nodeEquals(s_node, node1) && nodeEquals(e_node, node2)) {
+            return current->edge;
+        } else {
+            current = current->next;
+        }
+    }
+    return NULL;
+}
