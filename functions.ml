@@ -30,7 +30,14 @@ let function_decls =
         (Bool, "visited", [Node, "n"]);    
         (Node, "updateData", [(Node, "n"); (String, "s")]); 
         (Node, "updateVisited", [(Node, "n"); (Bool, "b")]);
+        (Int, "cost", [Node, "n"]);
+        (Int, "incrementCost", [Node, "n"]);
+        (Int, "decrementCost", [Node, "n"]);   
+        (Int, "updateCost", [(Node, "n1"); (Int, "i")]); 
+        (Node, "prec", [Node, "n"]);  
+        (Node, "setPrec", [(Node, "n1"); (Node, "n2")]);    
         (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")]);
+        (Bool, "getEdge", [(Node, "n1"); (Node, "n2")]);
 
         (* Edge Functions *)                  (* TODO: TEST ALL OF THIS *)
         (Void, "updateEdge", [(Edge, "e"); (Double, "d")]);
