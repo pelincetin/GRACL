@@ -8,82 +8,70 @@ int main() {
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     char yo[] = "Yo\n";
-    struct Node* n1 = malloc(sizeof(struct Node));
-    struct Node* n2 = malloc(sizeof(struct Node));
-    struct Node* n3 = malloc(sizeof(struct Node));
-    struct Edge* e1 = malloc(sizeof(struct Edge));
-    struct Edge* e2 = malloc(sizeof(struct Edge));
-    struct Edge* e3 = malloc(sizeof(struct Edge));
-    
-    n1->data = hello;
-    n1->visited = false;
-    n1->id=id_num;
-    id_num++;
-
-    n2->data = goodbye;
-    n2->visited = false;
-    n2->id=id_num;
-    id_num++;
-
-    n3->data = yo;
-    n3->visited = false;
-    n3->id=id_num;
-    id_num++;
-
-    e1->weight = 15.3;
-    e1->start = n1;
-    e1->end = n2;
-    
-    e2->weight = 3.7;
-    e2->start = n2;
-    e2->end = n1;
-
-    e3->weight = 4.8;
-    e3->start = n3;
-    e3->end = n2;
+    struct Graph* g = createGraph(100);
+    struct Node* n1 = createNode(g, hello);
+    struct Node* n2 = createNode(g, goodbye);
+    struct Node* n3 = createNode(g, yo);
+    struct Edge* e1 = addEdge(g, n1, n2, 15.3);
+    struct Edge* e2 = addEdge(g, n2, n1, 3.7);
+    struct Edge* e3 = addEdge(g, n3, n2, 4.8);
+    bool success = true;
 
     struct EdgeList* el = createEdgeList();
-    printf("Should be true: %s", empty_EL(el) ? "true\n" : "false\n");
-
-    printf("Append edge with start 'hello'\n");
+    if (!empty_EL(el)) {
+        success = false; 
+    }
     appendEdge(el, e1);
-    printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
-    printf("List should be goodbye hello: \n");
-    printEdgeList(el);
-    printf("Length should be 2: %d\n", length_EL(el));
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
     prependEdge(el, e3);
-    printf("List should be yo goodbye hello: \n");
-    printEdgeList(el);
+    if (!(length_EL(el)==3)) {
+        success = false; 
+    }
     
     removeFirst_EL(el);
     printf("After remove first (list should be goodbye hello): ");
     printEdgeList(el);
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
 
-    printf("Prepend edge with start 'yo'\n");
     prependEdge(el, e3);
     removeLast_EL(el);
     printf("After remove last (list should be yo goodbye): ");
     printEdgeList(el);
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
 
-    printf("Append edge with start 'hello'\n");
-    appendEdge(el, e1);
     removeEdge(el, e1);
-    printf("After remove edge with start hello (list should be yo goodbye): ");
+    printf("After remove edge (list should be yo goodbye): ");
     printEdgeList(el); 
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
 
-    removeFirst_EL(el);
-    printf("After remove first (list should be goodbye ): ");
-    printEdgeList(el);
-    printf("\n");
+    removeEdge(el, e2);
+    if (!(length_EL(el)==1)) {
+        success = false; 
+    }
 
-    removeFirst_EL(el);
-    printf("After remove first (list should be empty): ");
-    printEdgeList(el);
-    printf("\n");
+    removeEdge(el, e3);
+    if (!empty_EL(el)) {
+        success = false; 
+    }
+
+    if (success) {
+        printf("SUCCESS\n");
+    }
+    else {
+        printf("FAILURE\n");
+    }
 
     return 0;
 }
