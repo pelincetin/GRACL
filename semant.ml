@@ -305,7 +305,7 @@ let check (program) =
     
     let count = [|0|] in
 
-    let symbol_table = StringMap.empty :: top_level_symbols :: [] in 
+    let symbol_table =  top_level_symbols :: [] in 
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -409,18 +409,18 @@ let check (program) =
 	    
 	    (* A block is correct if each statement is correct and nothing
 	       follows any Return statement.  Nested blocks are flattened. *)   (* TODO: HOW IS SCOPING HANDLED? *)
-      | Block sl -> 
+      | Block sl -> let st = StringMap.empty::st in
           let rec check_stmt_list st = function
               [Return _ as s] -> [check_stmt st s]
             | Return _ :: _   -> raise (Failure "nothing may follow a return")
+            | Block sl :: ss  -> check_stmt_list (StringMap.empty::st) (sl @ ss) (* Flatten blocks *)
             | LoclBind(b) as lb :: ss -> let add_local typ name = if StringMap.mem name (List.hd st) then raise (Failure ("Cannot redeclare " ^ name)) 
               else StringMap.add name (typ, "var" ^ string_of_int (count.(0))) (List.hd st) and (t,n) = strip_val b and _ = count.(0) <- 1 + count.(0) in 
               let updated_table = (add_local t n)::(List.tl st) in
               let stm = check_stmt updated_table lb in stm :: check_stmt_list updated_table ss
             | BlockEnd as b :: ss -> SBlockEnd::check_stmt_list (List.tl st) ss
-            | Block sl :: ss  -> check_stmt_list (StringMap.empty::st) (sl @ ss) (* Flatten blocks *)
             | s :: ss         -> let stm = check_stmt st s in stm :: check_stmt_list st ss (* stm is VERY important here *)
-            | []              -> []
+            | []              -> []  
           in SBlock(check_stmt_list st sl)
       
       | LoclBind(b) -> 
