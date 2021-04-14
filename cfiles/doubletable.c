@@ -22,7 +22,7 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
     return id_node % dt->size;
 }
 
-double get(struct DoubleTable* dt, struct Node* n) {
+double getDouble(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
     start = &dt->arr[hashIndex];
@@ -73,7 +73,7 @@ struct NodeList* keys(struct DoubleTable* dt){
     return dt->keys;
 }
 
-bool includes(struct DoubleTable* dt, struct Node* n) {
+bool inDouble(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
     start = &dt->arr[hashIndex];
@@ -88,7 +88,7 @@ bool includes(struct DoubleTable* dt, struct Node* n) {
     return false;
 }
 
-int delete(struct DoubleTable* dt, struct Node* n) {
+int deleteDouble(struct DoubleTable* dt, struct Node* n) {
     // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
     all_nodes = keys(dt);

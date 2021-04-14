@@ -22,7 +22,7 @@ int hashCode_it(struct IntTable* it, struct Node* node) {
     return id_node % it->size;
 }
 
-int get(struct IntTable* it, struct Node* n) {
+int getInt(struct IntTable* it, struct Node* n) {
     int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start;
     start = &it->arr[hashIndex];
@@ -54,7 +54,7 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 // technically complexity could improve if we insert in a sorted manner
 // TODO
 void insert(struct IntTable* dt, struct Node* n, int data) {
-    int hashIndex = hashCode_dt(dt, n);
+    int hashIndex = hashCode_it(dt, n);
     struct IntTableItem* start = &dt->arr[hashIndex];
     if (start == NULL) {
         dt->arr[hashIndex] = *createIntTableItem(n, data);
@@ -73,8 +73,8 @@ struct NodeList* keys(struct IntTable* dt){
     return dt->keys;
 }
 
-bool includes(struct IntTable* dt, struct Node* n) {
-    int hashIndex = hashCode_dt(dt, n);
+bool inInt(struct IntTable* dt, struct Node* n) {
+    int hashIndex = hashCode_it(dt, n);
     struct IntTableItem* start;
     start = &dt->arr[hashIndex];
     while (start) {
@@ -88,13 +88,13 @@ bool includes(struct IntTable* dt, struct Node* n) {
     return false;
 }
 
-int delete(struct IntTable* dt, struct Node* n) {
+int deleteInt(struct IntTable* dt, struct Node* n) {
     // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
     all_nodes = keys(dt);
     removeNode(all_nodes, n);
 
-    int hashIndex = hashCode_dt(dt, n);
+    int hashIndex = hashCode_it(dt, n);
     struct IntTableItem* start;
     struct IntTableItem* prev;
     start = &dt->arr[hashIndex];
