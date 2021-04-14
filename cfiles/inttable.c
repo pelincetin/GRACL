@@ -10,7 +10,7 @@ struct IntTable* createIntTable(int predicted_size) {
     it->arr = (struct IntTableItem *)malloc(sizeof(struct IntTableItem)*predicted_size);  
     it->size = predicted_size;
     it->keys = createNodeList();
-    if (pthread_mutex_init(&dt->lock, NULL) !=0) {
+    if (pthread_mutex_init(&it->lock, NULL) !=0) {
         fprintf(stderr, "createIntTable: Failure to initialize mutex\n");
         exit(1); 
     }
@@ -53,11 +53,11 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 
 // technically complexity could improve if we insert in a sorted manner
 // TODO
-void insert(struct IntTable* dt, struct Node* n, int data) {
-    int hashIndex = hashCode_it(dt, n);
-    struct IntTableItem* start = &dt->arr[hashIndex];
+void insert(struct IntTable* it, struct Node* n, int data) {
+    int hashIndex = hashCode_it(it, n);
+    struct IntTableItem* start = &it->arr[hashIndex];
     if (start == NULL) {
-        dt->arr[hashIndex] = *createIntTableItem(n, data);
+        it->arr[hashIndex] = *createIntTableItem(n, data);
     }
     else {
         while (start && start->next) {
@@ -65,18 +65,18 @@ void insert(struct IntTable* dt, struct Node* n, int data) {
         }
         start->next = createIntTableItem(n, data);
     }
-    appendNode(dt->keys, n);
+    appendNode(it->keys, n);
     return;
 }
 
-struct NodeList* keys(struct IntTable* dt){
-    return dt->keys;
+struct NodeList* keys(struct IntTable* it){
+    return it->keys;
 }
 
-bool inInt(struct IntTable* dt, struct Node* n) {
-    int hashIndex = hashCode_it(dt, n);
+bool inInt(struct IntTable* it, struct Node* n) {
+    int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start;
-    start = &dt->arr[hashIndex];
+    start = &it->arr[hashIndex];
     while (start) {
         if (start->entry && nodeEquals(start->entry->key, n)) {
             return true;
@@ -88,22 +88,22 @@ bool inInt(struct IntTable* dt, struct Node* n) {
     return false;
 }
 
-int deleteInt(struct IntTable* dt, struct Node* n) {
+int deleteInt(struct IntTable* it, struct Node* n) {
     // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
-    all_nodes = keys(dt);
+    all_nodes = keys(it);
     removeNode(all_nodes, n);
 
-    int hashIndex = hashCode_it(dt, n);
+    int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start;
     struct IntTableItem* prev;
-    start = &dt->arr[hashIndex];
+    start = &it->arr[hashIndex];
     prev = NULL;
     while (start) {
         // find node to delete
         if (start->entry && nodeEquals(start->entry->key, n)) {
             if (prev == NULL) { // start of list
-                dt->arr[hashIndex] = *start->next;
+                it->arr[hashIndex] = *start->next;
             }
             else if (start->next == NULL) { // end of list
                 prev->next = NULL;
