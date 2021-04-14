@@ -80,7 +80,7 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
   | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  | SBlockEnd -> "SBlockEnd\n " (*^ (StringMap.fold (fun n t str -> string_of_typ t ^ " " ^ n ^ " " ^ str) b "") ^ "\n"*)
+  | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function
 | SDec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"
