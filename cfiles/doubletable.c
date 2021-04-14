@@ -37,8 +37,10 @@ double get(struct DoubleTable* dt, struct Node* n) {
     exit(1);
 }
 
-struct createDoubleTableLLItem* createDoubleTable(struct Node* n, double data) {
-    //
+struct DoubleTableLLItem* createDoubleTable(struct Node* n, double data) {
+    struct DoubleTableLLItem* dubtab = malloc(sizeof(DoubleTableLLItem));
+    dubtab->key = n;
+    dubtab->dub = data;
 }
 
 void insert(struct DoubleTable* dt, struct Node* n, double data) {
@@ -72,15 +74,36 @@ bool includes(struct DoubleTable* dt, struct Node* n) {
 }
 
 int delete(struct DoubleTable* dt, struct Node* n) {
-    //remove it from keys
+    // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
     all_nodes = keys(dt);
     removeNode(all_nodes, n);
 
-    if(dt->hashArray[hashCode_dt(dt, n)].key){
-        dt->hashArray[hashCode_dt(dt, n)].value = 0.0;
-        dt->hashArray[hashCode_dt(dt, n)].key = NULL;
-        return 1;
+    int hashIndex = hashCode_dt(dt, n);
+    struct DoubleTableItem* start;
+    struct DoubleTableItem* start_perm;
+    start = dt->arr[hashIndex];
+    start_perm = dt->arr[hashIndex];
+    while (start) {
+        // find node to delete
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            if (start->prev == NULL) { // start of list
+                dt->arr[hashIndex] = start->next;
+                if (start->next) {
+                    start->next->prev = NULL;
+                }
+            }
+            else if (start->next == NULL) { // end of list
+                start->prev->next = NULL;
+            }
+            else {
+                start->prev->next = start->next;
+                start->next->prev = start->prev;
+            }
+        }
+        else {
+            start = start->next;
+        }
     }
     return 0;
 }

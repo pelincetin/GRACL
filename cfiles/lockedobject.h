@@ -64,6 +64,12 @@ struct Graph
 };
 
 struct IntTableItem {
+    struct IntTableItem* prev;
+    struct IntTableItem* next;  
+    struct IntTableLLItem* entry;
+};
+
+struct IntTableLLItem {
     struct Node* key;
     int value;
 };
@@ -82,7 +88,7 @@ struct DoubleTableLLItem {
 struct IntTable
 {
     pthread_mutex_t lock;
-    struct IntTableItem* hashArray; 
+    struct IntTableItem* arr; 
     struct NodeList* keys;
     int size;
 };
