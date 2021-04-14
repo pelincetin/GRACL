@@ -7,8 +7,8 @@
 
 struct DoubleTable* createDoubleTable(int predicted_size) {
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
-    dt->arr = (DoubleTableItem *)malloc(sizeof(DoubleTableItem)*size);  
-    dt->size = size;
+    dt->arr = (DoubleTableItem *)malloc(sizeof(DoubleTableItem)*predicted_size);  
+    dt->size = predicted_size;
     dt->keys = createNodeList();
     if (pthread_mutex_init(&dt->lock, NULL) !=0) {
         fprintf(stderr, "createDoubleTable: Failure to initialize mutex\n");
