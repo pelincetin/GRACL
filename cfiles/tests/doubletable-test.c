@@ -69,11 +69,14 @@ int main(){
 
     // test delete
     delete(dt, node1);
+    delete(dt, node2);
+    delete(dt, node3);
+    delete(dt, node4);
     delete(dt, node1); // try deleting same node twice
     if (includes(dt, node1)) {
         success = false;
     }
-    if (length_NL(keys(dt)) != 10) {
+    if (length_NL(keys(dt)) != 7) {
         success = false;
     }
 
