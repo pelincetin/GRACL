@@ -61,7 +61,7 @@ let translate (globals, functions) =
   let inttableitem_pointer = L.pointer_type inttableitem_t in
   let inttable_t = L.struct_type context [|mutex_t; inttableitem_pointer; nodelist_pointer; i32_t|] in
   let inttable_pointer = L.pointer_type inttable_t in
-  let graph_t = L.struct_type context [|dataitem_pointer|] in
+  let graph_t = L.struct_type context [|dataitem_pointer; nodelist_pointer; i32_t; i32_t; i32_t|] in
   let graph_pointer = L.pointer_type graph_t in
 
   (* Return the LLVM type for a GRACL type *)
@@ -92,6 +92,7 @@ let translate (globals, functions) =
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
         | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
+        | _ -> L.const_pointer_null (ltype_of_typ t)
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
@@ -300,16 +301,6 @@ let translate (globals, functions) =
                       | _ -> f ^ "_result") in
          L.build_call fdef (Array.of_list llargs) result builder
     in
-    
-
-      (* Initialize local variables *)
-    let _ = 
-      let init = function 
-    | SDecinit(_, n, e) -> ignore(L.build_store (expr builder e) (lookup n) builder)
-    | SDec _ -> ()
-      in (List.map init fdecl.slocals) 
-    in
-
 
     (* LLVM insists each basic block end with exactly one "terminator" 
        instruction that transfers control.  This function runs "instr builder"
@@ -376,7 +367,9 @@ let translate (globals, functions) =
     add_terminal builder (match fdecl.styp with
         A.Void -> L.build_ret_void
       | A.Double -> L.build_ret (L.const_float double_t 0.0)
-      | A.Int -> L.build_ret (L.const_int i32_t 0))
+      | A.Int | A.Bool -> L.build_ret (L.const_int i32_t 0)
+      | A.String -> L.build_ret (L.build_global_stringptr "" "str" builder)
+      | _ as t -> L.build_ret (L.const_pointer_null (ltype_of_typ t)))
   in
 
   List.iter build_function_body functions; 

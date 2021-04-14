@@ -7,7 +7,7 @@ let function_decls =
       typ = typ; 
       fname = name; 
       formals = formallist;
-      locals = []; body = [] } map in List.fold_left add_func StringMap.empty [ 
+      body = [] } map in List.fold_left add_func StringMap.empty [ 
         (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
@@ -54,20 +54,24 @@ let function_decls =
         (Int,  "removeEdgeGraph", [(Graph, "g"); (Edge, "e")]);
 
         (* Nodelist Functions *)             (* TODO: TEST ALL OF THIS *)
-        (Int, "length_NL", [Nodelist, "n"]);
-        (Bool, "empty_NL", [Nodelist, "n"]);
+        (Node, "head_NL", [Nodelist, "nl"]);
+        (Node, "tail_NL", [Nodelist, "nl"]);
+        (Int, "length_NL", [Nodelist, "nl"]);
+        (Bool, "empty_NL", [Nodelist, "nl"]);
         (Int, "removeNode", [(Nodelist, "nl"); (Node, "n")]);
-        (Node, "removeFirst_NL", [Nodelist, "n"]);
-        (Node, "removeLast_NL", [Nodelist, "n"]);
+        (Node, "removeFirst_NL", [Nodelist, "nl"]);
+        (Node, "removeLast_NL", [Nodelist, "nl"]);
         (Void, "appendNode", [(Nodelist, "nl"); (Node, "n")]);
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
 
         (* Edgelist Functions *)                  (* TODO: TEST ALL OF THIS *)
-        (Int, "length_EL", [Edgelist, "e"]);
-        (Bool, "empty_EL", [Edgelist, "e"]);
+        (Edge, "head_EL", [Edgelist, "el"]);
+        (Edge, "tail_EL", [Edgelist, "el"]);
+        (Int, "length_EL", [Edgelist, "el"]);
+        (Bool, "empty_EL", [Edgelist, "el"]);
         (Int, "removeEdge", [(Edgelist, "el"); (Edge, "e")]);
-        (Node, "removeFirst_EL", [Edgelist, "e"]);
-        (Node, "removeLast_EL", [Edgelist, "e"]);
+        (Edge, "removeFirst_EL", [Edgelist, "el"]);
+        (Edge, "removeLast_EL", [Edgelist, "el"]);
         (Void, "appendEdge", [(Edgelist, "el"); (Edge, "e")]);
         (Void, "prependEdge", [(Edgelist, "el"); (Edge, "e")]);
 
