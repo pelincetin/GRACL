@@ -1,16 +1,7 @@
+Goodbye
+
+ahmed
+
 Hello
 
-Goodbye
-
-Start node: Hello
-End node: Goodbye
-Weight: 14.000000Start node: Goodbye
-End node: Hello
-Weight: 13.000000Hello
-
-Goodbye
-
-Now I should print 0
-0
-0
-0
+SUCCESS
