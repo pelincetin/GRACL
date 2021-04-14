@@ -1,26 +1,16 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #ifndef BUILDSTDLIB
-#include "commonFunctions.h"
+#include "graph.c"
 #endif
 
-void incrementId(){
-    id_num++;
-}
-
-struct IntTable* createIntTable(int size){
-    struct IntTableItem* d = malloc(sizeof(struct IntTableItem) * size);
-    for (int i = 0; i < size; i++) {
-        d[i].key = NULL;
-        d[i].value = 0;
-    }
+struct IntTable* createIntTable(int predicted_size) {
     struct IntTable* it = malloc(sizeof(struct IntTable));
-    it->hashArray = d;
-    it->size = size;
+    it->arr = (struct IntTableItem *)malloc(sizeof(struct IntTableItem)*predicted_size);  
+    it->size = predicted_size;
     it->keys = createNodeList();
-    if (pthread_mutex_init(&it->lock, NULL) !=0) {
+    if (pthread_mutex_init(&dt->lock, NULL) !=0) {
         fprintf(stderr, "createIntTable: Failure to initialize mutex\n");
         exit(1); 
     }
@@ -32,53 +22,100 @@ int hashCode_it(struct IntTable* it, struct Node* node) {
     return id_node % it->size;
 }
 
-int search(struct IntTable* it, struct Node* n) {
+int get(struct IntTable* it, struct Node* n) {
     int hashIndex = hashCode_it(it, n);
-    if(it->hashArray[hashIndex].key == n)
-        return it->hashArray[hashIndex].value; 
-    exit(1);        
+    struct IntTableItem* start;
+    start = &it->arr[hashIndex];
+    while (start) {
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            return start->entry->value;
+        }
+        else {
+            start = start->next;
+        }
+    } 
+    exit(1);
 }
 
-// DONE WITH OPERATOR
-void insert(struct IntTable* it, struct Node* n, int data) {
-    int hashIndex = hashCode_it(it, n);
-    it->hashArray[hashIndex].key = n;
-    it->hashArray[hashIndex].value = data;
-    appendNode(it->keys, n);
-    incrementId();
+struct IntTableLLItem* createIntTableLLItem(struct Node* n, int data) {
+    struct IntTableLLItem* inttab = malloc(sizeof(struct IntTableLLItem));
+    inttab->key = n;
+    inttab->value = data;
+    return inttab;
+}
+
+struct IntTableItem* createIntTableItem(struct Node* n, int data) {
+    struct IntTableItem* inttab = malloc(sizeof(struct IntTableItem));
+    inttab->entry = createIntTableLLItem(n, data);
+    inttab->next = NULL;
+    return inttab;
+}
+
+// technically complexity could improve if we insert in a sorted manner
+// TODO
+void insert(struct IntTable* dt, struct Node* n, int data) {
+    int hashIndex = hashCode_dt(dt, n);
+    struct IntTableItem* start = &dt->arr[hashIndex];
+    if (start == NULL) {
+        dt->arr[hashIndex] = *createIntTableItem(n, data);
+    }
+    else {
+        while (start && start->next) {
+            start = start->next;
+        }
+        start->next = createIntTableItem(n, data);
+    }
+    appendNode(dt->keys, n);
     return;
 }
 
-struct NodeList* keys(struct IntTable* it){
-    return it->keys;
+struct NodeList* keys(struct IntTable* dt){
+    return dt->keys;
 }
 
-bool includes(struct IntTable* it, struct Node* n){
-    struct NodeList* nl = malloc(sizeof(struct NodeList));
-    nl = keys(it);
-    int ret = includesNode(nl, n);
-    if (ret){
-        return true;
-    }
+bool includes(struct IntTable* dt, struct Node* n) {
+    int hashIndex = hashCode_dt(dt, n);
+    struct IntTableItem* start;
+    start = &dt->arr[hashIndex];
+    while (start) {
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            return true;
+        }
+        else {
+            start = start->next;
+        }
+    } 
     return false;
 }
 
-int delete(struct IntTable* it, struct Node* n) {
-    //remove it from keys
+int delete(struct IntTable* dt, struct Node* n) {
+    // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
-    all_nodes = keys(it);
+    all_nodes = keys(dt);
     removeNode(all_nodes, n);
 
-    if(it->hashArray[hashCode_it(it, n)].key){
-        it->hashArray[hashCode_it(it, n)].value = 0;
-        it->hashArray[hashCode_it(it, n)].key = NULL;
-        return 1;
+    int hashIndex = hashCode_dt(dt, n);
+    struct IntTableItem* start;
+    struct IntTableItem* prev;
+    start = &dt->arr[hashIndex];
+    prev = NULL;
+    while (start) {
+        // find node to delete
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            if (prev == NULL) { // start of list
+                dt->arr[hashIndex] = *start->next;
+            }
+            else if (start->next == NULL) { // end of list
+                prev->next = NULL;
+            }
+            else {
+                prev->next = start->next;
+            }
+        }
+        else {
+            prev = start;
+            start = start->next;
+        }
     }
     return 0;
 }
-
-/*
-int main(){
-    return 0;
-}
-*/
