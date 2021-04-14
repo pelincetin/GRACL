@@ -11,7 +11,7 @@ let function_decls =
         (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
-        (Graph, "createGraph", []);
+        (Graph, "createGraph", []); (* Should take an int parameter *)
         (Nodelist, "createNodeList", []);
         (Edgelist, "createEdgeList", []);
 

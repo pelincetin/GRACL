@@ -30,6 +30,7 @@ type formal = typ * string
 
 type stmt =
     Block of stmt list
+  | BlockEnd 
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
@@ -125,6 +126,7 @@ let rec string_of_stmt = function
   | EdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | LoclBind(b) -> string_of_vdecl b
+  | BlockEnd -> "BlockEnd\n"
 
 
 

@@ -8,7 +8,7 @@ module StringHash = Hashtbl.Make(struct  (* Consider changing? *)
   type t = string
   let equal x y = x = y
   let hash = Hashtbl.hash
-end)
+end) 
 
 
 (* Semantic checking of the AST. Returns an SAST if successful,
@@ -297,10 +297,13 @@ let check (program) =
   in
 
   let checkFunction func ft sl = 
-    let _ = check_symbol_table "global" sl; check_symbol_table "formal" func.formals in (* Checks globals when function is entered *)
-    let symbols = StringHash.create 25 in
+    let _ = check_symbol_table "global" sl; check_symbol_table "formal" func.formals in (* Checks globals and formals when function is entered *)
+    (* globals and formals, local / formal / global order of prio *)
+    let top_level_symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m) StringMap.empty ( sl @ func.formals ) in 
+
     let locals = StringHash.create 25 in
-    let _ = List.iter (fun (ty, name) -> StringHash.replace symbols name ty) ( sl @ func.formals ) in (* globals and formals, local / formal / global order of prio *)
+    
+    let symbol_table = top_level_symbols :: [] in 
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -309,27 +312,29 @@ let check (program) =
     in  
 
     (* Return a variable from our local symbol table *)
-    let type_of_identifier s =
-      try StringHash.find symbols s
-      with Not_found -> raise (Failure ("undeclared identifier " ^ s))
+    let rec type_of_identifier s = function
+      | ht::st ->
+        (try StringMap.find s ht
+        with Not_found -> type_of_identifier s st)
+      | [] -> raise (Failure ("undeclared identifier " ^ s))
     in
 
     (* Return a semantically-checked expression, i.e., with a type *)
-    let rec expr = function
+    let rec expr st = function
         Literal  l -> (Int, SLiteral l)
       | Fliteral l -> (Double, SFliteral l)
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> (type_of_identifier s, SId s)
+      | Id s       -> (type_of_identifier s st, SId s)
       | Assign(var, e) as ex -> 
-          let lt = type_of_identifier var 
-          and (rt, e') = expr e in
+          let lt = type_of_identifier var st
+          and (rt, e') = expr st e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
           in (check_assign lt rt err, SAssign(var, (rt, e')))
       | Unop(op, e) as ex -> 
-          let (t, e') = expr e in
+          let (t, e') = expr st e in
           let ty = match op with
             Neg when t = Int || t = Double -> t
           | Not when t = Bool -> Bool
@@ -338,8 +343,8 @@ let check (program) =
                                  " in " ^ string_of_expr ex))
           in (ty, SUnop(op, (t, e')))
       | Binop(e1, op, e2) as e -> 
-          let (t1, e1') = expr e1 
-          and (t2, e2') = expr e2 in
+          let (t1, e1') = expr st e1 
+          and (t2, e2') = expr st e2 in
           (* All binary operators require operands of the same type *)
           let same = t1 = t2 in
           (* Determine expression type based on operator and operand types *)
@@ -362,7 +367,7 @@ let check (program) =
             raise (Failure ("expecting " ^ string_of_int param_length ^ 
                             " arguments in " ^ string_of_expr call))
           else let check_call (ft, _) e = 
-            let (et, e') = expr e in 
+            let (et, e') = expr st e in 
             let err = "illegal argument found " ^ string_of_typ et ^
               " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
             in (check_assign ft et err, e')
@@ -373,28 +378,28 @@ let check (program) =
       | Insert(table, key, ex)*)
     in
 
-    let check_bool_expr e = 
-      let (t', e') = expr e
+    let check_bool_expr st e = 
+      let (t', e') = expr st e
       and err = "expected Boolean expression in " ^ string_of_expr e
       in if t' != Bool then raise (Failure err) else (t', e') 
     in
 
     (* Check declaration/initializations, prob no longer necessary *)
-    let check_local_decs = function
+    let check_local_decs st = function
       | Decinit(t, n, e) as di -> 
-        let (rt, ex) = expr  e in
+        let (rt, ex) = expr st e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
           in let _ = check_assign t rt err 
             in SDecinit(t, n, (rt, ex))
       | Dec(t,n) -> SDec(t,n) 
-    in
+    in 
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    let rec check_stmt = function
-        Expr e -> SExpr (expr e)
-      | If(p, b1, b2) -> SIf(check_bool_expr p, check_stmt b1, check_stmt b2)
-      | While(p, s) -> SWhile(check_bool_expr p, check_stmt s)
-      | Return e -> let (t, e') = expr e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
+    let rec check_stmt (st : Ast.typ StringMap.t list)  = function
+        Expr e -> SExpr (expr st e)
+      | If(p, b1, b2) -> SIf(check_bool_expr st p, check_stmt st b1, check_stmt st b2)
+      | While(p, s) -> SWhile(check_bool_expr st p, check_stmt st s)
+      | Return e -> let (t, e') = expr st e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
         if t = func.typ then SReturn (t, e') 
         else raise (
 	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
@@ -403,28 +408,32 @@ let check (program) =
 	    (* A block is correct if each statement is correct and nothing
 	       follows any Return statement.  Nested blocks are flattened. *)   (* TODO: HOW IS SCOPING HANDLED? *)
       | Block sl -> 
-          let rec check_stmt_list = function
-              [Return _ as s] -> [check_stmt s]
+          let rec check_stmt_list st = function
+              [Return _ as s] -> [check_stmt st s]
             | Return _ :: _   -> raise (Failure "nothing may follow a return")
-            | Block sl :: ss  -> check_stmt_list (sl @ ss) (* Flatten blocks *)
-            | s :: ss         -> let st = check_stmt s in st :: check_stmt_list ss (* st is VERY important here *)
+            | LoclBind(b) as lb :: ss -> let add_local typ name = if StringMap.mem name (List.hd st) then raise (Failure ("Cannot redeclare " ^ name)) 
+              else StringMap.add name typ (List.hd st) and (t,n) = strip_val b in 
+              let updated_table = (add_local t n)::(List.tl st) in
+              let stm = check_stmt updated_table lb in stm :: check_stmt_list updated_table ss
+            | BlockEnd as b :: ss -> SBlockEnd(List.hd st)::check_stmt_list (List.tl st) ss
+            | Block sl :: ss  -> check_stmt_list (StringMap.empty::st) (sl @ ss) (* Flatten blocks *)
+            | s :: ss         -> let stm = check_stmt st s in stm :: check_stmt_list st ss (* stm is VERY important here *)
             | []              -> []
-          in SBlock(check_stmt_list sl)
+          in SBlock(check_stmt_list st sl)
       
-      | LoclBind(b) -> match b with
-        | Dec(t,n) -> StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(Void, SNoexpr)
+      | LoclBind(b) -> 
+      begin match b with
+        | Dec(t,n) -> StringHash.replace locals n b; SExpr(Void, SNoexpr)
         | Decinit(t,n,e) as di -> 
-        let (rt, ex) = expr e in
+        let (rt, ex) = expr st e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
           in let _ = check_assign t rt err 
-            in  StringHash.replace locals n b; StringHash.replace symbols n t; SExpr(t, SAssign(n, (rt, ex)))
-      
+            in StringHash.replace locals n b; SExpr(t, SAssign(n, (rt, ex))) end
+
       (* TODO:
       | NodeFor 
       | EdgeFor
-      | Hatch 
-      | Synch
         *)
 
     in (* body of check_function *)
@@ -432,9 +441,9 @@ let check (program) =
       sfname = func.fname;
       sformals = func.formals; 
       slocals  = begin let locallist = (StringHash.fold (fun _ b lt -> b::lt) locals []) in 
-      let _ = check_symbol_table "local" (List.map strip_val locallist) 
-        in List.map check_local_decs locallist end;
-      sbody = match check_stmt (Block func.body) with
+      let _ = check_symbol_table "local" (List.map strip_val locallist) in [] end; 
+       (* in List.map check_local_decs  locallist *) 
+      sbody = match check_stmt symbol_table (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
     }
