@@ -26,7 +26,7 @@ type sstmt =
   | SNodeFor of string * string * sstmt 
   | SEdgeFor of string * string * sstmt 
   | SWhile of sexpr * sstmt
-  | SBlockEnd of typ StringMap.t
+  | SBlockEnd 
 
 type sbind = 
     SDec of typ * string
@@ -80,7 +80,7 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
   | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  | SBlockEnd(b) -> "SBlockEnd " ^ (StringMap.fold (fun n t str -> string_of_typ t ^ " " ^ n ^ " " ^ str) b "") ^ "\n"
+  | SBlockEnd -> "SBlockEnd\n " (*^ (StringMap.fold (fun n t str -> string_of_typ t ^ " " ^ n ^ " " ^ str) b "") ^ "\n"*)
 
 let string_of_svdecl = function
 | SDec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"

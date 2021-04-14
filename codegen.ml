@@ -308,7 +308,7 @@ let translate (globals, functions) =
 
     let rec stmt builder = function
 	      SBlock sl -> List.fold_left stmt builder sl
-      | SBlockEnd a -> builder
+      | SBlockEnd -> builder
       | SExpr e -> ignore(expr builder e); builder 
       | SReturn e -> ignore(match fdecl.styp with
                               (* Special "return nothing" instr *)

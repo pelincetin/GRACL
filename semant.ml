@@ -299,11 +299,13 @@ let check (program) =
   let checkFunction func ft sl = 
     let _ = check_symbol_table "global" sl; check_symbol_table "formal" func.formals in (* Checks globals and formals when function is entered *)
     (* globals and formals, local / formal / global order of prio *)
-    let top_level_symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m) StringMap.empty ( sl @ func.formals ) in 
-
+    let top_level_symbols = List.fold_left (fun m (ty, name) -> StringMap.add name (ty, name) m) StringMap.empty ( sl @ func.formals ) in 
+       
     let locals = StringHash.create 25 in
     
-    let symbol_table = StringMap.empty::top_level_symbols :: [] in 
+    let count = [|0|] in
+
+    let symbol_table = StringMap.empty :: top_level_symbols :: [] in 
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -326,13 +328,13 @@ let check (program) =
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> (type_of_identifier s st, SId s)
+      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name)
       | Assign(var, e) as ex -> 
-          let lt = type_of_identifier var st
+          let (lt, name) = type_of_identifier var st
           and (rt, e') = expr st e in
           let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_expr ex
-          in (check_assign lt rt err, SAssign(var, (rt, e')))
+          in (check_assign lt rt err, SAssign(name, (rt, e')))
       | Unop(op, e) as ex -> 
           let (t, e') = expr st e in
           let ty = match op with
@@ -395,7 +397,7 @@ let check (program) =
       | Dec(t,n) -> SDec(t,n) 
     in 
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    let rec check_stmt (st : Ast.typ StringMap.t list)  = function
+    let rec check_stmt (st : (Ast.typ*string) StringMap.t list)  = function
         Expr e -> SExpr (expr st e)
       | If(p, b1, b2) -> SIf(check_bool_expr st p, check_stmt st b1, check_stmt st b2)
       | While(p, s) -> SWhile(check_bool_expr st p, check_stmt st s)
@@ -412,10 +414,10 @@ let check (program) =
               [Return _ as s] -> [check_stmt st s]
             | Return _ :: _   -> raise (Failure "nothing may follow a return")
             | LoclBind(b) as lb :: ss -> let add_local typ name = if StringMap.mem name (List.hd st) then raise (Failure ("Cannot redeclare " ^ name)) 
-              else StringMap.add name typ (List.hd st) and (t,n) = strip_val b in 
+              else StringMap.add name (typ, "var" ^ string_of_int (count.(0))) (List.hd st) and (t,n) = strip_val b and _ = count.(0) <- 1 + count.(0) in 
               let updated_table = (add_local t n)::(List.tl st) in
               let stm = check_stmt updated_table lb in stm :: check_stmt_list updated_table ss
-            | BlockEnd as b :: ss -> SBlockEnd(List.hd st)::check_stmt_list (List.tl st) ss
+            | BlockEnd as b :: ss -> SBlockEnd::check_stmt_list (List.tl st) ss
             | Block sl :: ss  -> check_stmt_list (StringMap.empty::st) (sl @ ss) (* Flatten blocks *)
             | s :: ss         -> let stm = check_stmt st s in stm :: check_stmt_list st ss (* stm is VERY important here *)
             | []              -> []
@@ -423,13 +425,15 @@ let check (program) =
       
       | LoclBind(b) -> 
       begin match b with
-        | Dec(t,n) -> StringHash.replace locals n (SDec(t,n)); SExpr(Void, SNoexpr)
+        | Dec(t,n) -> if t = Void then raise (Failure ("illegal void local " ^ n)) else 
+          let (_, newname) = type_of_identifier n st in StringHash.replace locals n (SDec(t,newname)); SExpr(Void, SNoexpr)
         | Decinit(t,n,e) as di -> 
+        if t = Void then raise (Failure ("illegal void local " ^ n)) else 
         let (rt, ex) = expr st e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
-          in let _ = check_assign t rt err 
-            in StringHash.replace locals n (SDecinit(t, n, (rt, ex))); SExpr(t, SAssign(n, (rt, ex))) end
+          in let _ = check_assign t rt err and (_, newname) = type_of_identifier n st 
+            in StringHash.replace locals newname (SDecinit(t, newname, (rt, ex))); SExpr(t, SAssign(newname, (rt, ex))) end
 
       (* TODO:
       | NodeFor 
