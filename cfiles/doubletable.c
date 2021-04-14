@@ -7,7 +7,7 @@
 
 struct DoubleTable* createDoubleTable(int predicted_size) {
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
-    dt->arr = (DoubleTableItem *)malloc(sizeof(DoubleTableItem)*predicted_size);  
+    dt->arr = (struct DoubleTableItem *)malloc(sizeof(struct DoubleTableItem)*predicted_size);  
     dt->size = predicted_size;
     dt->keys = createNodeList();
     if (pthread_mutex_init(&dt->lock, NULL) !=0) {
@@ -25,7 +25,7 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
 double get(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
-    start = dt->arr[hashIndex];
+    start = &dt->arr[hashIndex];
     while (start) {
         if (start->entry && nodeEquals(start->entry->key, n)) {
             return start->entry->dub;
@@ -37,19 +37,34 @@ double get(struct DoubleTable* dt, struct Node* n) {
     exit(1);
 }
 
-struct DoubleTableLLItem* createDoubleTable(struct Node* n, double data) {
-    struct DoubleTableLLItem* dubtab = malloc(sizeof(DoubleTableLLItem));
+struct DoubleTableLLItem* createDoubleTableLLItem(struct Node* n, double data) {
+    struct DoubleTableLLItem* dubtab = malloc(sizeof(struct DoubleTableLLItem));
     dubtab->key = n;
     dubtab->dub = data;
+    return dubtab;
 }
 
+struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
+    struct DoubleTableItem* dubtab = malloc(sizeof(struct DoubleTableItem));
+    dubtab->entry = createDoubleTableLLItem(n, data);
+    dubtab->next = NULL;
+    return dubtab;
+}
+
+// technically complexity could improve if we insert in a sorted manner
+// TODO
 void insert(struct DoubleTable* dt, struct Node* n, double data) {
     int hashIndex = hashCode_dt(dt, n);
-    struct DoubleTableItem* start = dt->hashArray[hashIndex];
-    while (start && start->next) {
-        start = start->next;
+    struct DoubleTableItem* start = &dt->arr[hashIndex];
+    if (start == NULL) {
+        dt->arr[hashIndex] = *createDoubleTableItem(n, data);
     }
-    start->next = createDoubleTableLLItem(n, data);
+    else {
+        while (start && start->next) {
+            start = start->next;
+        }
+        start->next = createDoubleTableItem(n, data);
+    }
     appendNode(dt->keys, n);
     return;
 }
@@ -61,10 +76,10 @@ struct NodeList* keys(struct DoubleTable* dt){
 bool includes(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
-    start = dt->arr[hashIndex];
+    start = &dt->arr[hashIndex];
     while (start) {
         if (start->entry && nodeEquals(start->entry->key, n)) {
-            return true
+            return true;
         }
         else {
             start = start->next;
@@ -81,27 +96,24 @@ int delete(struct DoubleTable* dt, struct Node* n) {
 
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
-    struct DoubleTableItem* start_perm;
-    start = dt->arr[hashIndex];
-    start_perm = dt->arr[hashIndex];
+    struct DoubleTableItem* prev;
+    start = &dt->arr[hashIndex];
+    prev = NULL;
     while (start) {
         // find node to delete
         if (start->entry && nodeEquals(start->entry->key, n)) {
-            if (start->prev == NULL) { // start of list
-                dt->arr[hashIndex] = start->next;
-                if (start->next) {
-                    start->next->prev = NULL;
-                }
+            if (prev == NULL) { // start of list
+                dt->arr[hashIndex] = *start->next;
             }
             else if (start->next == NULL) { // end of list
-                start->prev->next = NULL;
+                prev->next = NULL;
             }
             else {
-                start->prev->next = start->next;
-                start->next->prev = start->prev;
+                prev->next = start->next;
             }
         }
         else {
+            prev = start;
             start = start->next;
         }
     }
