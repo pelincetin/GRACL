@@ -2,21 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #ifndef BUILDSTDLIB
-#include "commonFunctions.h"
+#include "graph.c"
 #endif
 
-void incrementId(){
-    id_num++;
-}
-
-struct DoubleTable* createDoubleTable(int size){
-    struct DoubleTableItem* d = malloc(sizeof(struct DoubleTableItem) * size);
-    for (int i = 0; i < size; i++) {
-        d[i].key = NULL;
-        d[i].value = 0.0;
-    }
+struct DoubleTable* createDoubleTable(int predicted_size) {
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
-    dt->hashArray = d;
+    dt->arr = (DoubleTableItem *)malloc(sizeof(DoubleTableItem)*size);  
     dt->size = size;
     dt->keys = createNodeList();
     if (pthread_mutex_init(&dt->lock, NULL) !=0) {
@@ -31,21 +22,33 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
     return id_node % dt->size;
 }
 
-// DONE WITH OPERATOR
-double search(struct DoubleTable* dt, struct Node* n) {
+double get(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
-    if(dt->hashArray[hashIndex].key == n)
-        return dt->hashArray[hashIndex].value; 
-    exit(1);      
+    struct DoubleTableItem* start;
+    start = dt->arr[hashIndex];
+    while (start) {
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            return start->entry->dub;
+        }
+        else {
+            start = start->next;
+        }
+    } 
+    exit(1);
 }
 
-// DONE WITH OPERATOR
+struct createDoubleTableLLItem* createDoubleTable(struct Node* n, double data) {
+    //
+}
+
 void insert(struct DoubleTable* dt, struct Node* n, double data) {
     int hashIndex = hashCode_dt(dt, n);
-    dt->hashArray[hashIndex].key = n;
-    dt->hashArray[hashIndex].value = data;
+    struct DoubleTableItem* start = dt->hashArray[hashIndex];
+    while (start && start->next) {
+        start = start->next;
+    }
+    start->next = createDoubleTableLLItem(n, data);
     appendNode(dt->keys, n);
-    incrementId();
     return;
 }
 
@@ -53,13 +56,18 @@ struct NodeList* keys(struct DoubleTable* dt){
     return dt->keys;
 }
 
-bool includes(struct DoubleTable* dt, struct Node* n){
-    struct NodeList* nl = malloc(sizeof(struct NodeList));
-    nl = keys(dt);
-    int ret = includesNode(nl, n);
-    if (ret){
-        return true;
-    }
+bool includes(struct DoubleTable* dt, struct Node* n) {
+    int hashIndex = hashCode_dt(dt, n);
+    struct DoubleTableItem* start;
+    start = dt->arr[hashIndex];
+    while (start) {
+        if (start->entry && nodeEquals(start->entry->key, n)) {
+            return true
+        }
+        else {
+            start = start->next;
+        }
+    } 
     return false;
 }
 
@@ -77,8 +85,3 @@ int delete(struct DoubleTable* dt, struct Node* n) {
     return 0;
 }
 
-/*
-int main(){
-    return 0;
-}
-*/

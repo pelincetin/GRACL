@@ -69,8 +69,14 @@ struct IntTableItem {
 };
 
 struct DoubleTableItem {
+    struct DoubleTableItem* prev;
+    struct DoubleTableItem* next;  
+    struct DoubleTableLLItem* entry;
+};
+
+struct DoubleTableLLItem {
     struct Node* key;
-    double value;
+    double dub;
 };
 
 struct IntTable
@@ -84,7 +90,7 @@ struct IntTable
 struct DoubleTable
 {
     pthread_mutex_t lock;
-    struct DoubleTableItem* hashArray; 
+    struct DoubleTableItem* arr;
     struct NodeList* keys;
     int size;
 };
