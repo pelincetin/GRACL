@@ -4,6 +4,8 @@
 #include "print-functions.c"
 
 int main() {
+    // NEED TO TEST NODE NEIGHBORS
+
     // create graph with 2 nodes and test the functions 
     struct Graph* g = createGraph(100);
     char greeting[] = "Hello\n";
@@ -63,7 +65,7 @@ int main() {
     if (!prec(node1)) { // should be null when inited
         success = false;
     }
-    node1 = set_prec(node1, node2);
+    node1 = setPrec(node1, node2);
     if (prec(node1) == NULL) {
         fprintf(stderr, "prec still null\n");
     }

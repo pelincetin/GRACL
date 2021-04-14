@@ -64,7 +64,7 @@ struct Node* prec(struct Node* node)
     return node->precursor;
 }
 
-struct Node* set_prec(struct Node* node, struct Node* precursor)
+struct Node* setPrec(struct Node* node, struct Node* precursor)
 {
     node->precursor = precursor;
     return node;
