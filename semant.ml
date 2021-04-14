@@ -303,7 +303,7 @@ let check (program) =
 
     let locals = StringHash.create 25 in
     
-    let symbol_table = top_level_symbols :: [] in 
+    let symbol_table = StringMap.empty::top_level_symbols :: [] in 
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -423,13 +423,13 @@ let check (program) =
       
       | LoclBind(b) -> 
       begin match b with
-        | Dec(t,n) -> StringHash.replace locals n b; SExpr(Void, SNoexpr)
+        | Dec(t,n) -> StringHash.replace locals n (SDec(t,n)); SExpr(Void, SNoexpr)
         | Decinit(t,n,e) as di -> 
         let (rt, ex) = expr st e in
           let err = "illegal assignment " ^ string_of_typ t ^ " = " ^ 
             string_of_typ rt ^ " in " ^ string_of_vdecl di
           in let _ = check_assign t rt err 
-            in StringHash.replace locals n b; SExpr(t, SAssign(n, (rt, ex))) end
+            in StringHash.replace locals n (SDecinit(t, n, (rt, ex))); SExpr(t, SAssign(n, (rt, ex))) end
 
       (* TODO:
       | NodeFor 
@@ -441,8 +441,8 @@ let check (program) =
       sfname = func.fname;
       sformals = func.formals; 
       slocals  = begin let locallist = (StringHash.fold (fun _ b lt -> b::lt) locals []) in 
-      let _ = check_symbol_table "local" (List.map strip_val locallist) in [] end; 
-       (* in List.map check_local_decs  locallist *) 
+      let _ = check_symbol_table "local" (List.map strip_sval locallist) 
+        in locallist end;
       sbody = match check_stmt symbol_table (Block func.body) with
 	SBlock(sl) -> sl
       | _ -> raise (Failure ("internal error: block didn't become a block?"))
