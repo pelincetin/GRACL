@@ -64,7 +64,6 @@ struct Graph
 };
 
 struct IntTableItem {
-    struct IntTableItem* prev;
     struct IntTableItem* next;  
     struct IntTableLLItem* entry;
 };
@@ -75,7 +74,6 @@ struct IntTableLLItem {
 };
 
 struct DoubleTableItem {
-    struct DoubleTableItem* prev;
     struct DoubleTableItem* next;  
     struct DoubleTableLLItem* entry;
 };
