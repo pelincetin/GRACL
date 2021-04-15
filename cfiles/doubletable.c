@@ -111,6 +111,7 @@ int deleteDouble(struct DoubleTable* dt, struct Node* n) {
             else {
                 prev->next = start->next;
             }
+            return 0;
         }
         else {
             prev = start;

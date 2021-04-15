@@ -31,52 +31,53 @@ int main(){
     struct DoubleTable* dt = createDoubleTable(5);
 
     // test hashcode
-    if(hashCode(dt, node1) != (node1->id % dt->size)){
+    if(hashCode_dt(dt, node1) != (node1->id % dt->size)){
         success = false;
     }
-    if(hashCode(dt, node2) != (node2->id % dt->size)){
+    if(hashCode_dt(dt, node2) != (node2->id % dt->size)){
         success = false;
     }
-    if(hashCode(dt, node3) != (node3->id % dt->size)){
+    if(hashCode_dt(dt, node3) != (node3->id % dt->size)){
         success = false;
     }
 
     // test insert with collisions
-    insert(dt, node1, 1.0);
-    insert(dt, node2, 2.0);
-    insert(dt, node3, 3.0);
-    insert(dt, node4, 4.0);
-    insert(dt, node5, 5.0);
-    insert(dt, node6, 6.0);
-    insert(dt, node7, 7.0);
-    insert(dt, node8, 8.0);
-    insert(dt, node9, 9.0);
-    insert(dt, node10, 10.0);
-    insert(dt, node10, 10.0); // try inserting same node twice -- what happens? node10 appended to end twice?
+    insertDouble(dt, node1, 1.0);
+    insertDouble(dt, node2, 2.0);
+    insertDouble(dt, node3, 3.0);
+    insertDouble(dt, node4, 4.0);
+    insertDouble(dt, node5, 5.0);
+    insertDouble(dt, node6, 6.0);
+    insertDouble(dt, node7, 7.0);
+    insertDouble(dt, node8, 8.0);
+    insertDouble(dt, node9, 9.0);
+    insertDouble(dt, node10, 10.0);
+    insertDouble(dt, node10, 10.0); // try inserting same node twice -- what happens? node10 appended to end twice?
 
     // test includes
-    if (!includes(dt, node1) || !includes(dt, node7) || !includes(dt, node10)) {
+    if (!inDouble(dt, node1) || !inDouble(dt, node7) || !inDouble(dt, node10)) {
         success = false;
     }
 
     // test get
-    double get1 = get(dt, node1);
-    double get8 = get(dt, node8);
-    double get3 = get(dt, node3);
+    double get1 = getDouble(dt, node1);
+    double get8 = getDouble(dt, node8);
+    double get3 = getDouble(dt, node3);
     if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
         success = false;
     }
 
     // test delete
-    delete(dt, node1);
-    delete(dt, node2);
-    delete(dt, node3);
-    delete(dt, node4);
-    delete(dt, node1); // try deleting same node twice
-    if (includes(dt, node1)) {
+    deleteDouble(dt, node1);
+    deleteDouble(dt, node2);
+    deleteDouble(dt, node3);
+    deleteDouble(dt, node4);
+    deleteDouble(dt, node1); // try deleting same node twice
+
+    if (inDouble(dt, node1)) {
         success = false;
     }
-    if (length_NL(keys(dt)) != 7) {
+    if (length_NL(doubleKeys(dt)) != 7) {
         success = false;
     }
 
