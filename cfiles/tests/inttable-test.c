@@ -31,52 +31,52 @@ int main(){
     struct IntTable* it = createIntTable(5);
 
     // test hashcode
-    if(hashCode(it, node1) != (node1->id % it->size)){
+    if(hashCode_it(it, node1) != (node1->id % it->size)){
         success = false;
     }
-    if(hashCode(it, node2) != (node2->id % it->size)){
+    if(hashCode_it(it, node2) != (node2->id % it->size)){
         success = false;
     }
-    if(hashCode(it, node3) != (node3->id % it->size)){
+    if(hashCode_it(it, node3) != (node3->id % it->size)){
         success = false;
     }
 
     // test insert with collisions
-    insert(it, node1, 1);
-    insert(it, node2, 2);
-    insert(it, node3, 3);
-    insert(it, node4, 4);
-    insert(it, node5, 5);
-    insert(it, node6, 6);
-    insert(it, node7, 7);
-    insert(it, node8, 8);
-    insert(it, node9, 9);
-    insert(it, node10, 10);
-    insert(it, node10, 10); // try inserting same node twice -- what happens? node10 appended to end twice?
+    insertInt(it, node1, 1);
+    insertInt(it, node2, 2);
+    insertInt(it, node3, 3);
+    insertInt(it, node4, 4);
+    insertInt(it, node5, 5);
+    insertInt(it, node6, 6);
+    insertInt(it, node7, 7);
+    insertInt(it, node8, 8);
+    insertInt(it, node9, 9);
+    insertInt(it, node10, 10);
+    insertInt(it, node10, 10); // try inserting same node twice -- what happens? node10 appended to end twice?
 
     // test includes
-    if (!includes(it, node1) || !includes(it, node7) || !includes(it, node10)) {
+    if (!inInt(it, node1) || !inInt(it, node7) || !inInt(it, node10)) {
         success = false;
     }
 
     // test get
-    double get1 = get(it, node1);
-    double get8 = get(it, node8);
-    double get3 = get(it, node3);
+    double get1 = getInt(it, node1);
+    double get8 = getInt(it, node8);
+    double get3 = getInt(it, node3);
     if ((get1 != 1) || (get8 != 8) || (get3 != 3)) {
         success = false;
     }
 
     // test delete
-    delete(it, node1);
-    delete(it, node2);
-    delete(it, node3);
-    delete(it, node4);
-    delete(it, node1); // try deleting same node twice
-    if (includes(it, node1)) {
+    deleteInt(it, node1);
+    deleteInt(it, node2);
+    deleteInt(it, node3);
+    deleteInt(it, node4);
+    deleteInt(it, node1); // try deleting same node twice
+    if (inInt(it, node1)) {
         success = false;
     }
-    if (length_NL(keys(it)) != 7) {
+    if (length_NL(intKeys(it)) != 7) {
         success = false;
     }
 

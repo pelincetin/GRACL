@@ -53,7 +53,7 @@ struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
 
 // technically complexity could improve if we insert in a sorted manner
 // TODO
-void insert(struct DoubleTable* dt, struct Node* n, double data) {
+void insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start = &dt->arr[hashIndex];
     if (start == NULL) {
@@ -69,7 +69,7 @@ void insert(struct DoubleTable* dt, struct Node* n, double data) {
     return;
 }
 
-struct NodeList* keys(struct DoubleTable* dt){
+struct NodeList* doubleKeys(struct DoubleTable* dt){
     return dt->keys;
 }
 
@@ -91,7 +91,7 @@ bool inDouble(struct DoubleTable* dt, struct Node* n) {
 int deleteDouble(struct DoubleTable* dt, struct Node* n) {
     // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
-    all_nodes = keys(dt);
+    all_nodes = doubleKeys(dt);
     removeNode(all_nodes, n);
 
     int hashIndex = hashCode_dt(dt, n);

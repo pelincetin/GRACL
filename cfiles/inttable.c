@@ -53,7 +53,7 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 
 // technically complexity could improve if we insert in a sorted manner
 // TODO
-void insert(struct IntTable* it, struct Node* n, int data) {
+void insertInt(struct IntTable* it, struct Node* n, int data) {
     int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start = &it->arr[hashIndex];
     if (start == NULL) {
@@ -69,7 +69,7 @@ void insert(struct IntTable* it, struct Node* n, int data) {
     return;
 }
 
-struct NodeList* keys(struct IntTable* it){
+struct NodeList* intKeys(struct IntTable* it){
     return it->keys;
 }
 
@@ -91,7 +91,7 @@ bool inInt(struct IntTable* it, struct Node* n) {
 int deleteInt(struct IntTable* it, struct Node* n) {
     // remove it from keys
     struct NodeList* all_nodes = malloc(sizeof(struct NodeList));
-    all_nodes = keys(it);
+    all_nodes = intKeys(it);
     removeNode(all_nodes, n);
 
     int hashIndex = hashCode_it(it, n);
