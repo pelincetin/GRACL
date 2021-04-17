@@ -79,7 +79,7 @@ let translate (globals, functions) =
   let global_vars : L.llvalue StringMap.t =
     let global_var m  = function
     | SDec(t, n) ->
-      let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
+      let defaultinit = match t with                                           (* TODO: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
         | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
