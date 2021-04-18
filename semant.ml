@@ -179,6 +179,7 @@ let check (program) =
       
       | BlockEnd -> (* Should have been handled by Block *)
         raise (Failure ("internal error: block end mishandled?"))
+      | Synch(id, statement_list) -> 
 
       (* TODO:
       | NodeFor 

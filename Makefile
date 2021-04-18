@@ -14,10 +14,6 @@ gracl.native :
 	opam config exec -- \
 	ocamlbuild -use-ocamlfind gracl.native
 
-.PHONY: gracllib
-gracllib: gracllib.c 
-	gcc -g -Wall -pthread -o gracllib gracllib.c
-
 .PHONY : codegen
 codegen: 
 	ocamlc ast.ml
@@ -41,11 +37,7 @@ helloworld:
 .PHONY : clean
 clean :
 	ocamlbuild -clean
-<<<<<<< HEAD
-	rm -rf testall.log ocamlllvm *.diff *.mli graclparser.ml gracllib *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
-=======
 	rm -rf *.o testall.log ocamlllvm *.diff *.mli graclparser.ml *.output gracl.native *.cmi *.cmo *.out *.ll *.s *.err *.exe *.breakdown
->>>>>>> main
 
 # removes some generated files while keeping those useful for debugging
 .PHONY : debugclean
