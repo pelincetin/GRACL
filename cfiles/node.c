@@ -1,8 +1,5 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <stdio.h>
 #ifndef BUILDSTDLIB
-#include "lockedobject.h"
+#include "node.h"
 #endif
 
 const char* data(struct Node* node)
@@ -72,12 +69,10 @@ struct Node* setPrec(struct Node* node, struct Node* precursor)
 
 bool nodeEquals(struct Node* node1, struct Node* node2)
 {
-    if (node1->id == node2->id) {
-        return true;
-    }
-    return false;
+    return (node1->id == node2->id);
 }
 
+/* TODO: NEEDS TESTING */
 struct Edge* getEdge(struct Node* node1, struct Node* node2)
 {
     struct EdgeListItem *current;

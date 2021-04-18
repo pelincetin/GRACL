@@ -1,10 +1,5 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
 #ifndef BUILDSTDLIB
-#include "nodelist.c"
-#include "edgelist.c"
-#include "edge.c"
+#include "graph.h"
 #endif
 
 /* 

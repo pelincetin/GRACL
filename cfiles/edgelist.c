@@ -1,7 +1,5 @@
-#include <stdlib.h>
-#include <string.h>
 #ifndef BUILDSTDLIB
-#include "lockedobject.h"
+#include "edgelist.h"
 #endif
 
 struct EdgeList* createEdgeList() {

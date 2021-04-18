@@ -1,8 +1,5 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
 #ifndef BUILDSTDLIB
-#include "graph.c"
+#include "doubletable.h"
 #endif
 
 struct DoubleTable* createDoubleTable(int predicted_size) {

@@ -1,6 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
 #ifndef BUILDSTDLIB
+#include "edge.h"
 #endif 
 
 void updateEdge(struct Edge* edge, double new_weight) {

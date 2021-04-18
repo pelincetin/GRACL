@@ -1,8 +1,5 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
 #ifndef BUILDSTDLIB
-#include "graph.c"
+#include "inttable.h"
 #endif
 
 struct IntTable* createIntTable(int predicted_size) {

@@ -1,8 +1,5 @@
-#include <stdlib.h>
-#include <string.h>
 #ifndef BUILDSTDLIB
-#include "lockedobject.h"
-#include "node.c"
+#include "nodelist.h"
 #endif
 
 struct NodeListItem* createNodeListItem(struct Node* e) {
@@ -76,7 +73,6 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
     return; 
 }
 
-
 bool empty_NL(struct NodeList* node_list) {
     struct NodeListItem* current;
     current = node_list->head;
@@ -110,10 +106,6 @@ void appendNode(struct NodeList* node_list, struct Node* n) {
     }
     return;
 }
-
-
-
-
 
 int removeNode(struct NodeList* node_list, struct Node* e) {
     struct NodeListItem* head = node_list->head;
