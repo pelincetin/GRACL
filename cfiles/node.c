@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "node.h"
-#endif
 
 const char* data(struct Node* node)
 {

@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "doubletable.h"
-#endif
 
 struct DoubleTable* createDoubleTable(int predicted_size) {
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));

@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "edge.h"
-#endif 
 
 void updateEdge(struct Edge* edge, double new_weight) {
     edge->weight = new_weight;

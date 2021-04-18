@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "graph.h"
-#endif
 
 /* 
  * The key of the graph hashtbl is going to be a node

@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "edgelist.h"
-#endif
 
 struct EdgeList* createEdgeList() {
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));

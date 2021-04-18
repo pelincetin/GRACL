@@ -1,6 +1,4 @@
-#ifndef BUILDSTDLIB
 #include "nodelist.h"
-#endif
 
 struct NodeListItem* createNodeListItem(struct Node* e) {
     struct NodeListItem* item = malloc(sizeof(struct NodeListItem));

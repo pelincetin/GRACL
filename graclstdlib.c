@@ -4,10 +4,10 @@
 #include <string.h>
 #define BUILDSTDLIB
 #include "./cfiles/lockedobject.h"
-#include "./cfiles/node.h"
-#include "./cfiles/edge.h"
-#include "./cfiles/nodelist.h"
-#include "./cfiles/edgelist.h"
-#include "./cfiles/graph.h"
-#include "./cfiles/doubletable.h"
-#include "./cfiles/inttable.h"
+#include "./cfiles/node.c"
+#include "./cfiles/edge.c"
+#include "./cfiles/nodelist.c"
+#include "./cfiles/edgelist.c"
+#include "./cfiles/graph.c"
+#include "./cfiles/doubletable.c"
+#include "./cfiles/inttable.c"
