@@ -29,54 +29,13 @@ int synch_destroy(pthread_mutex_t* lock) {
 }
 
 /*
-void* testSync(void *arg)
-{
-    synch_start();
-
-    unsigned long i = 0;
-    counter += 1;
-    printf("\n Job %d started\n", counter);
-
-    for(i=0; i<(0xFFFFFFFF);i++);
-
-    printf("\n Job %d finished\n", counter);
-
-    synch_end();
-
-    return NULL;
-}
-
-int main(){
-    // testing of synch
-    int i = 0;
-    int err;
-
-    synch_init();
-
-    while(i < 2)
-    {
-        err = pthread_create(&(tid[i]), NULL, &testSync, NULL);
-        if (err != 0)
-            printf("\ncan't create thread :[%s]", strerror(err));
-        i++;
-    }
-
-    pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
-    synch_destroy();
-
-    return 0;
-}
-*/
 
 // HATCH
-
-/*
 
 hatch nodelist func(arg1, arg2, arg3, arg4....) {
 
 }
-*/
+
 nodelist func(node current, node goal) {
     print(current.data)
 }
@@ -113,3 +72,4 @@ int hatch_end(int len) {
     }   
 }
 
+*/
