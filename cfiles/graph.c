@@ -25,6 +25,11 @@ struct Graph* createGraph(int size) {
     return graph;
 }
 
+
+// get rid of hashcode func and do it with arrays instead (also rename hasharray)
+// do hasharrays with small integers and turn it into an array
+// GET RID OF FAKEE DOUBLE LINKING FOR LISTS
+// be maximally lazy, only add features that you're 100% sure of
 int hashCode(struct Graph* g, struct Node* node) {
     int id_node = node->id;
     return id_node % g->size;
