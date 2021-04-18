@@ -38,7 +38,7 @@ type stmt =
   | EdgeFor of string * string * stmt 
   | While of expr * stmt
   | Hatch of string * string * expr list * stmt 
-  | Synch of string * stmt list
+  | Synch of string * stmt 
   | LoclBind of bind
 
 type func_decl = {
@@ -129,8 +129,7 @@ let rec string_of_stmt = function
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
-  | Synch(l, stmts) -> "synch " ^ l ^ 
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
+  | Synch(l, stmt) -> "synch " ^ l ^ " " ^ string_of_stmt stmt ^ "\n"
   | LoclBind(b) -> string_of_vdecl b
   | BlockEnd -> "BlockEnd\n"
 

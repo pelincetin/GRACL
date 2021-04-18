@@ -179,7 +179,13 @@ let check (program) =
       
       | BlockEnd -> (* Should have been handled by Block *)
         raise (Failure ("internal error: block end mishandled?"))
-      | Synch(id, statement_list) -> 
+      
+      | Synch(id, stmt) -> let (typ, name) = type_of_identifier id st in 
+        match typ with 
+        | Node | Edge -> SBlock(SExpr((Int, SCall(("_synch_start", [(typ, SId(name))])))) :: check_stmt st stmt :: [SExpr(Int, SCall("_synch_end", [(typ, SId(name))]))]) 
+        | _ -> raise (Failure ("Cannot synch with " ^ string_of_typ typ ^ " type variable " ^ id))
+
+
 
       (* TODO:
       | NodeFor 

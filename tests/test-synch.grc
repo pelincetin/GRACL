@@ -1,0 +1,10 @@
+int main() {
+    Graph g = createGraph();
+    Node n = g.createNode("Node data");
+    print(n.data());
+    synch n {
+        n.updateData("Yo");
+        print(n.data());
+    }
+    return 0;
+}

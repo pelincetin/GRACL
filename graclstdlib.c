@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
+#include <unistd.h>
 #define BUILDSTDLIB
 #include "./cfiles/lockedobject.h"
 #include "./cfiles/node.c"

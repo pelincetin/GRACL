@@ -107,7 +107,7 @@ stmt:
   | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
   | HATCH ID ID LPAREN args_list RPAREN stmt              { Hatch($2, $3, $5, $7)  }
-  | SYNCH ID LBRACE stmt_list RBRACE                      { Synch($2, List.rev $4) }
+  | SYNCH ID stmt                                         { Synch($2, $3)          }
   | vdecl                                                 { LoclBind($1)           }
 
 expr_opt:

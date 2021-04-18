@@ -11,8 +11,7 @@ int counter = 0;
 void* testSync(void *arg)
 {
     struct Node* node1 = (struct Node*) arg;
-    pthread_mutex_t* pm = convertToLockable(arg);
-    synch_start(pm);
+    _synch_start(arg);
 
     unsigned long i = 0;
     counter += 1;
@@ -25,7 +24,7 @@ void* testSync(void *arg)
 
     printf("Thread %d finished\n", counter);
 
-    synch_end(pm);
+    _synch_end(arg);
 
     return NULL;
 }
@@ -42,7 +41,7 @@ int main(){
     g = createGraph(10);
     node1 = createNode(g, hello);
 
-    pthread_mutex_t* pm = convertToLockable((void*)node1);
+    pthread_mutex_t* pm = _convert_to_lockable((void*)node1);
 
     while(i < 2)
     {

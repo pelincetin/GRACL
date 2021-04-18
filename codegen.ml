@@ -158,6 +158,16 @@ let translate (globals, functions) =
   let strcmp_func : L.llvalue = 
       L.declare_function "strcmp" strcmp_t the_module in
 
+  let synch_start_t : L.lltype = 
+      L.function_type i32_t [| string_t |] in
+  let synch_start_func : L.llvalue = 
+      L.declare_function "_synch_start" synch_start_t the_module in 
+
+  let synch_end_t : L.lltype = 
+      L.function_type i32_t [| string_t |] in
+  let synch_end_func : L.llvalue = 
+      L.declare_function "_synch_end" synch_end_t the_module in 
+
 
   (* Define each function (arguments and return type) so we can 
      call it even before we've created its body *)
@@ -259,6 +269,12 @@ let translate (globals, functions) =
 
       
       (* Special built in functions *)
+      | SCall("_synch_start", [e]) -> 
+        let void = L.build_bitcast (expr builder e) string_t "void_ptr" builder in
+        L.build_call synch_start_func [| void |] "synch_start" builder
+      | SCall("_synch_end", [e]) -> 
+        let void = L.build_bitcast (expr builder e) string_t "void_ptr" builder in
+        L.build_call synch_end_func [| void |] "synch_end" builder
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in

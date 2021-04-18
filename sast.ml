@@ -27,7 +27,6 @@ type sstmt =
   | SEdgeFor of string * string * sstmt 
   | SWhile of sexpr * sstmt
   | SHatch of string * string * expr list * stmt 
-  | SSynch of string * sstmt list
   | SBlockEnd 
 
 type sbind = 
@@ -84,8 +83,6 @@ let rec string_of_sstmt = function
   | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
   (*| Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ") " ^ string_of_sstmt s *)
-  | SSynch(l, stmts) -> "synch " ^ l ^ 
-    "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
   | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function
