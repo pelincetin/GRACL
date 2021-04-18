@@ -5,6 +5,7 @@ struct DoubleTable* createDoubleTable(int predicted_size) {
     dt->arr = (struct DoubleTableItem *)malloc(sizeof(struct DoubleTableItem)*predicted_size);  
     dt->size = predicted_size;
     dt->keys = createNodeList();
+    dt->graph_id = -1;
     if (pthread_mutex_init(&dt->lock, NULL) !=0) {
         fprintf(stderr, "createDoubleTable: Failure to initialize mutex\n");
         exit(1); 
@@ -49,6 +50,12 @@ struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
 // technically complexity could improve if we insert in a sorted manner
 // TODO
 void insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
+    if ((dt->graph_id != -1) && (dt->graph_id != n->parent_graph_id)) {
+        exit(1);
+    }
+    else if (dt->graph_id == -1) {
+        dt->graph_id = n->parent_graph_id;
+    }
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start = &dt->arr[hashIndex];
     if (start == NULL) {

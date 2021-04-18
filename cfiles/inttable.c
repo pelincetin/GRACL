@@ -49,6 +49,12 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 // technically complexity could improve if we insert in a sorted manner
 // TODO
 void insertInt(struct IntTable* it, struct Node* n, int data) {
+    if ((it->graph_id != -1) && (it->graph_id != n->parent_graph_id)) {
+        exit(1);
+    }
+    else if (it->graph_id == -1) {
+        it->graph_id = n->parent_graph_id;
+    }
     int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start = &it->arr[hashIndex];
     if (start == NULL) {

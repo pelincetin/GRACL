@@ -15,6 +15,8 @@ struct Graph* createGraph(int size) {
     graph->size = size;
     graph->nodes = createNodeList();
     graph->id_num = 1;
+    graph->graph_id_local = graph_id;
+    incrementGraphId();
     return graph;
 }
 
@@ -51,6 +53,7 @@ struct Node* createNode(struct Graph* g, char* data) {
     node->cost = 0;
     node->precursor = malloc(sizeof(struct Node));
     node->id = g->id_num;
+    node->parent_graph_id = g->graph_id_local;
     node->edges = createEdgeList();
     incrementId(g);
     g->hashArray[hashCode(g, node)].key = node;

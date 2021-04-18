@@ -13,6 +13,7 @@ struct Node {
     struct EdgeList* edges;
     struct Node* precursor;
     int cost; 
+    int parent_graph_id;
 };
 
 struct Edge {
@@ -89,6 +90,7 @@ struct IntTable
     struct IntTableItem* arr; 
     struct NodeList* keys;
     int size;
+    int graphId;
 };
 
 struct DoubleTable
@@ -97,4 +99,5 @@ struct DoubleTable
     struct DoubleTableItem* arr;
     struct NodeList* keys;
     int size;
+    int doubleId;
 };
