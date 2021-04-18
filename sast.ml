@@ -1,6 +1,7 @@
 (* Semantically-checked Abstract Syntax Tree and functions for printing it *)
 
 open Ast
+module StringMap = Map.Make(String)
 
 type sexpr = typ * sx
 and sx =
@@ -25,8 +26,7 @@ type sstmt =
   | SNodeFor of string * string * sstmt 
   | SEdgeFor of string * string * sstmt 
   | SWhile of sexpr * sstmt
-  (*| SHatch of string * string * expr list * stmt *)
-  | SSynch of string * sstmt list
+  | SBlockEnd 
 
 type sbind = 
     SDec of typ * string
@@ -65,7 +65,7 @@ let rec string_of_sexpr (t, e) =
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
   | SAccess(t, n) -> t ^ "[" ^ n ^ "]"
   | SInsert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_sexpr e
-  | SNoexpr -> ""
+  | SNoexpr -> "SNOEXPR"
 				  ) ^ ")"				     
 
 let rec string_of_sstmt = function
@@ -80,10 +80,7 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
   | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  (*| Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
-      f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ") " ^ string_of_sstmt s *)
-  | SSynch(l, stmts) -> "synch " ^ l ^ 
-      "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
+  | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function
 | SDec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"

@@ -1,0 +1,11 @@
+int main() {
+    String s = "Hello";
+    String t = "hello";
+    String empty = "";
+    printi(s.stringLength());
+    printi(empty.stringLength());
+    if (s.stringEquals(t)) print("Equals");
+    else print("Not Equals");
+    if (s.stringEquals("Hello")) print("Equals");
+    else print("Not Equals");
+}

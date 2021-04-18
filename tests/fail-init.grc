@@ -1,0 +1,4 @@
+int main() {
+    test = 3; //Cannot use before declaring
+    int test = 4; 
+}

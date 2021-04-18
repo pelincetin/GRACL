@@ -2,11 +2,11 @@ int main()
 {
   int i;
 
-  while (true) {
+  while (True) {
     i = i + 1;
   }
 
-  while (true) {
+  while (True) {
     foo(); /* foo undefined */
   }
 

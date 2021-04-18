@@ -1,26 +1,13 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "commonFunctions.h"
+#ifndef BUILDSTDLIB
+#include "lockedobject.h"
+#endif
 
 const char* data(struct Node* node)
 {
     return node->data;
-}
-
-/* Return the node neighbors of a node
- * Meaning every node it contains an edge to */ 
-struct NodeList* neighbors(struct Node* node)
-{
-    struct EdgeList* edges = node->edges;
-    int length_of_edgelist = length_EL(edges);
-    struct NodeList* neighbors = NULL;
-    int i;
-
-    for (i = 0; i < length_of_edgelist; i++) {
-        appendNode(neighbors, edges->head->edge->end);
-    }
-    return neighbors; 
 }
 
 /* Return the edgelist of surrounding edges */
@@ -36,21 +23,57 @@ bool visited(struct Node* node)
     return node->visited;
 }
 
-struct Node* updateData(char* new_data, struct Node* node)
+struct Node* updateData(struct Node* node, char* new_data)
 {
     node->data = new_data;
     return node;
 }
 
 /* Updates the visited field on the node to be the inputted bool */
-struct Node* updateVisited(bool tf, struct Node* node)
+struct Node* updateVisited(struct Node* node, bool tf)
 {
     node->visited = tf;
     return node;
 }
 
-/*
-int main(){
-    return 0;
+int cost(struct Node* node)
+{
+    return node->cost;
 }
-*/
+
+int incrementCost(struct Node* node)
+{
+    node->cost = node->cost + 1;
+    return node->cost;
+}
+
+int decrementCost(struct Node* node)
+{
+    node->cost = node->cost - 1;
+    return node->cost;
+}
+
+int updateCost(struct Node* node, int new_cost)
+{
+    node->cost = new_cost;
+    return node->cost;
+}
+
+struct Node* prec(struct Node* node)
+{
+    return node->precursor;
+}
+
+struct Node* set_prec(struct Node* node, struct Node* precursor)
+{
+    node->precursor = precursor;
+    return node;
+}
+
+bool nodeEquals(struct Node* node1, struct Node* node2)
+{
+    if (node1->id == node2->id) {
+        return true;
+    }
+    return false;
+}

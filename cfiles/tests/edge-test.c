@@ -1,20 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../edge.c"
-
-void printEdge (struct Edge* edge) {
-    printf("Start node: %s", edge->start->data);
-    printf("End node: %s", edge->end->data);
-    printf("Weight: %f", edge->weight);
-}
-
-void printNode (struct Node* node) {
-    printf("%s", node->visited ? "true\n" : "false\n");
-    printf("%d", node->id);
-    printf("%s", node->data);
-}
+#include "../../graclstdlib.c"
+#include "print-functions.c"
 
 int main() {
+    /*
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
@@ -43,4 +33,5 @@ int main() {
     printf("New weight: %f\n", weight(e));
 
     return 0;
+    */
 }

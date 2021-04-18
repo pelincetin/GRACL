@@ -1,0 +1,8 @@
+int main() {
+    int i = 5;
+    double d = intToDouble(i);
+    printi(i);
+    print(doubleToString(d));
+    print(doubleToString(intToDouble(23)));
+    return 0;
+}

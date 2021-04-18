@@ -1,0 +1,5 @@
+int main() {
+    double e = 3.142;
+    double pi = 2.718;
+    double res = e % pi; //mod doesn't work with doubles
+}

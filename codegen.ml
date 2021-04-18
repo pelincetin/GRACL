@@ -19,6 +19,7 @@ open Sast
 
 module StringMap = Map.Make(String)
 
+
 (* translate : Sast.program -> Llvm.module *)
 let translate (globals, functions) =
   let context    = L.global_context () in
@@ -53,7 +54,7 @@ let translate (globals, functions) =
   let string_t   = L.pointer_type i8_t in
   let dataitem_t = L.struct_type context [|node_pointer; nodelist_pointer|] in
   let dataitem_pointer = L.pointer_type dataitem_t in
-  let graph_t = L.struct_type context [|dataitem_pointer|] in
+  let graph_t = L.struct_type context [|dataitem_pointer; nodelist_pointer; i32_t; i32_t; i32_t|] in
   let graph_pointer = L.pointer_type graph_t in
 
   (* Return the LLVM type for a GRACL type *)
@@ -78,10 +79,11 @@ let translate (globals, functions) =
   let global_vars : L.llvalue StringMap.t =
     let global_var m  = function
     | SDec(t, n) ->
-      let defaultinit = match t with                                           (* TOOD: ERROR CASE FOR NO MATCH *)
+      let defaultinit = match t with                                           (* TODO: ERROR CASE FOR NO MATCH *)
           A.Double -> L.const_float (ltype_of_typ t) 0.0
         | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
         | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
+        | _ -> L.const_pointer_null (ltype_of_typ t)
       in StringMap.add n (L.define_global n defaultinit the_module) m 
     | SDecinit(_, n, e) ->
       let rec constexpr ((_, e) : sexpr) = match e with
@@ -103,8 +105,8 @@ let translate (globals, functions) =
 	  | A.Great   -> L.const_fcmp L.Fcmp.Ogt
 	  | A.Leq     -> L.const_fcmp L.Fcmp.Ole
     | A.Geq     -> L.const_fcmp L.Fcmp.Oge
-	  | A.And | A.Or ->
-	      raise (Failure "internal error: semant should have rejected and/or on float")
+	  | _ ->
+	      raise (Failure "internal error: semant should have rejected illegal float operation")
 	  ) e1' e2' 
       | SBinop (e1, op, e2) ->
 	  let e1' = constexpr e1
@@ -135,6 +137,7 @@ let translate (globals, functions) =
     in
     List.fold_left global_var StringMap.empty globals in
 
+  (* Standard C/LLVM Functions *)
   let printf_t : L.lltype = 
       L.var_arg_function_type i32_t [| string_t |] in
   let printf_func : L.llvalue = 
@@ -144,6 +147,16 @@ let translate (globals, functions) =
       L.var_arg_function_type i32_t [| string_t; i32_t; (L.i64_type context); string_t |] in
   let sprintf_func : L.llvalue = 
       L.declare_function "__sprintf_chk" sprintf_t the_module in
+
+  let strlen_t : L.lltype = 
+      L.function_type i64_t [| string_t |] in
+  let strlen_func : L.llvalue = 
+      L.declare_function "strlen" strlen_t the_module in
+
+  let strcmp_t : L.lltype = 
+      L.function_type i32_t [| string_t; string_t |] in
+  let strcmp_func : L.llvalue = 
+      L.declare_function "strcmp" strcmp_t the_module in
 
 
   (* Define each function (arguments and return type) so we can 
@@ -170,9 +183,9 @@ let translate (globals, functions) =
     let local_vars =
       let add_formal m (t, n) p = 
         L.set_value_name n p;
-	let local = L.build_alloca (ltype_of_typ t) n builder in
+	  let local = L.build_alloca (ltype_of_typ t) n builder in
         ignore (L.build_store p local builder);
-	StringMap.add n local m 
+	      StringMap.add n local m 
 
       (* Allocate space for any locally declared variables and add the
        * resulting registers to our map *)
@@ -194,7 +207,7 @@ let translate (globals, functions) =
 
     (* Construct code for an expression; return its value *)
     let rec expr builder ((_, e) : sexpr) = match e with
-	SLiteral i  -> L.const_int i32_t i
+	      SLiteral i  -> L.const_int i32_t i
       | SSliteral s -> L.build_global_stringptr s "str" builder
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)     
       | SFliteral l -> if l = "infinity" then L.const_float double_t infinity else L.const_float_of_string double_t l
@@ -216,8 +229,8 @@ let translate (globals, functions) =
 	  | A.Great   -> L.build_fcmp L.Fcmp.Ogt    
 	  | A.Leq     -> L.build_fcmp L.Fcmp.Ole
     | A.Geq     -> L.build_fcmp L.Fcmp.Oge
-	  | A.And | A.Or ->
-	      raise (Failure "internal error: semant should have rejected and/or on float")
+	  | _ ->
+	      raise (Failure "internal error: semant should have rejected illegal float operation")
 	  ) e1' e2' "tmp" builder
       | SBinop (e1, op, e2) ->
 	  let e1' = expr builder e1
@@ -249,17 +262,24 @@ let translate (globals, functions) =
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
-        L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
-          "doubleToString" builder; arrptr
+        ignore(L.build_call sprintf_func [| arrptr; (L.const_int i32_t 0); (L.const_int (L.i64_type context) 1000); float_format_str; (expr builder e) |] 
+          "doubleToString" builder); arrptr
+      | SCall("intToDouble", [e]) -> L.build_sitofp (expr builder e) double_t "intToDouble" builder
       | SCall("print", [e]) ->  
         L.build_call printf_func [| string_format_str; (expr builder e) |] "print" builder
       | SCall("printi", [e]) ->  
         L.build_call printf_func [| int_format_str; (expr builder e) |] "printi" builder
+      | SCall("stringLength", [e]) ->
+        let len = L.build_call strlen_func [| (expr builder e) |] "stringLength" builder in
+        L.build_trunc len i32_t "length" builder
+      | SCall("stringEquals", [s1 ; s2]) -> 
+        let compval = L.build_call strcmp_func [| (expr builder s1); (expr builder s2) |] "stringEquals" builder in
+        L.build_icmp L.Icmp.Eq (L.const_int i32_t 0) compval "equals" builder 
       (* General built in function call *)
       | SCall(fname, args) when StringMap.mem fname F.function_decls -> 
         let fdecl = StringMap.find fname F.function_decls in 
         let rettype = function A.Void -> i32_t | _ as typ -> ltype_of_typ typ in  (* Deals with void function calls *)
-        let func_t : L.lltype = L.function_type (rettype fdecl.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.formals))) in
+        let func_t : L.lltype = L.function_type (rettype fdecl.A.typ) (Array.of_list (List.map ltype_of_typ (List.map fst fdecl.A.formals))) in
         let func_value : L.llvalue = L.declare_function fname func_t the_module 
         and llargs = List.rev (List.map (expr builder) (List.rev args)) in
         L.build_call func_value (Array.of_list llargs) (fname ^ "_result") builder
@@ -272,16 +292,6 @@ let translate (globals, functions) =
                       | _ -> f ^ "_result") in
          L.build_call fdef (Array.of_list llargs) result builder
     in
-    
-
-      (* Initialize local variables *)
-    let _ = 
-      let init = function 
-    | SDecinit(_, n, e) -> ignore(L.build_store (expr builder e) (lookup n) builder)
-    | SDec _ -> ()
-      in (List.map init fdecl.slocals) 
-    in
-
 
     (* LLVM insists each basic block end with exactly one "terminator" 
        instruction that transfers control.  This function runs "instr builder"
@@ -297,7 +307,8 @@ let translate (globals, functions) =
        after the one generated by this call) *)
 
     let rec stmt builder = function
-	SBlock sl -> List.fold_left stmt builder sl
+	      SBlock sl -> List.fold_left stmt builder sl
+      | SBlockEnd -> builder
       | SExpr e -> ignore(expr builder e); builder 
       | SReturn e -> ignore(match fdecl.styp with
                               (* Special "return nothing" instr *)
@@ -348,7 +359,9 @@ let translate (globals, functions) =
     add_terminal builder (match fdecl.styp with
         A.Void -> L.build_ret_void
       | A.Double -> L.build_ret (L.const_float double_t 0.0)
-      | A.Int -> L.build_ret (L.const_int i32_t 0))
+      | A.Int | A.Bool -> L.build_ret (L.const_int i32_t 0)
+      | A.String -> L.build_ret (L.build_global_stringptr "" "str" builder)
+      | _ as t -> L.build_ret (L.const_pointer_null (ltype_of_typ t)))
   in
 
   List.iter build_function_body functions; 

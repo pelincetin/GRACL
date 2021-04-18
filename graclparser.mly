@@ -23,7 +23,7 @@ let parse_error s =
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
 %token NOT EQ LT LEQ GT GEQ AND OR NEQ
-%token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
+%token RETURN IF ELSE FOR WHILE IN 
 %token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
 %token <bool> BLIT
@@ -40,7 +40,6 @@ let parse_error s =
 %left AND
 %left EQ NEQ
 %left LT LEQ GT GEQ
-%nonassoc HATCH SYNCH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %right NOT
@@ -49,25 +48,23 @@ let parse_error s =
 %%     
 
 program:
-  decls EOF { $1 }
+  progparts EOF { List.rev $1 }
 
-decls:
-   /* nothing */ { ([], [])               }
- | decls vdecl { (($2 :: fst $1), snd $1) }
- | decls fdecl { (fst $1, ($2 :: snd $1)) }
+progparts:
+   /* nothing */ { ([])         }
+ | progparts vdecl { (GlobBind($2) :: $1) }
+ | progparts fdecl { (FuncDecl($2) :: $1) }
 
 fdecl:
    typ ID LPAREN formals_opt RPAREN LBRACE func_body RBRACE
      { { typ = $1;
 	 fname = $2;
 	 formals = List.rev $4;
-	 locals = List.rev ( fst $7 );
-	 body = List.rev ( snd $7 ) } }
+	 body = List.rev ( $7 ) } }
 
 func_body:
-    /* nothing */     { ([], [])                 }
-  | func_body vdecl   { (($2 :: fst $1), snd $1) }
-  | func_body stmt    { (fst $1, ($2 :: snd $1)) }
+    /* nothing */     { ([])                }
+  | func_body stmt    { ($2 :: $1) }
 
 formals_opt:
     /* nothing */ { [] }
@@ -102,14 +99,13 @@ stmt_list:
 stmt:
     expr SEMI                                             { Expr $1                }
   | RETURN expr_opt SEMI                                  { Return $2              }
-  | LBRACE stmt_list RBRACE                               { Block(List.rev $2)     }
+  | LBRACE stmt_list RBRACE                               { Block(List.rev (BlockEnd::$2))     }
   | IF LPAREN expr RPAREN stmt %prec NOELSE               { If($3, $5, Block([]))  }
   | IF LPAREN expr RPAREN stmt ELSE stmt                  { If($3, $5, $7)         }
   | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }
   | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
-  | HATCH ID ID LPAREN args_list RPAREN stmt              { Hatch($2, $3, $5, $7)  }
-  | SYNCH ID LBRACE stmt_list RBRACE                      { Synch($2, List.rev $4) }
+  | vdecl                                                 { LoclBind($1)           }
 
 expr_opt:
     /* nothing */ { Noexpr }

@@ -1,0 +1,6 @@
+int main() {
+    int foo() {
+        //Can't declare a function in a function
+    }
+    return 0;
+}
