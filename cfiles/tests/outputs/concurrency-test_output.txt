@@ -1,8 +1,12 @@
+Thread 1 started
+Printing the node: Hello
 
- Job 1 started
+Printing the node after data has been updated: i'm an updated node
 
- Job 1 finished
+Thread 1 finished
+Thread 2 started
+Printing the node: i'm an updated node
 
- Job 2 started
+Printing the node after data has been updated: i'm an updated node
 
- Job 2 finished
+Thread 2 finished
