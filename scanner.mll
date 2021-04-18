@@ -39,6 +39,8 @@ rule token = parse
 | "in"     { IN }
 | "while"  { WHILE }
 | "return" { RETURN }
+| "hatch"  { HATCH }
+| "synch"  { SYNCH }
 | "int"    { INT }
 | "bool"   { BOOL }
 | "double" { DOUBLE }

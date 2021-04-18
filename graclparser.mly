@@ -23,7 +23,7 @@ let parse_error s =
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK COMMA DOT PLUS MINUS TIMES DIVIDE MODULO ASSIGN
 %token NOT EQ LT LEQ GT GEQ AND OR NEQ
-%token RETURN IF ELSE FOR WHILE IN 
+%token RETURN IF ELSE FOR WHILE IN HATCH SYNCH 
 %token INT BOOL DOUBLE VOID STRING NODE EDGE GRAPH EDGELIST NODELIST INTTABLE DOUBLETABLE 
 %token <int> LITERAL
 %token <bool> BLIT
@@ -40,6 +40,7 @@ let parse_error s =
 %left AND
 %left EQ NEQ
 %left LT LEQ GT GEQ
+%nonassoc HATCH SYNCH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %right NOT
@@ -105,6 +106,8 @@ stmt:
   | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }
   | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
+  | HATCH ID ID LPAREN args_list RPAREN stmt              { Hatch($2, $3, $5, $7)  }
+  | SYNCH ID LBRACE stmt_list RBRACE                      { Synch($2, List.rev $4) }
   | vdecl                                                 { LoclBind($1)           }
 
 expr_opt:
