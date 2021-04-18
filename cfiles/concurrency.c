@@ -4,6 +4,16 @@
 #include <string.h>
 #include <unistd.h>
 
+struct Lockable{
+    pthread_mutex_t pm;
+};
+
+pthread_mutex_t* convertToLockable(void* obj){
+    struct Lockable* new;
+    new = (struct Lockable*) obj;
+    return &(new->pm);
+}
+
 int synch_start(pthread_mutex_t* lock) {
     if (pthread_mutex_lock(lock) != 0) {
         printf("\n locking failed\n");
