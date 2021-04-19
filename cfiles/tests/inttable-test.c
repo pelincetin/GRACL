@@ -52,7 +52,15 @@ int main(){
     insertInt(it, node8, 8);
     insertInt(it, node9, 9);
     insertInt(it, node10, 10);
-    insertInt(it, node10, 10); // try inserting same node twice -- what happens? node10 appended to end twice?
+    insertInt(it, node10, 10); // insert same node twice -- node10 appended to end twice without issue
+
+    /*
+    // test inserting a node from a different graph
+    struct Graph* g2 = createGraph(10);
+    char nodedata11[] = "noded11";
+    struct Node* node11 = createNode(g2, nodedata11);
+    insertInt(it, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
+    */
 
     // test includes
     if (!inInt(it, node1) || !inInt(it, node7) || !inInt(it, node10)) {
@@ -72,11 +80,19 @@ int main(){
     deleteInt(it, node2);
     deleteInt(it, node3);
     deleteInt(it, node4);
-    deleteInt(it, node1); // try deleting same node twice
+    deleteInt(it, node5);
+    deleteInt(it, node6);
+    deleteInt(it, node7);
+    deleteInt(it, node8);
+    deleteInt(it, node9);
+    deleteInt(it, node10);
+    deleteInt(it, node10); // try deleting same node (added to it twice) twice
+    deleteInt(it, node1); // try deleting same node (added to it once) twice
+
     if (inInt(it, node1)) {
         success = false;
     }
-    if (length_NL(intKeys(it)) != 7) {
+    if (length_NL(intKeys(it)) != 0) {
         success = false;
     }
 
@@ -87,6 +103,5 @@ int main(){
         printf("FAILURE\n");
     }
 
-    //insert(it, );
     return 0;
 }

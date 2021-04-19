@@ -5,6 +5,7 @@ struct IntTable* createIntTable(int predicted_size) {
     it->arr = (struct IntTableItem *)malloc(sizeof(struct IntTableItem)*predicted_size);  
     it->size = predicted_size;
     it->keys = createNodeList();
+    it->graph_id = -1;
     if (pthread_mutex_init(&it->lock, NULL) !=0) {
         fprintf(stderr, "createIntTable: Failure to initialize mutex\n");
         exit(1); 
