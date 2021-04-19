@@ -14,6 +14,8 @@ let function_decls =
         (Graph, "createGraph", []);
         (Nodelist, "createNodeList", []);
         (Edgelist, "createEdgeList", []);
+        (DoubleTable, "createDoubleTable", []);
+        (IntTable, "createIntTable", []);
 
         (* Casting Functions *)
         (String, "doubleToString", [Double, "d"]);
@@ -76,7 +78,17 @@ let function_decls =
         (Void, "prependEdge", [(Edgelist, "el"); (Edge, "e")]);
 
         (* IntTable Functions *)
+        (Int, "hashCode_it", [(IntTable, "it"); (Node, "n")]);
+        (Int, "getInt", [(IntTable, "it"); (Node, "n")]);
+        (Void, "insertInt", [(IntTable, "it"); (Node, "n"); (Int, "d")]);
+        (NodeList, "intKeys", [IntTable, "it"]);
+        (Int, "deleteInt", [(IntTable, "it"); (Node, "n")]);
 
         (* DoubleTable Functions *)
+        (Int, "hashCode_it", [(DoubleTable, "dt"); (Node, "n")]);
+        (Double, "getDouble", [(DoubleTable, "dt"); (Node, "n")]);
+        (Void, "insertDouble", [(DoubleTable, "dt"); (Node, "n"); (Int, "d")]);
+        (NodeList, "doubleKeys", [DoubleTable, "dt"]);
+        (Int, "deleteDouble", [(DoubleTable, "dt"); (Node, "n")]);
     ]
     
