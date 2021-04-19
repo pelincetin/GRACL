@@ -1,0 +1,60 @@
+int main() {
+   // create graph with 2 nodes and test the functions 
+    Graph g = createGraph(100);
+    String nodedata1 = "noded1";
+    String nodedata2 = "noded2";
+    String nodedata3 = "noded3";
+
+    Node node1 = g.createNode(nodedata1);
+    Node node2 = g.createNode(nodedata2);
+    Node node3 = g.createNode(nodedata3);
+
+    Edge edge1 = g.addEdge(node1, node2, 1.7);
+    Edge edge2 = g.addEdge(node2, node3, 6.8);
+    Edge edge3 = g.addEdge(node1, node2, 1.7);
+
+    bool success = True;
+
+    // test updateEdge and weight functions
+    edge2.updateEdge(16.3);
+    if (edge2.weight() != 16.300000) {
+        success = False; 
+    }
+    edge2.updateEdge(90.1);
+    if (edge2.weight() != 90.100000) {
+        success = False; 
+    }
+    edge2.updateEdge(-90.1);
+    if (edge2.weight() != -90.100000) {
+        success = False; 
+    }
+    edge2.updateEdge(infinity);
+    if (edge2.weight() != infinity) {
+        success = False; 
+    }
+    
+    // test edgeEquals
+    if(edge1.edgeEquals(edge2)) {
+        success = False;
+    }
+    if(!edge1.edgeEquals(edge1)) {
+        success = False;
+    }
+
+    // test end and start functions
+    if(edge1.end().data() != edge2.start().data()) {
+        success = False;
+    }
+    if(edge1.start().data() != edge3.start().data()) {
+        success = False;
+    }
+    if(edge1.start().data() == edge1.end().data()) {
+        success = False;
+    }
+    
+    if (success) {
+        print("SUCCESS");
+    } else {
+        print("FAILURE");
+    }
+}
