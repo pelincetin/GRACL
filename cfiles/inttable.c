@@ -18,7 +18,7 @@ int hashCode_it(struct IntTable* it, struct Node* n) {
     return id_node % it->size;
 }
 
-int getInt(struct IntTable* it, struct Node* n) {
+int _getInt(struct IntTable* it, struct Node* n) {
     int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start;
     start = &it->arr[hashIndex];
@@ -49,9 +49,9 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 
 // technically complexity could improve if we insert in a sorted manner
 // TODO
-void insertInt(struct IntTable* it, struct Node* n, int data) {
+void _insertInt(struct IntTable* it, struct Node* n, int data) {
     if ((it->graph_id != -1) && (it->graph_id != n->parent_graph_id)) {
-        exit(1);
+        fprintf(stderr, "_insertInt error: Cannot insert nodes from different graphs into the same IntTable\n");
     }
     else if (it->graph_id == -1) {
         it->graph_id = n->parent_graph_id;

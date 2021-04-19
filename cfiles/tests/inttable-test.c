@@ -42,25 +42,23 @@ int main(){
     }
 
     // test insert with collisions
-    insertInt(it, node1, 1);
-    insertInt(it, node2, 2);
-    insertInt(it, node3, 3);
-    insertInt(it, node4, 4);
-    insertInt(it, node5, 5);
-    insertInt(it, node6, 6);
-    insertInt(it, node7, 7);
-    insertInt(it, node8, 8);
-    insertInt(it, node9, 9);
-    insertInt(it, node10, 10);
-    insertInt(it, node10, 10); // insert same node twice -- node10 appended to end twice without issue
+    _insertInt(it, node1, 1);
+    _insertInt(it, node2, 2);
+    _insertInt(it, node3, 3);
+    _insertInt(it, node4, 4);
+    _insertInt(it, node5, 5);
+    _insertInt(it, node6, 6);
+    _insertInt(it, node7, 7);
+    _insertInt(it, node8, 8);
+    _insertInt(it, node9, 9);
+    _insertInt(it, node10, 10);
+    _insertInt(it, node10, 10); // insert same node twice -- node10 appended to end twice without issue
 
-    /*
     // test inserting a node from a different graph
     struct Graph* g2 = createGraph(10);
     char nodedata11[] = "noded11";
     struct Node* node11 = createNode(g2, nodedata11);
-    insertInt(it, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
-    */
+    _insertInt(it, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
 
     // test includes
     if (!inInt(it, node1) || !inInt(it, node7) || !inInt(it, node10)) {
@@ -68,9 +66,9 @@ int main(){
     }
 
     // test get
-    double get1 = getInt(it, node1);
-    double get8 = getInt(it, node8);
-    double get3 = getInt(it, node3);
+    double get1 = _getInt(it, node1);
+    double get8 = _getInt(it, node8);
+    double get3 = _getInt(it, node3);
     if ((get1 != 1) || (get8 != 8) || (get3 != 3)) {
         success = false;
     }

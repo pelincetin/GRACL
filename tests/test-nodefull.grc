@@ -7,7 +7,7 @@ void printNode(Node n){
 }
 int main (){
     //this is for testing createNode
-    Graph g = createGraph();
+    Graph g = createGraph(5);
     String greeting = "Hello";
 
     Node temp = g.createNode(greeting);

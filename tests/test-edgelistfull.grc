@@ -14,7 +14,7 @@ void printEdgeList(EdgeList el) {
 }
 
 int main() {
-    Graph g = createGraph();
+    Graph g = createGraph(5);
         
     String hello = "Hello";
     String goodbye = "Goodbye";

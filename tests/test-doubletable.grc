@@ -1,0 +1,91 @@
+int main(){
+    bool success = True;
+
+    Graph g = createGraph(10);
+    String nodedata1 = "noded1";
+    String nodedata2 = "noded2";
+    String nodedata3 = "noded3";
+    String nodedata4 = "noded4";
+    String nodedata5 = "noded5";
+    String nodedata6 = "noded6";
+    String nodedata7 = "noded7";
+    String nodedata8 = "noded8";
+    String nodedata9 = "noded9";
+    String nodedata10 = "noded10";
+    Node node1 = g.createNode(nodedata1);
+    Node node2 = g.createNode(nodedata2);
+    Node node3 = g.createNode(nodedata3);
+    Node node4 = g.createNode(nodedata4);
+    Node node5 = g.createNode(nodedata5);
+    Node node6 = g.createNode(nodedata6);
+    Node node7 = g.createNode(nodedata7);
+    Node node8 = g.createNode(nodedata8);
+    Node node9 = g.createNode(nodedata9);
+    Node node10 = g.createNode(nodedata10);
+
+    DoubleTable dt = createDoubleTable(5);
+    
+    // test insert with collisions
+    dt._insertDouble(node1, 1.0);
+    dt._insertDouble(node2, 2.0);
+    dt._insertDouble(node3, 3.0);
+    dt._insertDouble(node4, 4.0);
+    dt._insertDouble(node5, 5.0);
+    dt._insertDouble(node6, 6.0);
+    dt._insertDouble(node7, 7.0);
+    dt._insertDouble(node8, 8.0);
+    dt._insertDouble(node9, 9.0);
+    dt._insertDouble(node10, 10.0);
+    dt._insertDouble(node10, 10.0); // insert same node twice -- node10 appended to end twice without issue
+
+    // test inserting a node from a different graph
+    Graph g2 = createGraph(10);
+    String nodedata11 = "noded11";
+    Node node11 = g2.createNode(nodedata11);
+    dt._insertDouble(node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
+
+    /*
+    // test includes
+    if (!dt.inDouble(node1) || !dt.inDouble(node7) || !dt.inDouble(node10)) {
+        success = False;
+    }
+    
+    // test get
+    double get1 = dt._getDouble(node1);
+    double get8 = dt._getDouble(node8);
+    double get3 = dt._getDouble(node3);
+    if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
+        success = False;
+    }
+    
+    // test delete
+    dt.deleteDouble(node1);
+    dt.deleteDouble(node2);
+    dt.deleteDouble(node3);
+    dt.deleteDouble(node4);
+    dt.deleteDouble(node5);
+    dt.deleteDouble(node6);
+    dt.deleteDouble(node7);
+    dt.deleteDouble(node8);
+    dt.deleteDouble(node9);
+    dt.deleteDouble(node10);
+    dt.deleteDouble(node10); // try deleting same node (added to dt twice) twice
+    dt.deleteDouble(node1); // try deleting same node (added to dt once) twice
+
+    if (dt.inDouble(node1)) {
+        success = False;
+    }
+    NodeList keys = dt.doubleKeys();
+    if (keys.length_NL() != 0) {
+        success = False;
+    }
+    */
+    if(success) {
+        print("SUCCESS");
+    }
+    else {
+        print("FAILURE");
+    }
+
+    return 0;
+}

@@ -42,25 +42,23 @@ int main(){
     }
 
     // test insert with collisions
-    insertDouble(dt, node1, 1.0);
-    insertDouble(dt, node2, 2.0);
-    insertDouble(dt, node3, 3.0);
-    insertDouble(dt, node4, 4.0);
-    insertDouble(dt, node5, 5.0);
-    insertDouble(dt, node6, 6.0);
-    insertDouble(dt, node7, 7.0);
-    insertDouble(dt, node8, 8.0);
-    insertDouble(dt, node9, 9.0);
-    insertDouble(dt, node10, 10.0);
-    insertDouble(dt, node10, 10.0); // insert same node twice -- node10 appended to end twice without issue
+    _insertDouble(dt, node1, 1.0);
+    _insertDouble(dt, node2, 2.0);
+    _insertDouble(dt, node3, 3.0);
+    _insertDouble(dt, node4, 4.0);
+    _insertDouble(dt, node5, 5.0);
+    _insertDouble(dt, node6, 6.0);
+    _insertDouble(dt, node7, 7.0);
+    _insertDouble(dt, node8, 8.0);
+    _insertDouble(dt, node9, 9.0);
+    _insertDouble(dt, node10, 10.0);
+    _insertDouble(dt, node10, 10.0); // insert same node twice -- node10 appended to end twice without issue
 
-    /*
     // test inserting a node from a different graph
     struct Graph* g2 = createGraph(10);
     char nodedata11[] = "noded11";
     struct Node* node11 = createNode(g2, nodedata11);
-    insertDouble(dt, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
-    */
+    _insertDouble(dt, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
 
     // test includes
     if (!inDouble(dt, node1) || !inDouble(dt, node7) || !inDouble(dt, node10)) {
@@ -68,9 +66,9 @@ int main(){
     }
     
     // test get
-    double get1 = getDouble(dt, node1);
-    double get8 = getDouble(dt, node8);
-    double get3 = getDouble(dt, node3);
+    double get1 = _getDouble(dt, node1);
+    double get8 = _getDouble(dt, node8);
+    double get3 = _getDouble(dt, node3);
     if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
         success = false;
     }

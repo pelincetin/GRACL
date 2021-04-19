@@ -11,11 +11,11 @@ let function_decls =
         (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
-        (Graph, "createGraph", []);
+        (Graph, "createGraph", [Int, "i"]);
         (Nodelist, "createNodeList", []);
         (Edgelist, "createEdgeList", []);
-        (DoubleTable, "createDoubleTable", []);
-        (IntTable, "createIntTable", []);
+        (Doubletable, "createDoubleTable", [Int, "i"]);
+        (Inttable, "createIntTable", [Int, "i"]);
 
         (* Casting Functions *)
         (String, "doubleToString", [Double, "d"]);
@@ -77,18 +77,18 @@ let function_decls =
         (Void, "appendEdge", [(Edgelist, "el"); (Edge, "e")]);
         (Void, "prependEdge", [(Edgelist, "el"); (Edge, "e")]);
 
-        (* IntTable Functions *)
-        (Int, "hashCode_it", [(IntTable, "it"); (Node, "n")]);
-        (Int, "getInt", [(IntTable, "it"); (Node, "n")]);
-        (Void, "insertInt", [(IntTable, "it"); (Node, "n"); (Int, "d")]);
-        (NodeList, "intKeys", [IntTable, "it"]);
-        (Int, "deleteInt", [(IntTable, "it"); (Node, "n")]);
+        (* Inttable Functions *)
+        (Int, "hashCode_it", [(Inttable, "it"); (Node, "n")]);
+        (Int, "_getInt", [(Inttable, "it"); (Node, "n")]);
+        (Void, "_insertInt", [(Inttable, "it"); (Node, "n"); (Int, "d")]);
+        (Nodelist, "intKeys", [Inttable, "it"]);
+        (Int, "deleteInt", [(Inttable, "it"); (Node, "n")]);
 
-        (* DoubleTable Functions *)
-        (Int, "hashCode_it", [(DoubleTable, "dt"); (Node, "n")]);
-        (Double, "getDouble", [(DoubleTable, "dt"); (Node, "n")]);
-        (Void, "insertDouble", [(DoubleTable, "dt"); (Node, "n"); (Int, "d")]);
-        (NodeList, "doubleKeys", [DoubleTable, "dt"]);
-        (Int, "deleteDouble", [(DoubleTable, "dt"); (Node, "n")]);
+        (* Doubletable Functions *)
+        (Int, "hashCode_it", [(Doubletable, "dt"); (Node, "n")]);
+        (Double, "_getDouble", [(Doubletable, "dt"); (Node, "n")]);
+        (Void, "_insertDouble", [(Doubletable, "dt"); (Node, "n"); (Int, "d")]);
+        (Nodelist, "doubleKeys", [Doubletable, "dt"]);
+        (Int, "deleteDouble", [(Doubletable, "dt"); (Node, "n")]);
     ]
     

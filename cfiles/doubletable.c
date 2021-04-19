@@ -18,7 +18,7 @@ int hashCode_dt(struct DoubleTable* dt, struct Node* n) {
     return id_node % dt->size;
 }
 
-double getDouble(struct DoubleTable* dt, struct Node* n) {
+double _getDouble(struct DoubleTable* dt, struct Node* n) {
     int hashIndex = hashCode_dt(dt, n);
     struct DoubleTableItem* start;
     start = &dt->arr[hashIndex];
@@ -49,9 +49,9 @@ struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
 
 // technically complexity could improve if we insert in a sorted manner
 // TODO
-void insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
+void _insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
     if ((dt->graph_id != -1) && (dt->graph_id != n->parent_graph_id)) {
-        exit(1);
+        fprintf(stderr, "_insertDouble error: Cannot insert nodes from different graphs into the same DoubleTable\n");
     }
     else if (dt->graph_id == -1) {
         dt->graph_id = n->parent_graph_id;
