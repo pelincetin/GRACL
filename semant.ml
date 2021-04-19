@@ -80,7 +80,24 @@ let check (program) =
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name)
+      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) (* TODO: TEST ERROR HANDLING FOR ACCESS/INSERT *)
+      | Access(table, node) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        (match nodetyp with 
+        Node -> 
+          (match tabletyp with
+          | Inttable -> (Int, SCall("_getInt", [(Inttable, SId tablename); (Node, SId nodename)]))
+          | Doubletable -> (Double, SCall("_getDouble", [(Doubletable, SId tablename); (Node, SId nodename)]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable"))
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable"))))
+      | Insert(table, node, ex) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        (match nodetyp with 
+        Node -> (let (extyp, ex') = expr st ex in 
+          let err = "illegal insertion, cannot put " ^ string_of_typ extyp ^ " " ^ string_of_expr ex ^ " in " ^ string_of_typ tabletyp  in
+          match tabletyp with
+          | Inttable -> (Void, SCall("_insertInt", [(Inttable, SId tablename); (Node, SId nodename); (check_assign Int extyp err, ex')]))
+          | Doubletable -> (Void, SCall("_insertDouble", [(Doubletable, SId tablename); (Node, SId nodename); (check_assign Double extyp err, ex')]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable")))
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable")))
       | Assign(var, e) as ex -> 
           let (lt, name) = type_of_identifier var st
           and (rt, e') = expr st e in

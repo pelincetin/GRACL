@@ -87,7 +87,7 @@ let function_decls =
         (* Doubletable Functions *)
         (Int, "hashCode_it", [(Doubletable, "dt"); (Node, "n")]);
         (Double, "_getDouble", [(Doubletable, "dt"); (Node, "n")]);
-        (Void, "_insertDouble", [(Doubletable, "dt"); (Node, "n"); (Int, "d")]);
+        (Void, "_insertDouble", [(Doubletable, "dt"); (Node, "n"); (Double, "d")]);
         (Nodelist, "doubleKeys", [Doubletable, "dt"]);
         (Int, "deleteDouble", [(Doubletable, "dt"); (Node, "n")]);
     ]
