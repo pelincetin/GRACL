@@ -67,18 +67,17 @@ int main() {
     }
     node1 = setPrec(node1, node2);
     if (prec(node1) == NULL) {
-        fprintf(stderr, "prec still null\n");
+        success = false;
     }
     const char* data1;
     if (prec(node1) == NULL) {
-        fprintf(stderr, "somehow still null\n");
+        success = false;
     }
     data1 = data(prec(node1));
     if (data1 == NULL) {
-        fprintf(stderr, "data null\n");
+        success = false;
     }
     if (strcmp(data1, "noded2") != 0) {
-        fprintf(stderr, "inside strcmp\n");
         success = false;
     } 
 

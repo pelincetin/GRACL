@@ -70,7 +70,6 @@ bool nodeEquals(struct Node* node1, struct Node* node2)
     return (node1->id == node2->id);
 }
 
-/* TODO: NEEDS TESTING */
 struct Edge* getEdge(struct Node* node1, struct Node* node2)
 {
     struct EdgeListItem *current;

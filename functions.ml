@@ -39,7 +39,7 @@ let function_decls =
         (Node, "prec", [Node, "n"]);  
         (Node, "setPrec", [(Node, "n1"); (Node, "n2")]);    
         (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")]);
-        (Bool, "getEdge", [(Node, "n1"); (Node, "n2")]);
+        (Edge, "getEdge", [(Node, "n1"); (Node, "n2")]);
 
         (* Edge Functions *)                  (* TODO: TEST ALL OF THIS *)
         (Void, "updateEdge", [(Edge, "e"); (Double, "d")]);
@@ -48,14 +48,14 @@ let function_decls =
         (Double, "weight", [Edge, "e"]);
         (Bool, "edgeEquals", [(Edge, "e1"); (Edge, "e2")]);
 
-        (* Graph Functions *)                  (* TODO: TEST ALL OF THIS *)
+        (* Graph Functions *)
         (Nodelist, "nodes", [Graph, "g"]);    
         (Node, "createNode", [(Graph, "g"); (String, "s")]);
         (Int, "removeNodeGraph", [(Graph, "g"); (Node, "n")]);
         (Edge, "addEdge", [(Graph, "g"); (Node, "start"); (Node, "end"); (Double, "weight")]);
         (Int,  "removeEdgeGraph", [(Graph, "g"); (Edge, "e")]);
 
-        (* Nodelist Functions *)             (* TODO: TEST ALL OF THIS *)
+        (* Nodelist Functions *)
         (Node, "head_NL", [Nodelist, "nl"]);
         (Node, "tail_NL", [Nodelist, "nl"]);
         (Int, "length_NL", [Nodelist, "nl"]);
@@ -65,8 +65,9 @@ let function_decls =
         (Node, "removeLast_NL", [Nodelist, "nl"]);
         (Void, "appendNode", [(Nodelist, "nl"); (Node, "n")]);
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
+        (Bool, "includesNode", [(Nodelist, "nl"); (Node, "n")]);
 
-        (* Edgelist Functions *)                  (* TODO: TEST ALL OF THIS *)
+        (* Edgelist Functions *)
         (Edge, "head_EL", [Edgelist, "el"]);
         (Edge, "tail_EL", [Edgelist, "el"]);
         (Int, "length_EL", [Edgelist, "el"]);
