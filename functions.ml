@@ -80,9 +80,10 @@ let function_decls =
         (* Inttable Functions *)
         (Int, "hashCode_it", [(Inttable, "it"); (Node, "n")]);
         (Int, "_getInt", [(Inttable, "it"); (Node, "n")]);
-        (Void, "_insertInt", [(Inttable, "it"); (Node, "n"); (Int, "d")]);
+        (Void, "_insertInt", [(Inttable, "it"); (Node, "n"); (Int, "i")]);
         (Nodelist, "intKeys", [Inttable, "it"]);
         (Int, "deleteInt", [(Inttable, "it"); (Node, "n")]);
+        (Bool, "inInt", [(Inttable, "it"); (Node, "n")]);
 
         (* Doubletable Functions *)
         (Int, "hashCode_it", [(Doubletable, "dt"); (Node, "n")]);
@@ -90,5 +91,6 @@ let function_decls =
         (Void, "_insertDouble", [(Doubletable, "dt"); (Node, "n"); (Double, "d")]);
         (Nodelist, "doubleKeys", [Doubletable, "dt"]);
         (Int, "deleteDouble", [(Doubletable, "dt"); (Node, "n")]);
+        (Bool, "inDouble", [(Doubletable, "dt"); (Node, "n")]);
     ]
     

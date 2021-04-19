@@ -26,34 +26,33 @@ int main(){
     DoubleTable dt = createDoubleTable(5);
     
     // test insert with collisions
-    dt._insertDouble(node1, 1.0);
-    dt._insertDouble(node2, 2.0);
-    dt._insertDouble(node3, 3.0);
-    dt._insertDouble(node4, 4.0);
-    dt._insertDouble(node5, 5.0);
-    dt._insertDouble(node6, 6.0);
-    dt._insertDouble(node7, 7.0);
-    dt._insertDouble(node8, 8.0);
-    dt._insertDouble(node9, 9.0);
-    dt._insertDouble(node10, 10.0);
-    dt._insertDouble(node10, 10.0); // insert same node twice -- node10 appended to end twice without issue
+    dt[node1] = 1.0;
+    dt[node2] = 2.0;
+    dt[node3] = 3.0;
+    dt[node4] = 4.0;
+    dt[node5] = 5.0;
+    dt[node6] = 6.0;
+    dt[node7] = 7.0;
+    dt[node8] = 8.0;
+    dt[node9] = 9.0;
+    dt[node10] = 10.0;
+    dt[node10] = 10.0; // insert same node twice -- node10 appended to end twice without issue
 
     // test inserting a node from a different graph
     Graph g2 = createGraph(10);
     String nodedata11 = "noded11";
     Node node11 = g2.createNode(nodedata11);
-    dt._insertDouble(node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
+    dt[node11] = 11.0;
 
-    /*
     // test includes
     if (!dt.inDouble(node1) || !dt.inDouble(node7) || !dt.inDouble(node10)) {
         success = False;
     }
     
     // test get
-    double get1 = dt._getDouble(node1);
-    double get8 = dt._getDouble(node8);
-    double get3 = dt._getDouble(node3);
+    double get1 = dt[node1];
+    double get8 = dt[node8];
+    double get3 = dt[node3];
     if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
         success = False;
     }
@@ -79,7 +78,7 @@ int main(){
     if (keys.length_NL() != 0) {
         success = False;
     }
-    */
+    
     if(success) {
         print("SUCCESS");
     }

@@ -26,23 +26,23 @@ int main(){
     IntTable it = createIntTable(5);
 
     // test insert with collisions
-    it._insertInt(node1, 1);
-    it._insertInt(node2, 2);
-    it._insertInt(node3, 3);
-    it._insertInt(node4, 4);
-    it._insertInt(node5, 5);
-    it._insertInt(node6, 6);
-    it._insertInt(node7, 7);
-    it._insertInt(node8, 8);
-    it._insertInt(node9, 9);
-    it._insertInt(node10, 10);
-    it._insertInt(node10, 10); // insert same node twice -- node10 appended to end twice without issue
+    it[node1] = 1;
+    it[node2] = 2;
+    it[node3] = 3;
+    it[node4] = 4;
+    it[node5] = 5;
+    it[node6] = 6;
+    it[node7] = 7;
+    it[node8] = 8;
+    it[node9] = 9;
+    it[node10] = 10;
+    it[node10] = 10; // insert same node twice -- node10 appended to end twice without issue
 
     // test inserting a node from a different graph
     Graph g2 = createGraph(10);
     String nodedata11 = "noded11";
     Node node11 = g2.createNode(nodedata11);
-    it._insertInt(node11, 11); // exit(1) ends program so no "success" or "failure" is printed
+    it[node11] = 11;
 
     // test includes
     if (!it.inInt(node1) || !it.inInt(node7) || !it.inInt(node10)) {
@@ -50,10 +50,10 @@ int main(){
     }
     
     // test get
-    double get1 = it._getInt(node1);
-    double get8 = it._getInt(node8);
-    double get3 = it._getInt(node3);
-    if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
+    int get1 = it[node1];
+    int get8 = it[node8];
+    int get3 = it[node3];
+    if ((get1 != 1) || (get8 != 8) || (get3 != 3)) {
         success = False;
     }
     
