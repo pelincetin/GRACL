@@ -1,0 +1,11 @@
+//Tests having a function and variables with the same name
+int foo(int foo){
+    printi(foo);
+    foo = foo + 1;
+    return foo;
+}
+int foo = 5;
+int main() {  
+    foo = foo(foo);
+    printi(foo);
+}

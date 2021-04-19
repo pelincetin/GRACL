@@ -99,7 +99,7 @@ stmt_list:
 stmt:
     expr SEMI                                             { Expr $1                }
   | RETURN expr_opt SEMI                                  { Return $2              }
-  | LBRACE stmt_list RBRACE                               { Block(List.rev $2)     }
+  | LBRACE stmt_list RBRACE                               { Block(List.rev (BlockEnd::$2))     }
   | IF LPAREN expr RPAREN stmt %prec NOELSE               { If($3, $5, Block([]))  }
   | IF LPAREN expr RPAREN stmt ELSE stmt                  { If($3, $5, $7)         }
   | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }

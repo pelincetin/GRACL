@@ -1,0 +1,6 @@
+//Tests how functions and methods interact
+int main() {
+    Graph g = createGraph();
+    Node n = g.createNode(doubleToString(intToDouble(42)));
+    print(n.data());
+}
