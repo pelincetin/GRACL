@@ -13,8 +13,8 @@ struct IntTable* createIntTable(int predicted_size) {
     return it;
 }
 
-int hashCode_it(struct IntTable* it, struct Node* node) {
-    int id_node = node->id;
+int hashCode_it(struct IntTable* it, struct Node* n) {
+    int id_node = n->id;
     return id_node % it->size;
 }
 

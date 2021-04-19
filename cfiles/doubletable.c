@@ -13,8 +13,8 @@ struct DoubleTable* createDoubleTable(int predicted_size) {
     return dt;
 }
 
-int hashCode_dt(struct DoubleTable* dt, struct Node* node) {
-    int id_node = node->id;
+int hashCode_dt(struct DoubleTable* dt, struct Node* n) {
+    int id_node = n->id;
     return id_node % dt->size;
 }
 
