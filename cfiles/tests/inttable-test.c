@@ -55,10 +55,12 @@ int main(){
     _insertInt(it, node10, 10); // insert same node twice -- node10 appended to end twice without issue
 
     // test inserting a node from a different graph
+    /*
     struct Graph* g2 = createGraph(10);
     char nodedata11[] = "noded11";
     struct Node* node11 = createNode(g2, nodedata11);
-    _insertInt(it, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
+    _insertInt(it, node11, 11.0); // GIVES AN ERROR (as it should)
+    */
 
     // test includes
     if (!inInt(it, node1) || !inInt(it, node7) || !inInt(it, node10)) {
