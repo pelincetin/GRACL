@@ -52,13 +52,21 @@ int main(){
     insertDouble(dt, node8, 8.0);
     insertDouble(dt, node9, 9.0);
     insertDouble(dt, node10, 10.0);
-    insertDouble(dt, node10, 10.0); // try inserting same node twice -- what happens? node10 appended to end twice?
+    insertDouble(dt, node10, 10.0); // insert same node twice -- node10 appended to end twice without issue
+
+    /*
+    // test inserting a node from a different graph
+    struct Graph* g2 = createGraph(10);
+    char nodedata11[] = "noded11";
+    struct Node* node11 = createNode(g2, nodedata11);
+    insertDouble(dt, node11, 11.0); // exit(1) ends program so no "success" or "failure" is printed
+    */
 
     // test includes
     if (!inDouble(dt, node1) || !inDouble(dt, node7) || !inDouble(dt, node10)) {
         success = false;
     }
-
+    
     // test get
     double get1 = getDouble(dt, node1);
     double get8 = getDouble(dt, node8);
@@ -66,21 +74,28 @@ int main(){
     if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
         success = false;
     }
-
+    
     // test delete
     deleteDouble(dt, node1);
     deleteDouble(dt, node2);
     deleteDouble(dt, node3);
     deleteDouble(dt, node4);
-    deleteDouble(dt, node1); // try deleting same node twice
+    deleteDouble(dt, node5);
+    deleteDouble(dt, node6);
+    deleteDouble(dt, node7);
+    deleteDouble(dt, node8);
+    deleteDouble(dt, node9);
+    deleteDouble(dt, node10);
+    deleteDouble(dt, node10); // try deleting same node (added to dt twice) twice
+    deleteDouble(dt, node1); // try deleting same node (added to dt once) twice
 
     if (inDouble(dt, node1)) {
         success = false;
     }
-    if (length_NL(doubleKeys(dt)) != 7) {
+    if (length_NL(doubleKeys(dt)) != 0) {
         success = false;
     }
-
+    
     if (success) {
         printf("SUCCESS\n");
     }

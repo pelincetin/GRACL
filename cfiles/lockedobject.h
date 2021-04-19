@@ -90,7 +90,7 @@ struct IntTable
     struct IntTableItem* arr; 
     struct NodeList* keys;
     int size;
-    int graphId;
+    int graph_id;
 };
 
 struct DoubleTable
@@ -100,4 +100,5 @@ struct DoubleTable
     struct NodeList* keys;
     int size;
     int doubleId;
+    int graph_id;
 };
