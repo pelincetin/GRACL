@@ -122,7 +122,7 @@ let check (program) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -239,7 +239,7 @@ let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAUL
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
