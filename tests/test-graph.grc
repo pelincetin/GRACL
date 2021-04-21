@@ -75,6 +75,10 @@ int main() {
         success = False;
     }    
 
+    // test making an graph with a size of 0 or smaller
+    Graph g2 = createGraph(0);
+    Graph g3 = createGraph(-1);
+
     if (success) {
         print("SUCCESS");
     } else {

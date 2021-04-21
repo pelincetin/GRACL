@@ -78,6 +78,10 @@ int main(){
     if (keys.length_NL() != 0) {
         success = False;
     }
+
+    // test making an dt with a size of 0 or smaller
+    DoubleTable dt2 = createDoubleTable(0);
+    DoubleTable dt3 = createDoubleTable(-1);
     
     if(success) {
         print("SUCCESS");
