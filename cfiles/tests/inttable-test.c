@@ -96,6 +96,10 @@ int main(){
         success = false;
     }
 
+    // test making an dt with a size of 0 or smaller
+    struct IntTable* it2 = createIntTable(0);
+    struct IntTable* it3 = createIntTable(-1);
+
     if (success) {
         printf("SUCCESS\n");
     }

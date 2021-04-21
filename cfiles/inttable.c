@@ -1,6 +1,9 @@
 #include "inttable.h"
 
 struct IntTable* createIntTable(int predicted_size) {
+    if (predicted_size <= 0) {
+        fprintf(stderr, "Error: IntTable must have be at least size 1 or larger\n");
+    }
     struct IntTable* it = malloc(sizeof(struct IntTable));
     it->arr = (struct IntTableItem *)malloc(sizeof(struct IntTableItem)*predicted_size);  
     it->size = predicted_size;

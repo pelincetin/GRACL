@@ -95,6 +95,10 @@ int main(){
     if (length_NL(doubleKeys(dt)) != 0) {
         success = false;
     }
+
+    // test making an dt with a size of 0 or smaller
+    struct DoubleTable* dt2 = createDoubleTable(0);
+    struct DoubleTable* dt3 = createDoubleTable(-1);
     
     if (success) {
         printf("SUCCESS\n");

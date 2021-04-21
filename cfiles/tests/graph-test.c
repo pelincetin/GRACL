@@ -79,7 +79,11 @@ int main() {
     removeNodeGraph(g, node1);
     if (!(empty_NL(nodes(g)) == 1)) {
         success = false;
-    }    
+    }
+
+    // test making an graph with a size of 0 or smaller
+    struct Graph* g2 = createGraph(0);
+    struct Graph* g3 = createGraph(-1);
 
     if (success) {
         printf("SUCCESS\n");

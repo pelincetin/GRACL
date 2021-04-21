@@ -1,6 +1,9 @@
 #include "doubletable.h"
 
 struct DoubleTable* createDoubleTable(int predicted_size) {
+    if (predicted_size <= 0) {
+        fprintf(stderr, "Error: DoubleTable must have be at least size 1 or larger\n");
+    }
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
     dt->arr = (struct DoubleTableItem *)malloc(sizeof(struct DoubleTableItem)*predicted_size);  
     dt->size = predicted_size;

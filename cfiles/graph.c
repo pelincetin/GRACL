@@ -5,6 +5,9 @@
  * The value will be a nodelist of nodes having an edge to the key
  */
 struct Graph* createGraph(int size) {
+    if (size <= 0) {
+        fprintf(stderr, "Error: Graph must have be at least size 1 or larger\n");
+    }
     struct DataItem* d = malloc(sizeof(struct DataItem) * size);
     for (int i = 0; i < size; i++) {
         d[i].key = NULL;
