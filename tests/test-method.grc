@@ -1,6 +1,6 @@
 int main() {
-    //Node n = createGraph().createNode("blah");
-    //n.updateData(doubleToString(3.14));
+    Node n = createGraph(5).createNode("blah");
+    n.updateData(doubleToString(3.14));
     double d = 33.2;
     d.doubleToString().print();
     return 0;

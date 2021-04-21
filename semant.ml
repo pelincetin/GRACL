@@ -80,7 +80,24 @@ let check (program) =
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name)
+      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) (* TODO: TEST ERROR HANDLING FOR ACCESS/INSERT *)
+      | Access(table, node) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        (match nodetyp with 
+        Node -> 
+          (match tabletyp with
+          | Inttable -> (Int, SCall("_getInt", [(Inttable, SId tablename); (Node, SId nodename)]))
+          | Doubletable -> (Double, SCall("_getDouble", [(Doubletable, SId tablename); (Node, SId nodename)]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable"))
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable"))))
+      | Insert(table, node, ex) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        (match nodetyp with 
+        Node -> (let (extyp, ex') = expr st ex in 
+          let err = "illegal insertion, cannot put " ^ string_of_typ extyp ^ " " ^ string_of_expr ex ^ " in " ^ string_of_typ tabletyp  in
+          match tabletyp with
+          | Inttable -> (Void, SCall("_insertInt", [(Inttable, SId tablename); (Node, SId nodename); (check_assign Int extyp err, ex')]))
+          | Doubletable -> (Void, SCall("_insertDouble", [(Doubletable, SId tablename); (Node, SId nodename); (check_assign Double extyp err, ex')]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable")))
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable")))
       | Assign(var, e) as ex -> 
           let (lt, name) = type_of_identifier var st
           and (rt, e') = expr st e in
@@ -105,7 +122,7 @@ let check (program) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -222,7 +239,7 @@ let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAUL
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool

@@ -1,17 +1,13 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
-#ifndef BUILDSTDLIB
-#include "nodelist.c"
-#include "edgelist.c"
-#include "edge.c"
-#endif
+#include "graph.h"
 
 /* 
  * The key of the graph hashtbl is going to be a node
  * The value will be a nodelist of nodes having an edge to the key
  */
 struct Graph* createGraph(int size) {
+    if (size <= 0) {
+        fprintf(stderr, "Error: Graph must have be at least size 1 or larger\n");
+    }
     struct DataItem* d = malloc(sizeof(struct DataItem) * size);
     for (int i = 0; i < size; i++) {
         d[i].key = NULL;
@@ -22,9 +18,16 @@ struct Graph* createGraph(int size) {
     graph->size = size;
     graph->nodes = createNodeList();
     graph->id_num = 1;
+    graph->graph_id_local = graph_id;
+    incrementGraphId();
     return graph;
 }
 
+
+// get rid of hashcode func and do it with arrays instead (also rename hasharray)
+// do hasharrays with small integers and turn it into an array
+// GET RID OF FAKEE DOUBLE LINKING FOR LISTS
+// be maximally lazy, only add features that you're 100% sure of
 int hashCode(struct Graph* g, struct Node* node) {
     int id_node = node->id;
     return id_node % g->size;
@@ -53,6 +56,7 @@ struct Node* createNode(struct Graph* g, char* data) {
     node->cost = 0;
     node->precursor = malloc(sizeof(struct Node));
     node->id = g->id_num;
+    node->parent_graph_id = g->graph_id_local;
     node->edges = createEdgeList();
     incrementId(g);
     g->hashArray[hashCode(g, node)].key = node;
