@@ -1,0 +1,7 @@
+int main (){
+    Graph g = createGraph();
+    String greeting = "Hello";
+
+    Node n = g.createNode(greeting);
+    print(n.data());  
+}

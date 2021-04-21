@@ -7,11 +7,11 @@ let function_decls =
       typ = typ; 
       fname = name; 
       formals = formallist;
-      locals = []; body = [] } map in List.fold_left add_func StringMap.empty [ 
+      body = [] } map in List.fold_left add_func StringMap.empty [ 
         (* General Functions *)
         (Void, "print", [String, "s"]);
         (Void, "printi", [Int, "i"]);
-        (Graph, "createGraph", []);
+        (Graph, "createGraph", []); (* Should take an int parameter *)
         (Nodelist, "createNodeList", []);
         (Edgelist, "createEdgeList", []);
 

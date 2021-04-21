@@ -1,48 +1,91 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../node.c"
+#include "../../graclstdlib.c"
 #include "print-functions.c"
 
-
 int main() {
-    //this is for testing purposes for createNode
+    // create graph with 2 nodes and test the functions 
+    struct Graph* g = createGraph(100);
     char greeting[] = "Hello\n";
-    struct Node* temp= malloc(sizeof(struct Node));
-    bool temporary;
-    struct Node* temp2= malloc(sizeof(struct Node));
+    char nodedata1[] = "noded1";
+    char nodedata2[] = "noded2";
+    struct Node* node1 = createNode(g, nodedata1);
+    struct Node* node2 = createNode(g, nodedata2);
+    bool success = false;
 
-    temp->data = greeting;
-    temp->visited = false;
-    temp->id=id_num;
-    id_num++;
-    printNode(temp); 
+    // test data function 
+    if (!(strcmp(data(node1), "noded1") && strcmp(data(node2), "noded2"))) {
+        success = true;
+    }
 
-    //this is for testing updateData
-    char hsm_forever[] = "zac efron\n";
-    temp = updateData(hsm_forever, temp);
-    printNode(temp);
+    // test update data function 
+    node1 = updateData(node1, greeting);
+    if ((strcmp(node1->data, "Hello\n") != 0)) {
+        success = false; 
+    }
 
-    //this is for testing visited()
-    temporary = visited(temp);
-    printf("%s", temporary ? "true\n" : "false\n");
+    // test visited function, that nodes are initialized to false
+    if (visited(node1)) {
+        success = false;
+    }
 
-    //this is for testing updateVisited()
-    temp = updateVisited(true, temp);
-    temporary = visited(temp);
-    printf("%s", temporary ? "true\n" : "false\n");
+    // test update visited 
+    if (!visited(updateVisited(node1, true))) {
+        success = false;
+    }
 
-    // this is for testing equals()
-    temp = updateData(greeting, temp);
-    temp2->data = greeting;
-    temp2->visited = false;
-    temp2->id=id_num;
-    id_num++;
-    printNode(temp2);    
-    temporary = nodeEquals(temp, temp2);
-    printf("%s", temporary ? "true\n" : "false\n");
+    // test nodeequals
+    if (!nodeEquals(node1, node1)) {
+        success = false;
+    }
 
-    temporary = nodeEquals(temp, temp);
-    printf("%s", temporary ? "true\n" : "false\n");
+    if (nodeEquals(node1, node2)) {
+        success = false; 
+    }
+    // test the 4 cost functions
+    if (cost(node1) != 0) {
+        success = false;
+    }
+    incrementCost(node1);
+    if (cost(node1) != 1) {
+        success = false;
+    }
+    decrementCost(node1);
+    if (cost(node1) != 0) {
+        success = false;
+    }
+    updateCost(node1, 5);
+    if (cost(node1) != 5) {
+        success = false;
+    }
 
-    return 0;
+    // test the two precursors 
+    if (!prec(node1)) { // should be null when inited
+        success = false;
+    }
+    node1 = set_prec(node1, node2);
+    if (prec(node1) == NULL) {
+        fprintf(stderr, "prec still null\n");
+    }
+    const char* data1;
+    if (prec(node1) == NULL) {
+        fprintf(stderr, "somehow still null\n");
+    }
+    data1 = data(prec(node1));
+    if (data1 == NULL) {
+        fprintf(stderr, "data null\n");
+    }
+    if (strcmp(data1, "noded2") != 0) {
+        fprintf(stderr, "inside strcmp\n");
+        success = false;
+    } 
+
+    // test edges function 
+    // TO-DO
+
+    if (success) {
+        printf("SUCCESS\n");
+    } else {
+        printf("FAILURE\n");
+    }
 }
