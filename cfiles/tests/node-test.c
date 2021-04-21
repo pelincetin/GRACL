@@ -45,15 +45,15 @@ int main() {
         success = false; 
     }
     // test the 4 cost functions
-    if (cost(node1) != 0) {
+    if (cost(node1) != -1) {
         success = false;
     }
     incrementCost(node1);
-    if (cost(node1) != 1) {
+    if (cost(node1) != 0) {
         success = false;
     }
     decrementCost(node1);
-    if (cost(node1) != 0) {
+    if (cost(node1) != -1) {
         success = false;
     }
     updateCost(node1, 5);

@@ -1,9 +1,6 @@
 /*
 // Based off of the Java implementation here: https://www.baeldung.com/java-dijkstra
 
-// Add cost and prec/prev to Node (?)
-// Have two different implementations -- one with DoubleTable and one with cost
-
 // HELPER METHODS
 
 // Find the unsettled node the shortest distance away

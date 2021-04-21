@@ -32,6 +32,10 @@ inttable-test: inttable-test.c
 doubletable-test: doubletable-test.c
 	$(CC) $(CFLAGS) -pthread -o doubletable-test doubletable-test.c
 
+.PHONY: dijkstra-test
+dijkstra-test: dijkstra-test.c
+	$(CC) $(CFLAGS) -pthread -o dijkstra-test dijkstra-test.c
+
 .PHONY: clean
 clean:
-	rm -f *.o node-test edge-test edgelist-test nodelist-test graph-test inttable-test doubletable-test
+	rm -f *.o node-test edge-test edgelist-test nodelist-test graph-test inttable-test doubletable-test dijkstra-test
