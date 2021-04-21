@@ -42,13 +42,13 @@ int main() {
     }
 
     // test end and start functions
-    if(edge1.end().data() != edge2.start().data()) {
+    if(!edge1.end().data().stringEquals(edge2.start().data())) {
         success = False;
     }
-    if(edge1.start().data() != edge3.start().data()) {
+    if(!edge1.start().data().stringEquals(edge3.start().data())) {
         success = False;
     }
-    if(edge1.start().data() == edge1.end().data()) {
+    if(edge1.start().data().stringEquals(edge1.end().data())) {
         success = False;
     }
     

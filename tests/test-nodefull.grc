@@ -11,13 +11,13 @@ int main() {
     bool success = False;
     
     // test data function 
-    if ((node1.data() == "noded1") && (node2.data() == "noded2")) {
+    if ((node1.data().stringEquals("noded1")) && (node2.data().stringEquals("noded2"))) {
         success = True;
     }
     
     // test update data function 
     node1 = node1.updateData(greeting);
-    if (node1.data() != "Hello") {
+    if (!node1.data().stringEquals("Hello")) {
         success = False; 
     }
     
@@ -59,13 +59,13 @@ int main() {
 
     // test setPrec and prec
     node1 = node1.setPrec(node2);
-    if (node1.prec().data() != node2.data()) {
+    if (!node1.prec().data().stringEquals(node2.data())) {
         success = False;
     }
     String data1 = node1.prec().data();
-    if (data1 != "noded2") {
+    if (!data1.stringEquals("noded2")) {
         success = False;
-    } 
+    }
     
     // test getEdge
     Edge edge1 = g.addEdge(node1, node2, 1.7);
