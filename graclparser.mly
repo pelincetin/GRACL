@@ -102,8 +102,7 @@ stmt:
   | LBRACE stmt_list RBRACE                               { Block(List.rev (BlockEnd::$2))     }
   | IF LPAREN expr RPAREN stmt %prec NOELSE               { If($3, $5, Block([]))  }
   | IF LPAREN expr RPAREN stmt ELSE stmt                  { If($3, $5, $7)         }
-  | FOR LPAREN NODE ID IN ID RPAREN stmt                  { NodeFor($4, $6, $8)    }
-  | FOR LPAREN EDGE ID IN ID RPAREN stmt                  { EdgeFor($4, $6, $8)    }                                 
+  | FOR LPAREN typ ID IN expr RPAREN stmt                 { For($3, $4, $6, Block(LoclBind(Dec($3, $4))::$8::[BlockEnd]))    }                             
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
   | vdecl                                                 { LoclBind($1)           }
 

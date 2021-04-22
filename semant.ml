@@ -146,8 +146,6 @@ let check (program) =
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
-     (* TODO: | Access(table, key)
-      | Insert(table, key, ex)*)
     in
 
     let check_bool_expr st e = 
@@ -164,9 +162,15 @@ let check (program) =
       | Return e -> let (t, e') = expr st e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
         if t = func.typ then SReturn (t, e') 
         else raise (
-	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
-		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
-	    
+	        Failure ("return gives " ^ string_of_typ t ^ " expected " ^
+		      string_of_typ func.typ ^ " in " ^ string_of_expr e))
+	    | For(t, n, e, s) -> let (lt, _) as lexpr = expr st e in 
+        let check_list = function
+        | Nodelist when t = Node -> SFor(t, n, lexpr, check_stmt st s)
+        | Edgelist when t = Edge -> SFor(t, n, lexpr, check_stmt st s)
+        | Nodelist | Edgelist as ltyp -> raise (Failure ("Cannot use " ^ string_of_typ t ^ " loop to iterate over " ^ string_of_typ ltyp))
+        | _ as badt -> raise (Failure ("Cannot use for loop to iterate over " ^ string_of_typ badt))
+        in check_list lt 
 	    (* A block is correct if each statement is correct and nothing
 	       follows any Return statement.  Nested blocks are flattened. *)   
       | Block sl -> let st = StringMap.empty::st in
