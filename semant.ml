@@ -82,13 +82,14 @@ let check (program) =
       | Noexpr     -> (Void, SNoexpr)
       | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) (* TODO: TEST ERROR HANDLING FOR ACCESS/INSERT *)
       | Access(table, node) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
-        (match nodetyp with 
-        Node -> 
-          (match tabletyp with
+        let check_access = function
+        Node -> let access_call = function
           | Inttable -> (Int, SCall("_getInt", [(Inttable, SId tablename); (Node, SId nodename)]))
           | Doubletable -> (Double, SCall("_getDouble", [(Doubletable, SId tablename); (Node, SId nodename)]))
           | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable"))
-        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable"))))
+          in access_call tabletyp
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable"))
+          in check_access nodetyp
       | Insert(table, node, ex) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
         (match nodetyp with 
         Node -> (let (extyp, ex') = expr st ex in 
