@@ -24,6 +24,10 @@ struct Node* getCheapestNode(struct NodeList* unsettledNodes) {
 struct NodeList* getShortestPath(struct Node* source, struct Node* goal) {
     struct NodeList* path = createNodeList();
     struct Node* current = goal;
+    if(nodeEquals(source, goal)){
+        prependNode(path, current);
+        return path;
+    }
     while (current->precursor) {
         prependNode(path, current);
         current = current->precursor;
@@ -63,6 +67,12 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
         }
         appendNode(settledNodes, currentNode);
     }
+    //return nothing if goal node is unsettled, i.e. not seen
+    if (!includesNode(settledNodes, goal)){
+        //return empty nodelist
+        return createNodeList();
+    }
+    //else return shortest path
     return getShortestPath(source, goal);
 }
 
