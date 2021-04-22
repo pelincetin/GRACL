@@ -29,8 +29,15 @@ struct NodeList* getShortestPath(struct Node* source, struct Node* goal) {
         return path;
     }
     while (current->precursor) {
+        //printf("current%s\n", current->data);
+        //printf("precursor%s\n", current->precursor->data);
         prependNode(path, current);
+        if(nodeEquals(current, source)){
+            //printf("inside if block %s\n", current->data);
+            return path;
+        }
         current = current->precursor;
+        
     }
     return path;
 }
@@ -49,6 +56,7 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
         // Iterate through neighbors to find minimum distance and add them to unsettled
         struct EdgeListItem* currentEdgeItem = currentNode->edges->head;
         while (currentEdgeItem) {
+            //printf("printing current explored node %s\n", currentEdgeItem->edge->end->data);
             struct Edge* currentEdge = currentEdgeItem->edge;
             struct Node* adjacentNode = currentEdge->end;
             if (!includesNode(settledNodes, adjacentNode)) {
@@ -68,6 +76,10 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
         appendNode(settledNodes, currentNode);
     }
     //return nothing if goal node is unsettled, i.e. not seen
+    //printf("settled\n");
+    //printNodeList(settledNodes);
+    //printf("\nunsettled\n");
+    //printNodeList(unsettledNodes);
     if (!includesNode(settledNodes, goal)){
         //return empty nodelist
         return createNodeList();
@@ -78,6 +90,7 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
 
 // Print data of each node (start to finish) for testing
 void printPathNodeData(struct NodeList* path){
+    //printf("FINAL\n");
     struct NodeListItem* current = path->head;
     while (current) {
         printf("%s ", current->node->data);
@@ -120,6 +133,35 @@ int main() {
 
     printf("Path should not exist\n");
     printPathNodeData(dijkstra(g, nodeB, nodeC));
+    printf("\n");
+
+    printf("Path should be A-B\n");
+    printPathNodeData(dijkstra(g, nodeA, nodeB));
+    printf("\n");
+
+    printf("Path should not exist\n");
+    printPathNodeData(dijkstra(g, nodeF, nodeA));
+    printf("\n");
+
+    printf("Path should be D-E\n");
+    printPathNodeData(dijkstra(g, nodeD, nodeE));
+    printf("\n");
+
+    printf("Path should be B-D-F\n");
+    printPathNodeData(dijkstra(g, nodeB, nodeF));
+    printf("\n");
+
+    printf("Path should be B-D-E\n");
+    printPathNodeData(dijkstra(g, nodeB, nodeE));
+    printf("\n");
+
+
+    printf("Path should be D\n");
+    printPathNodeData(dijkstra(g, nodeD, nodeD));
+    printf("\n");
+
+    printf("Path should be C\n");
+    printPathNodeData(dijkstra(g, nodeC, nodeC));
     printf("\n");
 
     return 0;
