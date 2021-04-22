@@ -59,7 +59,6 @@ struct Node* removeLast_NL(struct NodeList* node_list) {
 } 
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
-    fprintf(stderr, "hello1\n");
     struct NodeListItem* prepend_item = createNodeListItem(e);
     if (!node_list->head) {
         // if list is empty
@@ -67,15 +66,10 @@ void prependNode(struct NodeList* node_list, struct Node* e) {
         node_list->tail = prepend_item;
         return;
     }
-    fprintf(stderr, "hello2\n");
     struct NodeListItem* head = node_list->head;
-    fprintf(stderr, "hello3\n");
     prepend_item->next = head;
-    fprintf(stderr, "hello4\n");
     head->prev = prepend_item;
-    fprintf(stderr, "hello5\n");
     node_list->head = prepend_item;
-    fprintf(stderr, "hello6\n");
     return; 
 }
 

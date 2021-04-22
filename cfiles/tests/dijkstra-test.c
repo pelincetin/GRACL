@@ -11,12 +11,9 @@ struct Node* getCheapestNode(struct NodeList* unsettledNodes) {
     double cheapestCost = 100000000000000000000000.0; // had trouble with infinity so going with this as max
     struct NodeListItem* current = unsettledNodes->head;
     while (current) {
-        //printf("current node data (from getCheapestNode): %s\n", current->node->data);
         if (current->node->cost < cheapestCost) {
             cheapestCost = current->node->cost;
-            //printf("cheapestCost: %f\n", cheapestCost);
             cheapestNode = current->node;
-            //printf("cheapestNode data: %s\n", cheapestNode->data);
         }
         current = current->next;
     }
@@ -25,63 +22,30 @@ struct Node* getCheapestNode(struct NodeList* unsettledNodes) {
 
 // Recurse through goal node's precursors to start node to get full path
 struct NodeList* getShortestPath(struct Node* source, struct Node* goal) {
-    fprintf(stderr, "made it to getShortestPath\n");
     struct NodeList* path = createNodeList();
-    // printf("path head: %s\n", path->head->node->data);
-    // printf("path tail: %s\n", path->tail->node->data);
-    // if (path->head == NULL) {
-    //         printf("path head is null\n");
-    // }
     struct Node* current = goal;
-    fprintf(stderr, "hey");
-    while (current) {
-        fprintf(stderr, "wtf is happening\n");
-        // printf("current node data (from getShortestPath): %s\n", current->data);
-        // printf("path head: %s\n", path->head->node->data);
-        // printf("path tail: %s\n", path->tail->node->data);
-        // printf("printing the path\n");
-        // printNodeList(path);
+    while (current->precursor) {
         prependNode(path, current);
-        
-        // printf("printing the path after i prepend\n");
-        // fprintf(stderr, "path\n");
-        // printNodeList(path);
-        // printf("\n");
-        if (current->precursor) {
-            current = current->precursor;
-        }else{
-            current = NULL;
-        }
+        current = current->precursor;
     }
-    printNodeList(path);
     return path;
 }
 
 // Main Dijkstra method
 struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goal) {
     updateCost(source, 0);
-
     struct NodeList* settledNodes = createNodeList(); // Nodes with known cheapest cost
-    //printf("settled nodes: ");
-    //printNodeList(settledNodes);
-    //printf("\n");
     struct NodeList* unsettledNodes = createNodeList(); // Frontier nodes with unknown cheapest cost
     appendNode(unsettledNodes, source);
-    //printf("unsettled nodes: ");
-    //printNodeList(unsettledNodes);
-    //printf("\n");
-
     while (!empty_NL(unsettledNodes)) {
         struct Node* currentNode = getCheapestNode(unsettledNodes);
         if (includesNode(unsettledNodes, currentNode)) {
             removeNode(unsettledNodes, currentNode);
         }
-
         // Iterate through neighbors to find minimum distance and add them to unsettled
         struct EdgeListItem* currentEdgeItem = currentNode->edges->head;
         while (currentEdgeItem) {
             struct Edge* currentEdge = currentEdgeItem->edge;
-            //printf("current node data (from dijkstra): %s\n", currentNode->data);
             struct Node* adjacentNode = currentEdge->end;
             if (!includesNode(settledNodes, adjacentNode)) {
                 // If it's a shorter path to adjacentNode, update adjacentNode cost and prec
@@ -100,6 +64,16 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
         appendNode(settledNodes, currentNode);
     }
     return getShortestPath(source, goal);
+}
+
+// Print data of each node (start to finish) for testing
+void printPathNodeData(struct NodeList* path){
+    struct NodeListItem* current = path->head;
+    while (current) {
+        printf("%s ", current->node->data);
+        current = current->next;
+    }
+    printf("\n");
 }
 
 // TEST!
@@ -122,16 +96,21 @@ int main() {
     addEdge(g, nodeD, nodeF, 1.0);
     addEdge(g, nodeF, nodeE, 5.0);
 
-    //printf("here!\n");
+    printf("Path should be A-B-D-F\n");
+    printPathNodeData(dijkstra(g, nodeA, nodeF));
+    printf("\n");
 
-    struct NodeList* path = dijkstra(g, nodeA, nodeF);
+    printf("Path should be A-B-D-E\n");
+    printPathNodeData(dijkstra(g, nodeA, nodeE));
+    printf("\n");
 
-    // Print data of each node (start to finish) for testing
-    struct NodeListItem* current = path->head;
-    while (current) {
-        //printNode(current->node);
-        current = current->next;
-    }
+    printf("Path should be E\n");
+    printPathNodeData(dijkstra(g, nodeE, nodeE));
+    printf("\n");
 
-    return length_NL(path);
+    printf("Path should not exist\n");
+    printPathNodeData(dijkstra(g, nodeB, nodeC));
+    printf("\n");
+
+    return 0;
 }
