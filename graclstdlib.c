@@ -11,5 +11,5 @@
 #include "./cfiles/edgelist.c"
 #include "./cfiles/graph.c"
 #include "./cfiles/concurrency.c"
-//#include "./cfiles/doubletable.c"
-//#include "./cfiles/inttable.c"
+#include "./cfiles/doubletable.c"
+#include "./cfiles/inttable.c"

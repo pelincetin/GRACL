@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: all
-all: node edge edgelist nodelist graph concurrency
+all: node edge edgelist nodelist graph concurrency inttable doubletable
 
 .PHONY: node
 node: node.c
@@ -32,6 +32,14 @@ concurrency: concurrency.c
 normaldfs: normalDFS-conc.c
 	$(CC) $(CFLAGS) -pthread -o normaldfs normalDFS-conc.c
 
+.PHONY: inttable
+inttable: inttable.c
+	$(CC) $(CFLAGS) -pthread -o inttable inttable.c
+
+.PHONY: doubletable
+doubletable: doubletable.c
+	$(CC) $(CFLAGS) -pthread -o doubletable doubletable.c
+
 .PHONY: clean
 clean:
-	rm -f *.o node edge edgelist nodelist graph concurrency normaldfs
+	rm -f *.o node edge edgelist nodelist graph inttable doubletable normaldfs concurrency

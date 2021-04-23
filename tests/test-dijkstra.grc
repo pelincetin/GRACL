@@ -1,0 +1,161 @@
+
+// Based off of the Java implementation here: https://www.baeldung.com/java-dijkstra
+
+// HELPER METHODS
+
+// Find the unsettled node the shortest distance away
+
+Node getCheapestNode(NodeList unsettledNodes) {
+    Node cheapestNode;
+    double cheapestCost = infinity;  
+    for (Node n in unsettledNodes) {
+        if (n.cost() < cheapestCost) {
+            cheapestCost = n.cost();
+            cheapestNode = n;
+        }
+    }
+    return cheapestNode;
+}
+
+
+
+NodeList getShortestPath(Node source, Node goal, NodeList nl) {
+    NodeList path = createNodeList();
+    Node current = goal;
+    if(source.nodeEquals(goal)){
+        path.prependNode(current);
+    }
+    else if(!nl.includesNode(goal)){
+        path = createNodeList();
+    }
+    else{
+        bool notfound = True;
+        while (notfound) {
+            path.prependNode(current); 
+            if(current.nodeEquals(source)){
+                notfound = False;
+            }
+            current = current.prec();
+        }
+    }
+    return path;
+}
+
+
+NodeList dijkstra(Graph g, Node source, Node goal) {
+    source.updateCost(0.0);
+
+    // nodes with known cheapest cost
+    NodeList settledNodes = createNodeList(); 
+    // frontier nodes with unknown cheapest cost
+    NodeList unsettledNodes = createNodeList(); 
+    unsettledNodes.appendNode(source);
+
+    while (unsettledNodes.length_NL()>0) {
+        Node currentNode = getCheapestNode(unsettledNodes);
+        if (unsettledNodes.includesNode(currentNode)){
+            unsettledNodes.removeNode(currentNode);
+        }
+
+        // Iterate through neighbors to find minimum distance and add them to unsettled
+        EdgeList edges = currentNode.edges();
+        for (Edge edge in edges) {
+            Node adjacentNode = edge.end();
+
+            if (!settledNodes.includesNode(adjacentNode)) {
+                double newCost = currentNode.cost()+edge.weight();
+                // If it's a shorter path to adjacentNode, update adjacentNode cost and prec
+
+                if (cost(adjacentNode) == -1.0 || newCost < adjacentNode.cost()) {
+                    adjacentNode.updateCost(newCost);
+                    adjacentNode.setPrec(currentNode);
+
+                }
+                // Add neighbors to unsettled
+                if (!unsettledNodes.includesNode(adjacentNode)) {
+                    unsettledNodes.appendNode(adjacentNode);
+                }
+            }
+        }
+        settledNodes.appendNode(currentNode);
+    } 
+    return getShortestPath(source, goal, settledNodes);   
+}
+
+
+int printNl(NodeList nl){
+    if(!nl.empty_NL()){
+        for (Node n in nl){
+        print(n.data());
+    }
+    }
+    return 0;
+}
+
+// TEST!
+int main(){
+    Graph g = createGraph(6);
+
+    Node nodeA = g.createNode("A");
+    Node nodeB = g.createNode("B");
+    Node nodeC = g.createNode("C");
+    Node nodeD = g.createNode("D"); 
+    Node nodeE = g.createNode("E");
+    Node nodeF = g.createNode("F");
+    
+    Edge e1 = g.addEdge(nodeA, nodeB, 10.0);
+    Edge e2 = g.addEdge(nodeA, nodeC, 15.0);
+    Edge e3 = g.addEdge(nodeB, nodeD, 12.0);
+    Edge e4 = g.addEdge(nodeB, nodeF, 15.0);
+    Edge e5 = g.addEdge(nodeC, nodeE, 10.0);
+    Edge e6 = g.addEdge(nodeD, nodeE, 2.0);
+    Edge e7 = g.addEdge(nodeD, nodeF, 1.0); 
+    Edge e8 = g.addEdge(nodeF, nodeE, 5.0);
+    
+
+    //print("Path should be A-B-D-F");
+    NodeList path = dijkstra(g, nodeA, nodeF);
+    printNl(path);
+    
+    //print("Path should be A-B-D-E");
+    path = dijkstra(g, nodeA, nodeE);
+    printNl(path);
+
+    //print("Path should be E");
+    path = dijkstra(g, nodeE, nodeE);
+    printNl(path);
+
+    //print("Path should be A-B");
+    path = dijkstra(g, nodeA, nodeB);
+    printNl(path);
+
+    //print("Path should be D-E");
+    path = dijkstra(g, nodeD, nodeE);
+    printNl(path);
+
+    //print("Path should be B-D-F");
+    path = dijkstra(g, nodeB, nodeF);
+    printNl(path);
+
+    //print("Path should be B-D-E");
+    path = dijkstra(g, nodeB, nodeE);
+    printNl(path);
+
+    //print("Path should be D");
+    path = dijkstra(g, nodeD, nodeD);
+    printNl(path);
+
+    //print("Path should be C");
+    path = dijkstra(g, nodeC, nodeC);
+    printNl(path);
+    
+    //print("Path should not exist");
+    path = dijkstra(g, nodeB, nodeC);
+    printNl(path);
+
+    //print("Path should not exist");
+    path = dijkstra(g, nodeF, nodeA);
+    printNl(path); 
+
+    return 0;
+}

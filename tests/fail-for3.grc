@@ -1,0 +1,8 @@
+int main(){
+    Graph g = createGraph(10);
+    EdgeList el = createEdgeList();
+    el.appendEdge(g.addEdge(g.createNode("start"), g.createNode("end"), 3.14));
+    for (Edge e in el){
+        print(e.data()); //e is an Edge, data looks for Node
+    }
+}

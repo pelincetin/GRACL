@@ -4,6 +4,8 @@
 #include "print-functions.c"
 
 int main() {
+    // NEED TO TEST NODE NEIGHBORS
+
     // create graph with 2 nodes and test the functions 
     struct Graph* g = createGraph(100);
     char greeting[] = "Hello\n";
@@ -43,15 +45,15 @@ int main() {
         success = false; 
     }
     // test the 4 cost functions
-    if (cost(node1) != 0) {
+    if (cost(node1) != -1) {
         success = false;
     }
     incrementCost(node1);
-    if (cost(node1) != 1) {
+    if (cost(node1) != 0) {
         success = false;
     }
     decrementCost(node1);
-    if (cost(node1) != 0) {
+    if (cost(node1) != -1) {
         success = false;
     }
     updateCost(node1, 5);
@@ -63,25 +65,35 @@ int main() {
     if (!prec(node1)) { // should be null when inited
         success = false;
     }
-    node1 = set_prec(node1, node2);
+    node1 = setPrec(node1, node2);
     if (prec(node1) == NULL) {
-        fprintf(stderr, "prec still null\n");
+        success = false;
     }
     const char* data1;
     if (prec(node1) == NULL) {
-        fprintf(stderr, "somehow still null\n");
+        success = false;
     }
     data1 = data(prec(node1));
     if (data1 == NULL) {
-        fprintf(stderr, "data null\n");
+        success = false;
     }
     if (strcmp(data1, "noded2") != 0) {
-        fprintf(stderr, "inside strcmp\n");
         success = false;
     } 
 
-    // test edges function 
-    // TO-DO
+    // test getEdge
+    struct Edge* edge1 = addEdge(g, node1, node2, 1.7);
+    struct Edge* edge2 = addEdge(g, node2, node1, 6.8);
+    if (!edgeEquals(edge1, getEdge(node1, node2))) {
+        success = false;
+    }
+    if (!edgeEquals(edge2, getEdge(node2, node1))) {
+        success = false;
+    }
+    if (getEdge(node1, node1)) {
+        success = false;
+    }
+
 
     if (success) {
         printf("SUCCESS\n");

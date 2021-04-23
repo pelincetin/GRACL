@@ -1,9 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#ifndef BUILDSTDLIB
-#include "lockedobject.h"
-#include "node.c"
-#endif
+#include "nodelist.h"
 
 struct NodeListItem* createNodeListItem(struct Node* e) {
     struct NodeListItem* item = malloc(sizeof(struct NodeListItem));
@@ -69,17 +64,18 @@ struct Node* removeLast_NL(struct NodeList* node_list) {
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
     struct NodeListItem* prepend_item = createNodeListItem(e);
+    if (!node_list->head) {
+        // if list is empty
+        node_list->head = prepend_item;
+        node_list->tail = prepend_item;
+        return;
+    }
     struct NodeListItem* head = node_list->head;
     prepend_item->next = head;
     head->prev = prepend_item;
     node_list->head = prepend_item;
-    if (!head) {
-        // if list is empty
-        node_list->tail = prepend_item;
-    }
     return; 
 }
-
 
 bool empty_NL(struct NodeList* node_list) {
     struct NodeListItem* current;
@@ -114,7 +110,6 @@ void appendNode(struct NodeList* node_list, struct Node* n) {
     }
     return;
 }
-
 
 int removeNode(struct NodeList* node_list, struct Node* e) {
     struct NodeListItem* head = node_list->head;

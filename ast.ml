@@ -34,8 +34,7 @@ type stmt =
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | NodeFor of string * string * stmt 
-  | EdgeFor of string * string * stmt 
+  | For of typ * string * expr * stmt 
   | While of expr * stmt
   | Hatch of string * string * expr list * stmt 
   | Synch of string * stmt 
@@ -124,8 +123,7 @@ let rec string_of_stmt = function
   | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | NodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_stmt s
-  | EdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_stmt s
+  | For(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s

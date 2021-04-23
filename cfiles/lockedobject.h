@@ -12,7 +12,8 @@ struct Node {
     bool visited;
     struct EdgeList* edges;
     struct Node* precursor;
-    int cost; 
+    double cost; 
+    int parent_graph_id;
 };
 
 struct Edge {
@@ -65,18 +66,41 @@ struct Graph
     int graph_id_local;
 };
 
-// struct DoubleTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct IntTableItem {
+    struct IntTableItem* next;  
+    struct IntTableLLItem* entry;
+};
 
-// struct IntTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct IntTableLLItem {
+    struct Node* key;
+    int value;
+};
+
+struct DoubleTableItem {
+    struct DoubleTableItem* next;  
+    struct DoubleTableLLItem* entry;
+};
+
+struct DoubleTableLLItem {
+    struct Node* key;
+    double dub;
+};
+
+struct IntTable
+{
+    pthread_mutex_t lock;
+    struct IntTableItem* arr; 
+    struct NodeList* keys;
+    int size;
+    int graph_id;
+};
+
+struct DoubleTable
+{
+    pthread_mutex_t lock;
+    struct DoubleTableItem* arr;
+    struct NodeList* keys;
+    int size;
+    int doubleId;
+    int graph_id;
+};

@@ -1,41 +1,85 @@
-void printNode(Node n){
-    print(n.data());
-    if (n.visited()){
-        print("Visited");
-    }
-    else print("Not visited");
-}
-int main (){
-    //this is for testing createNode
-    Graph g = createGraph();
+int main() {
+    // NEED TO TEST NODE NEIGHBORS
+
+    // create graph with 2 nodes and test the functions 
+    Graph g = createGraph(100);
     String greeting = "Hello";
+    String nodedata1 = "noded1";
+    String nodedata2 = "noded2";
+    Node node1 = g.createNode(nodedata1);
+    Node node2 = g.createNode(nodedata2);
+    bool success = False;
+    
+    // test data function 
+    if ((node1.data().stringEquals("noded1")) && (node2.data().stringEquals("noded2"))) {
+        success = True;
+    }
+    
+    // test update data function 
+    node1 = node1.updateData(greeting);
+    if (!node1.data().stringEquals("Hello")) {
+        success = False; 
+    }
+    
+    // test visited function, that nodes are initialized to false
+    if (node1.visited()) {
+        success = False;
+    }
+    
+    // test update visited 
+    node1 = node1.updateVisited(True);
+    if (!node1.visited()) {
+        success = False;
+    }
+    
+    // test nodeequals
+    if (!node1.nodeEquals(node1)) {
+        success = False;
+    }
 
-    Node temp = g.createNode(greeting);
-    printNode(temp);    
+    if (node1.nodeEquals(node2)) {
+        success = False; 
+    }
+    // test the 4 cost functions
+    if (node1.cost() != -1.000000) {
+        success = False;
+    }
+    node1.incrementCost();
+    if (node1.cost() != 0.000000) {
+        success = False;
+    }
+    node1.decrementCost();
+    if (node1.cost() != -1.000000) {
+        success = False;
+    }
+    node1.updateCost(5.0);
+    if (node1.cost() != 5.000000) {
+        success = False;
+    }
 
-    //this is for testing updateData
-    String hsm_forever = "zac efron";
-
-    temp.updateData(hsm_forever); 
-    printNode(temp);
-
-    //this is for testing visited
-    if (temp.visited()) print("Visited");
-    else print("Not Visited");
-
-    //this is for testing updateVisited
-    temp.updateVisited(True);
-    if (temp.visited()) print("Visited");
-    else print("Not Visited");
-
-    // this is for testing equals
-    temp.updateData(greeting); 
-    Node temp2 = g.createNode(greeting);
-    printNode(temp2);    
-    if (temp.nodeEquals(temp2)) print("Equal");
-    else print("Not Equal");
-    if (temp.nodeEquals(temp)) print("Equal");
-    else print("Not Equal");
-
-    return 0;
+    // test setPrec and prec
+    node1 = node1.setPrec(node2);
+    if (!node1.prec().data().stringEquals(node2.data())) {
+        success = False;
+    }
+    String data1 = node1.prec().data();
+    if (!data1.stringEquals("noded2")) {
+        success = False;
+    }
+    
+    // test getEdge
+    Edge edge1 = g.addEdge(node1, node2, 1.7);
+    Edge edge2 = g.addEdge(node2, node1, 6.8);
+    if (!edge1.edgeEquals(node1.getEdge(node2))) {
+        success = False;
+    }
+    if (!edge2.edgeEquals(node2.getEdge(node1))) {
+        success = False;
+    }
+    
+    if (success) {
+        print("SUCCESS");
+    } else {
+        print("FAILURE");
+    }
 }

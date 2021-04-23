@@ -1,0 +1,8 @@
+int main(){
+    Graph g = createGraph(10);
+    NodeList nl = createNodeList();
+    nl.appendNode(g.createNode("yo"));
+    for (Edge e in nl){
+        //Can't use Edges to iterate over NodeList
+    }
+}

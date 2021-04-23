@@ -1,7 +1,7 @@
 int main() {
     Node n;
     {
-        Graph g = createGraph();
+        Graph g = createGraph(5);
         n = g.createNode("Hello there");
     }
     int g = 5; //Graph g out of scope

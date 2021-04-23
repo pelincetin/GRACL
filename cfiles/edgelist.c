@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#ifndef BUILDSTDLIB
-#include "lockedobject.h"
-#endif
+#include "edgelist.h"
 
 struct EdgeList* createEdgeList() {
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
