@@ -1,46 +1,56 @@
-/*
+
 // Based off of the Java implementation here: https://www.baeldung.com/java-dijkstra
 
 // HELPER METHODS
 
 // Find the unsettled node the shortest distance away
+
 Node getCheapestNode(NodeList unsettledNodes) {
-    Node cheapestNode = null;
+    Node cheapestNode;
     double cheapestCost = infinity;
+    /*
     for (Node n in unsettledNodes) {
         if (n.cost() < cheapestCost) {
             cheapestCost = n.cost();
             cheapestNode = n;
         }
     }
+    */
     return cheapestNode;
 }
-
+/*
 NodeList getShortestPath(Node source, Node goal) {
     NodeList path = createNodeList();
     Node current = goal;
-    while (current) {
-        path.prepend(current);
+    if(source.nodeEquals(goal)){
+        path.prependNode(current);
+    }
+    while (current.prec()) {
+        path.prependNode(current);
         current = current.prec();
     }
     return path;
 }
 
-Graph dijkstra(Graph g, Node source, Node goal) {
+NodeList dijkstra(Graph g, Node source, Node goal) {
     source.updateCost(0);
 
     NodeList settledNodes = createNodeList(); // nodes with known cheapest cost
     NodeList unsettledNodes = createNodeList(); // frontier nodes with unknown cheapest cost
-    unsettledNodes.append(source);
+    unsettledNodes.appendNode(source);
 
     while (!unsettledNodes.empty()) {
         Node currentNode = getCheapestNode(unsettledNodes);
-        unsettledNodes.remove(currentNode);
+        if (unsettledNodes.includes(currentNode)){
+            unsettledNodes.removeNode(currentNode);
+        }
 
         // Iterate through neighbors to find minimum distance and add them to unsettled
-        for (Node adjacentNode in currentNode.neighbors()) {
+        EdgeList edges = currentNode.edges();
+        for (Edge edge in edges) {
+            Node adjacentNode = edge.end();
             if (!settledNodes.includes(adjacentNode)) {
-                double edgeWeight = currentNode.getEdge(adjacentNode).weight();
+                double edgeWeight = currentNode.cost()+edge.weight();
                 // If it's a shorter path to adjacentNode, update adjacentNode cost and prec
                 if (adjacentNode.cost() == NULL || currentNode.cost() + edgeWeight < adjacentNode.cost()) {
                     adjacentNode.updateCost(currentNode.cost() + edgeWeight);
@@ -48,47 +58,52 @@ Graph dijkstra(Graph g, Node source, Node goal) {
                 }
                 // Add neighbors to unsettled
                 if (!unsettledNodes.includes(adjacentNode)) {
-                    unsettledNodes.add(adjacentNode);
+                    unsettledNodes.appendNode(adjacentNode);
                 }
             }
         }
-        settledNodes.add(currentNode);
+        settledNodes.appendNode(currentNode);
     }
+    if(!settledNodes.includesNode(goal)){
+        return createNodeList();
+    }
+
     return getShortestPath(source, goal)
 }
 
 // TEST!
+int main(){
+    Graph g = new Graph();
 
-Graph g = new Graph();
+    Node nodeA = g.createNode("A");
+    Node nodeB = g.createNode("B");
+    Node nodeC = g.createNode("C");
+    Node nodeD = g.createNode("D"); 
+    Node nodeE = g.createNode("E");
+    Node nodeF = g.createNode("F");
 
-Node nodeA = g.createNode("A");
-Node nodeB = g.createNode("B");
-Node nodeC = g.createNode("C");
-Node nodeD = g.createNode("D"); 
-Node nodeE = g.createNode("E");
-Node nodeF = g.createNode("F");
+    g.addEdge(nodeA, nodeB, 10.0);
+    g.addEdge(nodeA, nodeC, 15.0);
 
-g.addEdge(nodeA, nodeB, 10.0);
-g.addEdge(nodeA, nodeC, 15.0);
+    g.addEdge(nodeB, nodeD, 12.0);
+    g.addEdge(nodeB, nodeF, 15.0);
 
-g.addEdge(nodeB, nodeD, 12.0);
-g.addEdge(nodeB, nodeF, 15.0);
+    g.addEdge(nodeC, nodeE 10.0);
 
-g.addEdge(nodeC, nodeE 10.0);
+    g.addEdge(nodeD, nodeE, 2.0);
+    g.addEdge(nodeD, nodeF, 1.0);
 
-g.addEdge(nodeD, nodeE, 2.0);
-g.addEdge(nodeD, nodeF, 1.0);
+    g.addEdge(nodeF, nodeE, 5.0);
 
-g.addEdge(nodeF, nodeE, 5.0);
-
-NodeList path = dijkstra(g, nodeA);
-
-// Print data of each node (start to finish) for testing
-for (Node n in path) {
-    print(n.data());
+    NodeList path = dijkstra(g, nodeA, nodeF);
+    print("hello");
+    // Print data of each node (start to finish) for testing
+    for (Node n in path) {
+        print("hey");
+        print(n.data());
+    }
 }
 */
-
-int main() {
+int main(){
     return 0;
 }
