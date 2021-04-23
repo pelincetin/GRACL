@@ -194,7 +194,7 @@ let check (program) =
       | LoclBind(b) -> 
       begin match b with
         | Dec(t,n) -> if t = Void then raise (Failure ("illegal void local " ^ n)) else 
-          let (_, newname) = type_of_identifier n st in StringHash.replace locals n (SDec(t,newname)); SExpr(t, SId newname)
+          let (_, newname) = type_of_identifier n st in StringHash.replace locals newname (SDec(t,newname)); SExpr(t, SId newname)
         | Decinit(t,n,e) as di -> 
         if t = Void then raise (Failure ("illegal void local " ^ n)) else 
         let (rt, ex) = expr st e in
