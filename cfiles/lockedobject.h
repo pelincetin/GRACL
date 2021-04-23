@@ -12,7 +12,7 @@ struct Node {
     bool visited;
     struct EdgeList* edges;
     struct Node* precursor;
-    int cost; 
+    double cost; 
     int parent_graph_id;
 };
 

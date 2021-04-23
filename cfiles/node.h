@@ -20,13 +20,13 @@ struct Node* updateData(struct Node* node, char* new_data);
 /* Updates the visited field on the node to be the inputted bool */
 struct Node* updateVisited(struct Node* node, bool tf);
 
-int cost(struct Node* node);
+double cost(struct Node* node);
 
-int incrementCost(struct Node* node);
+double incrementCost(struct Node* node);
 
-int decrementCost(struct Node* node);
+double decrementCost(struct Node* node);
 
-int updateCost(struct Node* node, int new_cost);
+double updateCost(struct Node* node, double new_cost);
 
 struct Node* prec(struct Node* node);
 

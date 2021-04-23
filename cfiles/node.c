@@ -31,24 +31,24 @@ struct Node* updateVisited(struct Node* node, bool tf)
     return node;
 }
 
-int cost(struct Node* node)
+double cost(struct Node* node)
 {
     return node->cost;
 }
 
-int incrementCost(struct Node* node)
+double incrementCost(struct Node* node)
 {
-    node->cost = node->cost + 1;
+    node->cost = node->cost + 1.0;
     return node->cost;
 }
 
-int decrementCost(struct Node* node)
+double decrementCost(struct Node* node)
 {
-    node->cost = node->cost - 1;
+    node->cost = node->cost - 1.0;
     return node->cost;
 }
 
-int updateCost(struct Node* node, int new_cost)
+double updateCost(struct Node* node, double new_cost)
 {
     node->cost = new_cost;
     return node->cost;
@@ -85,3 +85,4 @@ struct Edge* getEdge(struct Node* node1, struct Node* node2)
     }
     return NULL;
 }
+

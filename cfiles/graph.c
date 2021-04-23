@@ -53,7 +53,7 @@ struct Node* createNode(struct Graph* g, char* data) {
     struct EdgeList* el = createEdgeList();
     node->data = data;
     node->visited = false;
-    node->cost = -1;
+    node->cost = -1.0;
     node->precursor = malloc(sizeof(struct Node));
     node->id = g->id_num;
     node->parent_graph_id = g->graph_id_local;

@@ -44,7 +44,7 @@ struct NodeList* getShortestPath(struct Node* source, struct Node* goal) {
 
 // Main Dijkstra method
 struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goal) {
-    updateCost(source, 0);
+    updateCost(source, 0.0);
     struct NodeList* settledNodes = createNodeList(); // Nodes with known cheapest cost
     struct NodeList* unsettledNodes = createNodeList(); // Frontier nodes with unknown cheapest cost
     appendNode(unsettledNodes, source);
@@ -62,7 +62,17 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
             if (!includesNode(settledNodes, adjacentNode)) {
                 // If it's a shorter path to adjacentNode, update adjacentNode cost and prec
                 double newCost = currentNode->cost + currentEdge->weight;
-                if (adjacentNode->cost == -1 || newCost < adjacentNode->cost) {
+                printf("current node is ");
+                printf("%s\n", currentNode->data);
+                
+                printf("current node cost\n");
+                printf("%f\n", cost(currentNode));
+                printf("edgeweight");
+                printf("%f\n", newCost);
+                printf("adjacent node cost");
+                printf("%f\n", cost(adjacentNode));
+
+                if (adjacentNode->cost == -1.0 || newCost < adjacentNode->cost) {
                     updateCost(adjacentNode, newCost);
                     setPrec(adjacentNode, currentNode);
                 }

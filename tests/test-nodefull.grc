@@ -41,19 +41,19 @@ int main() {
         success = False; 
     }
     // test the 4 cost functions
-    if (node1.cost() != 0) {
+    if (node1.cost() != -1.000000) {
         success = False;
     }
     node1.incrementCost();
-    if (node1.cost() != 1) {
+    if (node1.cost() != 0.000000) {
         success = False;
     }
     node1.decrementCost();
-    if (node1.cost() != 0) {
+    if (node1.cost() != -1.000000) {
         success = False;
     }
-    node1.updateCost(5);
-    if (node1.cost() != 5) {
+    node1.updateCost(5.0);
+    if (node1.cost() != 5.000000) {
         success = False;
     }
 
