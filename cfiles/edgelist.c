@@ -4,10 +4,10 @@ struct EdgeList* createEdgeList() {
     struct EdgeList* edge_list = malloc(sizeof(struct EdgeList));
     edge_list->head = NULL;
     edge_list->tail = NULL;
-    if (pthread_mutex_init(&edge_list->lock, NULL) !=0) {
+    /*if (pthread_mutex_init(&edge_list->lock, NULL) !=0) {
         fprintf(stderr, "createEdgeList: Failure to initialize mutex\n");
         exit(1); 
-    } 
+    } */
     return edge_list;
 }
 

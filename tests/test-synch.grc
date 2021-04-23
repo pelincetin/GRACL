@@ -1,5 +1,5 @@
 int main() {
-    Graph g = createGraph();
+    Graph g = createGraph(1);
     Node n = g.createNode("Node data");
     print(n.data());
     synch n {
