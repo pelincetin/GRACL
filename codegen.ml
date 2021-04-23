@@ -346,28 +346,32 @@ let translate (globals, functions) =
         ignore(L.build_br pred_bb builder);
 
         let body_bb = L.append_block context "for_body" the_function in
+        let endfor_bb = L.append_block context "end_for" the_function in
         let body_builder = L.builder_at_end context body_bb in 
         let item_load = L.build_load item_alloca "item" body_builder in
         let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "item_gep" body_builder in
         let _ = L.build_store (L.build_load item_gep "element" body_builder) (lookup n) body_builder in
-        let _ = stmt body_builder body in 
-        let item_load = L.build_load item_alloca "item" body_builder in
-        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" body_builder in
-        let next_item_load = L.build_load item_gep "next" body_builder in
-        let _ = L.build_store next_item_load item_alloca body_builder in
-        add_terminal body_builder (L.build_br pred_bb);
+        add_terminal (stmt (body_builder) body) (L.build_br endfor_bb);
+        
+        
+        let end_builder = L.builder_at_end context endfor_bb in 
+        let item_load = L.build_load item_alloca "item" end_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" end_builder in
+        let next_item_load = L.build_load item_gep "next" end_builder in
+        let _ = L.build_store next_item_load item_alloca end_builder in
+        add_terminal end_builder (L.build_br pred_bb);
 
         let pred_builder = L.builder_at_end context pred_bb in
         let bool_val = let item_load = L.build_load item_alloca "item" pred_builder in 
           L.build_is_not_null item_load "bool" pred_builder in                
 
-        let merge_bb = L.append_block context "merge" the_function in
+        let merge_bb = L.append_block context "formerge" the_function in
         ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
         L.builder_at_end context merge_bb
 
       | SIf (predicate, then_stmt, else_stmt) ->
          let bool_val = expr builder predicate in
-	 let merge_bb = L.append_block context "merge" the_function in
+	 let merge_bb = L.append_block context "ifmerge" the_function in
          let build_br_merge = L.build_br merge_bb in (* partial function *)
 
 	 let then_bb = L.append_block context "then" the_function in

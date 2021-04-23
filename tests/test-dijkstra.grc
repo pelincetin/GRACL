@@ -4,7 +4,7 @@
 // HELPER METHODS
 
 // Find the unsettled node the shortest distance away
-
+/*
 Node getCheapestNode(NodeList unsettledNodes) {
     Node cheapestNode;
     double cheapestCost = infinity;
@@ -20,8 +20,8 @@ Node getCheapestNode(NodeList unsettledNodes) {
     }
     return cheapestNode;
 }
+*/
 
-/*
 Node getCheapestNode(NodeList unsettledNodes) {
     Node cheapestNode;
     double cheapestCost = infinity;
@@ -34,7 +34,7 @@ Node getCheapestNode(NodeList unsettledNodes) {
     }
     return cheapestNode;
 }
-*/
+
 
 
 
@@ -44,14 +44,13 @@ NodeList getShortestPath(Node source, Node goal, NodeList settledNodes) {
     if(source.nodeEquals(goal)){
         path.prependNode(current);
     }
-    /*
-    while (current.prec()) {
-        path.prependNode(current);
-        current = current.prec();
-    }*/
+    printi(1);
     while (!current.nodeEquals(source)) {
+        printi(2);
         path.prependNode(current);
+        printi(3);
         current = current.prec();
+        printi(4);
     }
     if(settledNodes.includesNode(goal)){
         path = createNodeList();
@@ -157,7 +156,7 @@ int main(){
     Edge e7 = g.addEdge(nodeD, nodeF, 1.0); 
     Edge e8 = g.addEdge(nodeF, nodeE, 5.0);
     
-    NodeList path = dijkstra(g, nodeA, nodeA);
+    NodeList path = dijkstra(g, nodeA, nodeF);
 
     int i = path.length_NL();
     while (i > 0){
