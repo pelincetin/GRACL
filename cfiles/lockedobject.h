@@ -34,6 +34,7 @@ struct EdgeListItem {
 };
 
 struct EdgeList {
+    pthread_mutex_t lock;
     struct EdgeListItem* head;
     struct EdgeListItem* tail;
 };
@@ -45,6 +46,7 @@ struct NodeListItem {
 };
 
 struct NodeList {
+    pthread_mutex_t lock;
     struct NodeListItem* head;
     struct NodeListItem* tail;
 };

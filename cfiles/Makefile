@@ -28,6 +28,10 @@ graph: graph.c
 concurrency: concurrency.c
 	$(CC) $(CFLAGS) -pthread -o concurrency concurrency.c
 
+.PHONY: normaldfs
+normaldfs: normalDFS-conc.c
+	$(CC) $(CFLAGS) -pthread -o normaldfs normalDFS-conc.c
+
 .PHONY: clean
 clean:
-	rm -f *.o node edge edgelist nodelist graph concurrency
+	rm -f *.o node edge edgelist nodelist graph concurrency normaldfs
