@@ -1,0 +1,5 @@
+int main(){
+    Graph inttable = createGraph(10);
+    Node n = inttable.createNode("test");
+    printi(inttable[n]);
+}

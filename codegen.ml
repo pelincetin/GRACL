@@ -332,6 +332,39 @@ let translate (globals, functions) =
                               (* Build return statement *)
                             | _ -> L.build_ret (expr builder e) builder );
                      builder
+      | SFor(t, n, e, body) -> 
+        let list_alloca = L.build_alloca (if t = A.Node then nodelist_pointer else edgelist_pointer) "list" builder in
+        let item_alloca = L.build_alloca (if t = A.Node then nodelistitem_pointer else edgelistitem_pointer) "item" builder and
+        _ = L.build_store (expr builder e) list_alloca builder in
+        let list_load = L.build_load list_alloca "list" builder in
+        let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "list_gep" builder in
+        let list_pointer = L.build_load list_gep "item_ptr" builder in
+        let _ = L.build_store list_pointer item_alloca builder in
+
+
+        let pred_bb = L.append_block context "for" the_function in 
+        ignore(L.build_br pred_bb builder);
+
+        let body_bb = L.append_block context "for_body" the_function in
+        let body_builder = L.builder_at_end context body_bb in 
+        let item_load = L.build_load item_alloca "item" body_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "item_gep" body_builder in
+        let _ = L.build_store (L.build_load item_gep "element" body_builder) (lookup n) body_builder in
+        let _ = stmt body_builder body in 
+        let item_load = L.build_load item_alloca "item" body_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" body_builder in
+        let next_item_load = L.build_load item_gep "next" body_builder in
+        let _ = L.build_store next_item_load item_alloca body_builder in
+        add_terminal body_builder (L.build_br pred_bb);
+
+        let pred_builder = L.builder_at_end context pred_bb in
+        let bool_val = let item_load = L.build_load item_alloca "item" pred_builder in 
+          L.build_is_not_null item_load "bool" pred_builder in                
+
+        let merge_bb = L.append_block context "merge" the_function in
+        ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
+        L.builder_at_end context merge_bb
+
       | SIf (predicate, then_stmt, else_stmt) ->
          let bool_val = expr builder predicate in
 	 let merge_bb = L.append_block context "merge" the_function in
@@ -363,9 +396,6 @@ let translate (globals, functions) =
 	  ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
 	  L.builder_at_end context merge_bb
 
-      (* Implement for loops as while loops *)
-      (*| SFor (e1, e2, e3, body) -> stmt builder
-	    ( SBlock [SExpr e1 ; SWhile (e2, SBlock [body ; SExpr e3]) ] ) *)
     in
 
     (* Build the code for each statement in the function *)

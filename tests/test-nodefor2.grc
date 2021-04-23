@@ -1,0 +1,10 @@
+int main() {
+    Graph g = createGraph(10);
+    NodeList list = createNodeList();
+    list.appendNode(g.createNode("one"));
+    list.appendNode(g.createNode("two"));
+    list.appendNode(g.createNode("three"));
+    for (Node n in list){
+        print(n.data());
+    }
+}

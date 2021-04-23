@@ -21,8 +21,7 @@ type sstmt =
   | SExpr of sexpr
   | SReturn of sexpr
   | SIf of sexpr * sstmt * sstmt
-  | SNodeFor of string * string * sstmt 
-  | SEdgeFor of string * string * sstmt 
+  | SFor of typ * string * sexpr * sstmt 
   | SWhile of sexpr * sstmt
   | SBlockEnd 
 
@@ -74,8 +73,7 @@ let rec string_of_sstmt = function
   | SIf(e, s1, s2) ->  "if (" ^ string_of_sexpr e ^ ")\n" ^
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
-  | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
+  | SFor(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function

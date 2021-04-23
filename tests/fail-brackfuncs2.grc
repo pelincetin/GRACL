@@ -1,0 +1,5 @@
+int main() {
+    IntTable it = createIntTable(5);
+    String node = "Node";
+    it[node] = 10;
+}

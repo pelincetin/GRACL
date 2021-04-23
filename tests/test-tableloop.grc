@@ -1,0 +1,16 @@
+int main() {
+    Graph g = createGraph(10);
+    g.createNode("A");
+    g.createNode("B");
+    g.createNode("C");
+    IntTable it = createIntTable(10);
+    int i = 1;
+    for (Node n in g.nodes()){
+        it[n] = i;
+        i = i + 1;
+    }
+    for (Node n in g.nodes()){
+        printi(it[n]);
+    }
+    
+}

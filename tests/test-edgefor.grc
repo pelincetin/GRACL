@@ -1,0 +1,11 @@
+int main() {
+    Graph g = createGraph(100);
+    EdgeList el = createEdgeList();
+    el.appendEdge(g.addEdge(g.createNode("1"), g.createNode("2"), infinity));
+    el.appendEdge(g.addEdge(g.createNode("3"), g.createNode("4"), 3.14));
+    for (Edge e in el){
+        print(doubleToString(e.weight()));
+        print(e.start().data());
+        print(e.end().data());
+    }
+}
