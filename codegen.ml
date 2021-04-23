@@ -335,11 +335,11 @@ let translate (globals, functions) =
       | SFor(t, n, e, body) -> 
         let list_alloca = L.build_alloca (if t = A.Node then nodelist_pointer else edgelist_pointer) "list" builder in
         let item_alloca = L.build_alloca (if t = A.Node then nodelistitem_pointer else edgelistitem_pointer) "item" builder and
-        list = L.build_store (expr builder e) list_alloca builder in
+        _ = L.build_store (expr builder e) list_alloca builder in
         let list_load = L.build_load list_alloca "list" builder in
         let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "list_gep" builder in
         let list_pointer = L.build_load list_gep "item_ptr" builder in
-        let list_item = L.build_store list_pointer item_alloca builder in
+        let _ = L.build_store list_pointer item_alloca builder in
 
 
         let pred_bb = L.append_block context "for" the_function in 
@@ -349,12 +349,12 @@ let translate (globals, functions) =
         let body_builder = L.builder_at_end context body_bb in 
         let item_load = L.build_load item_alloca "item" body_builder in
         let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "item_gep" body_builder in
-        let element = L.build_store (L.build_load item_gep "element" body_builder) (lookup n) body_builder in
-        let body = stmt body_builder body in 
+        let _ = L.build_store (L.build_load item_gep "element" body_builder) (lookup n) body_builder in
+        let _ = stmt body_builder body in 
         let item_load = L.build_load item_alloca "item" body_builder in
         let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" body_builder in
         let next_item_load = L.build_load item_gep "next" body_builder in
-        let store_next = L.build_store next_item_load item_alloca body_builder in
+        let _ = L.build_store next_item_load item_alloca body_builder in
         add_terminal body_builder (L.build_br pred_bb);
 
         let pred_builder = L.builder_at_end context pred_bb in
