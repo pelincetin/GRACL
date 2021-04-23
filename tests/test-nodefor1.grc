@@ -6,5 +6,6 @@ int main() {
     g.createNode("4");
     g.createNode("5");
     for (Node n in g.nodes()) print(n.data()); 
+    print("Here");
     return 0;
 }

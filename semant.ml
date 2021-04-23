@@ -141,7 +141,7 @@ let check (program) =
           else let check_call (ft, _) e = 
             let (et, e') = expr st e in 
             let err = "illegal argument found " ^ string_of_typ et ^
-              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
+              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e  
             in (check_assign ft et err, e')
           in 
           let args' = List.map2 check_call fd.formals args
@@ -164,10 +164,14 @@ let check (program) =
         else raise (
 	        Failure ("return gives " ^ string_of_typ t ^ " expected " ^
 		      string_of_typ func.typ ^ " in " ^ string_of_expr e))
-	    | For(t, n, e, s) -> let (lt, _) as lexpr = expr st e in 
+	    | For(t, _, e, s) -> let (lt, _) as lexpr = expr st e in 
+        let ss = check_stmt st s in
+        let get_name = function
+        | SBlock(SExpr(_, SId name)::_) -> name
+        | _ -> raise (Failure("internal error: new name for loop not found")) in
         let check_list = function
-        | Nodelist when t = Node -> SFor(t, n, lexpr, check_stmt st s)
-        | Edgelist when t = Edge -> SFor(t, n, lexpr, check_stmt st s)
+        | Nodelist when t = Node -> SFor(t, get_name ss, lexpr, ss)
+        | Edgelist when t = Edge -> SFor(t, get_name ss, lexpr, ss)
         | Nodelist | Edgelist as ltyp -> raise (Failure ("Cannot use " ^ string_of_typ t ^ " loop to iterate over " ^ string_of_typ ltyp))
         | _ as badt -> raise (Failure ("Cannot use for loop to iterate over " ^ string_of_typ badt))
         in check_list lt 
@@ -190,7 +194,7 @@ let check (program) =
       | LoclBind(b) -> 
       begin match b with
         | Dec(t,n) -> if t = Void then raise (Failure ("illegal void local " ^ n)) else 
-          let (_, newname) = type_of_identifier n st in StringHash.replace locals n (SDec(t,newname)); SExpr(Void, SNoexpr)
+          let (_, newname) = type_of_identifier n st in StringHash.replace locals n (SDec(t,newname)); SExpr(t, SId newname)
         | Decinit(t,n,e) as di -> 
         if t = Void then raise (Failure ("illegal void local " ^ n)) else 
         let (rt, ex) = expr st e in
