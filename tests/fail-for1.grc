@@ -1,0 +1,7 @@
+int main(){
+    Graph g = createGraph(10);
+    g.createNode("yo");
+    for (Node n in g){
+        //Can't iterate over graph
+    }
+}

@@ -50,12 +50,26 @@ let translate (globals, functions) =
   let nodelist_pointer = L.pointer_type nodelist_t in 
   let _ = L.struct_set_body edgelistitem_t [|edge_pointer; edgelistitem_pointer; edgelistitem_pointer|] false in
   let _ = L.struct_set_body nodelistitem_t [|node_pointer; nodelistitem_pointer; nodelistitem_pointer|] false in
-  let _ = L.struct_set_body node_t [|mutex_t; i32_t; L.pointer_type i8_t; i8_t; edgelist_pointer|] false in
+  let _ = L.struct_set_body node_t [|mutex_t; i32_t; L.pointer_type i8_t; i8_t; edgelist_pointer; node_pointer; i32_t; i32_t |] false in
   let string_t   = L.pointer_type i8_t in
-  let dataitem_t = L.struct_type context [|node_pointer; nodelist_pointer|] in
+  let dataitem_t = L.struct_type context [|node_pointer; edgelist_pointer|] in
   let dataitem_pointer = L.pointer_type dataitem_t in
   let graph_t = L.struct_type context [|dataitem_pointer; nodelist_pointer; i32_t; i32_t; i32_t|] in
   let graph_pointer = L.pointer_type graph_t in
+  let doubletablellitem_t = L.struct_type context [|node_pointer; double_t|] in
+  let doubletablellitem_pointer = L.pointer_type doubletablellitem_t in
+  let doubletableitem_t = L.named_struct_type context "DoubleTableItem" in
+  let doubletableitem_pointer = L.pointer_type doubletableitem_t in
+  let doubletable_t = L.struct_type context [|mutex_t; doubletableitem_pointer; nodelist_pointer; i32_t; i32_t; i32_t|] in
+  let doubletable_pointer = L.pointer_type doubletable_t in
+  let inttablellitem_t = L.struct_type context [|node_pointer; i32_t|] in
+  let inttablellitem_pointer = L.pointer_type inttablellitem_t in
+  let inttableitem_t = L.named_struct_type context "IntTableItem" in
+  let inttableitem_pointer = L.pointer_type inttableitem_t in
+  let inttable_t = L.struct_type context [|mutex_t; inttableitem_pointer; nodelist_pointer; i32_t; i32_t|] in
+  let inttable_pointer = L.pointer_type inttable_t in
+  let _ = L.struct_set_body doubletableitem_t [|doubletableitem_pointer; doubletablellitem_pointer|] false in
+  let _ = L.struct_set_body inttableitem_t [|inttableitem_pointer; inttablellitem_pointer|] false in
 
   (* Return the LLVM type for a GRACL type *)
   let ltype_of_typ = function
@@ -69,6 +83,8 @@ let translate (globals, functions) =
     | A.Edgelist -> edgelist_pointer
     | A.Nodelist -> nodelist_pointer
     | A.Graph -> graph_pointer
+    | A.Doubletable -> doubletable_pointer
+    | A.Inttable -> inttable_pointer
   in
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
@@ -316,6 +332,39 @@ let translate (globals, functions) =
                               (* Build return statement *)
                             | _ -> L.build_ret (expr builder e) builder );
                      builder
+      | SFor(t, n, e, body) -> 
+        let list_alloca = L.build_alloca (if t = A.Node then nodelist_pointer else edgelist_pointer) "list" builder in
+        let item_alloca = L.build_alloca (if t = A.Node then nodelistitem_pointer else edgelistitem_pointer) "item" builder and
+        _ = L.build_store (expr builder e) list_alloca builder in
+        let list_load = L.build_load list_alloca "list" builder in
+        let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "list_gep" builder in
+        let list_pointer = L.build_load list_gep "item_ptr" builder in
+        let _ = L.build_store list_pointer item_alloca builder in
+
+
+        let pred_bb = L.append_block context "for" the_function in 
+        ignore(L.build_br pred_bb builder);
+
+        let body_bb = L.append_block context "for_body" the_function in
+        let body_builder = L.builder_at_end context body_bb in 
+        let item_load = L.build_load item_alloca "item" body_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "item_gep" body_builder in
+        let _ = L.build_store (L.build_load item_gep "element" body_builder) (lookup n) body_builder in
+        let _ = stmt body_builder body in 
+        let item_load = L.build_load item_alloca "item" body_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" body_builder in
+        let next_item_load = L.build_load item_gep "next" body_builder in
+        let _ = L.build_store next_item_load item_alloca body_builder in
+        add_terminal body_builder (L.build_br pred_bb);
+
+        let pred_builder = L.builder_at_end context pred_bb in
+        let bool_val = let item_load = L.build_load item_alloca "item" pred_builder in 
+          L.build_is_not_null item_load "bool" pred_builder in                
+
+        let merge_bb = L.append_block context "merge" the_function in
+        ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
+        L.builder_at_end context merge_bb
+
       | SIf (predicate, then_stmt, else_stmt) ->
          let bool_val = expr builder predicate in
 	 let merge_bb = L.append_block context "merge" the_function in
@@ -347,9 +396,6 @@ let translate (globals, functions) =
 	  ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
 	  L.builder_at_end context merge_bb
 
-      (* Implement for loops as while loops *)
-      (*| SFor (e1, e2, e3, body) -> stmt builder
-	    ( SBlock [SExpr e1 ; SWhile (e2, SBlock [body ; SExpr e3]) ] ) *)
     in
 
     (* Build the code for each statement in the function *)

@@ -1,9 +1,4 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <stdio.h>
-#ifndef BUILDSTDLIB
-#include "lockedobject.h"
-#endif
+#include "node.h"
 
 const char* data(struct Node* node)
 {
@@ -64,7 +59,7 @@ struct Node* prec(struct Node* node)
     return node->precursor;
 }
 
-struct Node* set_prec(struct Node* node, struct Node* precursor)
+struct Node* setPrec(struct Node* node, struct Node* precursor)
 {
     node->precursor = precursor;
     return node;
@@ -72,8 +67,21 @@ struct Node* set_prec(struct Node* node, struct Node* precursor)
 
 bool nodeEquals(struct Node* node1, struct Node* node2)
 {
-    if (node1->id == node2->id) {
-        return true;
+    return (node1->id == node2->id);
+}
+
+struct Edge* getEdge(struct Node* node1, struct Node* node2)
+{
+    struct EdgeListItem *current;
+    current = node1->edges->head;
+    while (current != NULL) {
+        struct Node* s_node = current->edge->start;
+        struct Node* e_node = current->edge->end;
+        if (nodeEquals(s_node, node1) && nodeEquals(e_node, node2)) {
+            return current->edge;
+        } else {
+            current = current->next;
+        }
     }
-    return false;
+    return NULL;
 }

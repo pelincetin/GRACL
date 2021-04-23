@@ -1,0 +1,89 @@
+void printNodeList(NodeList nl) {
+    /*
+    for (Node n in nl) {
+        print(n.data());
+    }*/
+    int i = nl.length_NL();
+    while (i > 0){
+        Node n = nl.removeFirst_NL();
+        print(n.data());
+        nl.appendNode(n);
+        i = i - 1;
+    }
+}
+
+int main() {
+    Graph g;
+    Node node1;
+    Node node2;
+    Node node3;
+    Edge e1;
+    Edge e2;
+    Edge e3;
+    NodeList nl1;
+    NodeList nl2;
+    String hello = "Hello";
+    String goodbye = "Goodbye";
+    String ahmed = "ahmed";
+    bool success = True;
+    
+    g = createGraph(100);
+    node1 = g.createNode(hello);
+    node2 = g.createNode(goodbye);
+    node3 = g.createNode(ahmed);
+
+    nl1 = g.nodes();
+    if (!(nl1.length_NL() == 3)) {
+        success = False;
+    }
+
+    e1 = g.addEdge(node1, node2, 14.0);
+    e2 = g.addEdge(node2, node1, 13.0);
+    e3 = g.addEdge(node1, node3, 43.0);
+
+    EdgeList el1 = node1.edges();
+    if (!(el1.length_EL() == 2)) {
+        success = False;
+    }
+
+    g.removeNodeGraph(node3);
+    nl2 = node1.neighbors();
+    if (!(nl2.length_NL() == 1)) {
+        success = False;
+    }
+    el1 = node1.edges();
+    if (!(el1.length_EL() == 1)) {
+        success = False;
+    }
+    nl2 = g.nodes();
+    if (!(nl2.length_NL() == 2)) {
+        success = False;
+    }  
+
+    g.removeEdgeGraph(e1);
+    el1 = node1.edges();
+    if (!el1.empty_EL()) {
+        success = False;
+    }  
+
+    g.removeNodeGraph(node2);
+    printNodeList(g.nodes()); // should print Hello
+
+    //addEdge(g, node1, node2, 5.0); // this line causes a segfault
+    g.removeNodeGraph(node1);
+    if (!(empty_NL(g.nodes()) == True)) {
+        success = False;
+    }    
+
+    // test making an graph with a size of 0 or smaller
+    Graph g2 = createGraph(0);
+    Graph g3 = createGraph(-1);
+
+    if (success) {
+        print("SUCCESS");
+    } else {
+        print("FAILURE");
+    }
+
+    return 0;
+}

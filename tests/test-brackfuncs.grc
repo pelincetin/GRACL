@@ -1,0 +1,11 @@
+int main() {
+    IntTable it = createIntTable(10);
+    Graph g = createGraph(10);
+    Node n1 = g.createNode("Hello");
+    it[n1] = 42;
+    printi(it[n1]);
+    DoubleTable dt = createDoubleTable(10);
+    Node n2 = g.createNode("Goodbye");
+    dt[n2] = 5.5;
+    print(doubleToString(dt[n2]));
+}

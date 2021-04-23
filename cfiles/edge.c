@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#ifndef BUILDSTDLIB
-#include "node.c"
-#endif 
+#include "edge.h"
 
 void updateEdge(struct Edge* edge, double new_weight) {
     edge->weight = new_weight;

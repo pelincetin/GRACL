@@ -1,0 +1,5 @@
+int main(){
+    Graph g = createGraph(10);
+    Node n = g.createNode("test");
+    g[n] = 5;
+}

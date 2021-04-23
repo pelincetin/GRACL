@@ -1,0 +1,11 @@
+int main() {
+    Graph g = createGraph(10);
+    g.createNode("1");
+    g.createNode("2");
+    g.createNode("3");
+    g.createNode("4");
+    g.createNode("5");
+    for (Node n in g.nodes()) print(n.data()); 
+    print("Here");
+    return 0;
+}

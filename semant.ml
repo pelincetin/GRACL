@@ -80,7 +80,25 @@ let check (program) =
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name)
+      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) (* TODO: TEST ERROR HANDLING FOR ACCESS/INSERT *)
+      | Access(table, node) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        let check_access = function
+        Node -> let access_call = function
+          | Inttable -> (Int, SCall("_getInt", [(Inttable, SId tablename); (Node, SId nodename)]))
+          | Doubletable -> (Double, SCall("_getDouble", [(Doubletable, SId tablename); (Node, SId nodename)]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable"))
+          in access_call tabletyp
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable"))
+          in check_access nodetyp
+      | Insert(table, node, ex) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
+        (match nodetyp with 
+        Node -> (let (extyp, ex') = expr st ex in 
+          let err = "illegal insertion, cannot put " ^ string_of_typ extyp ^ " " ^ string_of_expr ex ^ " in " ^ string_of_typ tabletyp  in
+          match tabletyp with
+          | Inttable -> (Void, SCall("_insertInt", [(Inttable, SId tablename); (Node, SId nodename); (check_assign Int extyp err, ex')]))
+          | Doubletable -> (Void, SCall("_insertDouble", [(Doubletable, SId tablename); (Node, SId nodename); (check_assign Double extyp err, ex')]))
+          | _ -> raise(Failure ("Cannot treat " ^ string_of_typ tabletyp ^ " as an IntTable/DoubleTable")))
+        | _ -> raise(Failure ("Cannot use " ^ string_of_typ nodetyp ^ " as keys in an IntTable/DoubleTable")))
       | Assign(var, e) as ex -> 
           let (lt, name) = type_of_identifier var st
           and (rt, e') = expr st e in
@@ -105,7 +123,7 @@ let check (program) =
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
@@ -123,13 +141,11 @@ let check (program) =
           else let check_call (ft, _) e = 
             let (et, e') = expr st e in 
             let err = "illegal argument found " ^ string_of_typ et ^
-              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
+              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e  
             in (check_assign ft et err, e')
           in 
           let args' = List.map2 check_call fd.formals args
           in (fd.typ, SCall(fname, args'))
-     (* TODO: | Access(table, key)
-      | Insert(table, key, ex)*)
     in
 
     let check_bool_expr st e = 
@@ -146,9 +162,19 @@ let check (program) =
       | Return e -> let (t, e') = expr st e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
         if t = func.typ then SReturn (t, e') 
         else raise (
-	  Failure ("return gives " ^ string_of_typ t ^ " expected " ^
-		   string_of_typ func.typ ^ " in " ^ string_of_expr e))
-	    
+	        Failure ("return gives " ^ string_of_typ t ^ " expected " ^
+		      string_of_typ func.typ ^ " in " ^ string_of_expr e))
+	    | For(t, _, e, s) -> let (lt, _) as lexpr = expr st e in 
+        let ss = check_stmt st s in
+        let get_name = function
+        | SBlock(SExpr(_, SId name)::_) -> name
+        | _ -> raise (Failure("internal error: new name for loop not found")) in
+        let check_list = function
+        | Nodelist when t = Node -> SFor(t, get_name ss, lexpr, ss)
+        | Edgelist when t = Edge -> SFor(t, get_name ss, lexpr, ss)
+        | Nodelist | Edgelist as ltyp -> raise (Failure ("Cannot use " ^ string_of_typ t ^ " loop to iterate over " ^ string_of_typ ltyp))
+        | _ as badt -> raise (Failure ("Cannot use for loop to iterate over " ^ string_of_typ badt))
+        in check_list lt 
 	    (* A block is correct if each statement is correct and nothing
 	       follows any Return statement.  Nested blocks are flattened. *)   
       | Block sl -> let st = StringMap.empty::st in
@@ -168,7 +194,7 @@ let check (program) =
       | LoclBind(b) -> 
       begin match b with
         | Dec(t,n) -> if t = Void then raise (Failure ("illegal void local " ^ n)) else 
-          let (_, newname) = type_of_identifier n st in StringHash.replace locals n (SDec(t,newname)); SExpr(Void, SNoexpr)
+          let (_, newname) = type_of_identifier n st in StringHash.replace locals newname (SDec(t,newname)); SExpr(t, SId newname)
         | Decinit(t,n,e) as di -> 
         if t = Void then raise (Failure ("illegal void local " ^ n)) else 
         let (rt, ex) = expr st e in
@@ -222,7 +248,7 @@ let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAUL
           let ty = match op with
             Add | Sub | Mult | Div | Mod when same && t1 = Int   -> Int
           | Add | Sub | Mult | Div when same && t1 = Double -> Double
-          | Equal | Neq          when same               -> Bool
+          | Equal | Neq          when same && (t1 = Int || t1 = Double || t1 = Bool) -> Bool
           | Less | Leq | Great | Geq
                      when same && (t1 = Int || t1 = Double) -> Bool
           | And | Or when same && t1 = Bool -> Bool
