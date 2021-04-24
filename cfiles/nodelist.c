@@ -12,10 +12,10 @@ struct NodeList* createNodeList() {
     struct NodeList* node_list = malloc(sizeof(struct NodeList));
     node_list->head = NULL;
     node_list->tail = NULL;
-    /*if (pthread_mutex_init(&node_list->lock, NULL) !=0) {
+    if (pthread_mutex_init(&node_list->lock, NULL) !=0) {
         fprintf(stderr, "createNodeList: Failure to initialize mutex\n");
         exit(1);
-    }*/
+    }
     return node_list;
 }
 

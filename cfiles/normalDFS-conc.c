@@ -9,34 +9,31 @@ bool goalTest(struct Node* goal, struct Node* current){
     return nodeEquals(current, goal);
 }
 
-int normalDFS(struct Node* current, struct Node* goal, bool initialize){
-    if(!initialize){
-        initialize = true;
-        fprintf(stderr, "hello1\n");
-        struct NodeList* path = createNodeList();
-        fprintf(stderr, "hello2\n");
+int normalDFS(struct Node* current, struct Node* goal, struct NodeList* myPath, struct NodeList* path){
+    _synch_start((void*)path);
+    if(!empty_NL(path)){
+        _synch_end((void*)path);
+        return 0;
     }
-    fprintf(stderr, "hello3\n");
-    appendNode(path, current);
-    fprintf(stderr, "hello4\n");
+    _synch_end((void*)path);
+
+    appendNode(myPath, current);
 
     if (goalTest(goal, current)){
+        _synch_start((void*)path);
+        path = myPath;
         printNodeList(path);
-        fprintf(stderr, "hello10\n");
+        _synch_end((void*)path);
         return 0;
     }else{
-        fprintf(stderr, "hello5\n");
         _synch_start((void*)current);
-        fprintf(stderr, "hello6\n");
         if(updateVisited(current, true) < 0){
             return -1;
         }
         _synch_end((void*)current);
-        fprintf(stderr, "hello7\n");
 
         struct EdgeListItem* currentEdgeItem = current->edges->head;
         while (currentEdgeItem) {
-            fprintf(stderr, "hello8\n");
             struct Edge* currentEdge = currentEdgeItem->edge;
             struct Node* adjacentNode = currentEdge->end;
 
@@ -46,7 +43,7 @@ int normalDFS(struct Node* current, struct Node* goal, bool initialize){
             _synch_end((void*)adjacentNode);
 
             if(!alreadyVisited){
-                normalDFS(adjacentNode, goal, true);
+                normalDFS(adjacentNode, goal, myPath, path);
             }
             currentEdgeItem = currentEdgeItem->next;
         }
@@ -54,17 +51,26 @@ int normalDFS(struct Node* current, struct Node* goal, bool initialize){
     return 0;
 }
 
+void normalDFS_start(struct Node* current, struct Node* goal, struct NodeList* myPath, struct NodeList* path){
+    struct NodeList* individual_nl = createNodeList();
+    struct Node* node = myPath->head->node;
+    appendNode(individual_nl, node);
+    
+    normalDFS(current, goal, individual_nl, path);
+}
+
 //THIS HAS TO BE DONE BY THE COMPILER
 struct normalDFSArgs {
     struct Node* current;
     struct Node* goal; 
-    bool initialize;
+    struct NodeList* myPath;
+    struct NodeList* path;
 };
 
 void *normalDFS_unwrapper(void *args) {
     struct normalDFSArgs *fargs = (struct normalDFSArgs *) args;
 
-    normalDFS(fargs->current, fargs->goal, fargs->initialize);
+    normalDFS_start(fargs->current, fargs->goal, fargs->myPath, fargs->path);
     return NULL;
 }
 
@@ -113,6 +119,8 @@ int main(){
 
     struct Node* goal = node7; 
     struct NodeList* possible_start = createNodeList();
+    struct NodeList* myPath = createNodeList();
+    struct NodeList* path = createNodeList();
     appendNode(possible_start, node1); //A
     appendNode(possible_start, node9); //I
     appendNode(possible_start, node8); //H
@@ -130,7 +138,8 @@ int main(){
         // done by the compiler
         dfsargs[i].current = currentNode->node;
         dfsargs[i].goal = goal;
-        dfsargs[i].initialize = false;
+        dfsargs[i].myPath = myPath;
+        dfsargs[i].path = path;
 
         pthread_create(threads + i, NULL, normalDFS_unwrapper, dfsargs + i);
         currentNode = currentNode->next;
