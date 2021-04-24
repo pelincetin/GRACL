@@ -3,9 +3,10 @@
 struct DoubleTable* createDoubleTable(int predicted_size) {
     if (predicted_size <= 0) {
         fprintf(stderr, "Error: DoubleTable must have be at least size 1 or larger\n");
+        exit(1);
     }
     struct DoubleTable* dt = malloc(sizeof(struct DoubleTable));
-    dt->arr = (struct DoubleTableItem *)malloc(sizeof(struct DoubleTableItem)*predicted_size);  
+    dt->arr = (struct DoubleTableItem *)calloc(predicted_size, sizeof(struct DoubleTableItem));  
     dt->size = predicted_size;
     dt->keys = createNodeList();
     dt->graph_id = -1;
@@ -55,6 +56,7 @@ struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
 void _insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
     if ((dt->graph_id != -1) && (dt->graph_id != n->parent_graph_id)) {
         fprintf(stderr, "_insertDouble error: Cannot insert nodes from different graphs into the same DoubleTable\n");
+        exit(1);
     }
     else if (dt->graph_id == -1) {
         dt->graph_id = n->parent_graph_id;

@@ -3,9 +3,10 @@
 struct IntTable* createIntTable(int predicted_size) {
     if (predicted_size <= 0) {
         fprintf(stderr, "Error: IntTable must have be at least size 1 or larger\n");
+        exit(1);
     }
     struct IntTable* it = malloc(sizeof(struct IntTable));
-    it->arr = (struct IntTableItem *)malloc(sizeof(struct IntTableItem)*predicted_size);  
+    it->arr = (struct IntTableItem *)calloc(predicted_size, sizeof(struct IntTableItem));
     it->size = predicted_size;
     it->keys = createNodeList();
     it->graph_id = -1;
@@ -55,6 +56,7 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 void _insertInt(struct IntTable* it, struct Node* n, int data) {
     if ((it->graph_id != -1) && (it->graph_id != n->parent_graph_id)) {
         fprintf(stderr, "_insertInt error: Cannot insert nodes from different graphs into the same IntTable\n");
+        exit(1);
     }
     else if (it->graph_id == -1) {
         it->graph_id = n->parent_graph_id;
@@ -80,8 +82,7 @@ struct NodeList* intKeys(struct IntTable* it){
 
 bool inInt(struct IntTable* it, struct Node* n) {
     int hashIndex = hashCode_it(it, n);
-    struct IntTableItem* start;
-    start = &it->arr[hashIndex];
+    struct IntTableItem* start = &it->arr[hashIndex];
     while (start) {
         if (start->entry && nodeEquals(start->entry->key, n)) {
             return true;

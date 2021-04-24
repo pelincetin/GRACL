@@ -97,8 +97,8 @@ int main(){
     }
 
     // test making an dt with a size of 0 or smaller
-    struct DoubleTable* dt2 = createDoubleTable(0);
-    struct DoubleTable* dt3 = createDoubleTable(-1);
+    //struct DoubleTable* dt2 = createDoubleTable(0);
+    //struct DoubleTable* dt3 = createDoubleTable(-1);
     
     if (success) {
         printf("SUCCESS\n");

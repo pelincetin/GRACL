@@ -7,13 +7,14 @@
 struct Graph* createGraph(int size) {
     if (size <= 0) {
         fprintf(stderr, "Error: Graph must have be at least size 1 or larger\n");
+        exit(1);
     }
     struct DataItem* d = malloc(sizeof(struct DataItem) * size);
     for (int i = 0; i < size; i++) {
         d[i].key = NULL;
         d[i].value = NULL;
     }
-    struct Graph* graph = malloc(sizeof(struct Graph));
+    struct Graph* graph = calloc(1, sizeof(struct Graph));
     graph->hashArray = d;
     graph->size = size;
     graph->nodes = createNodeList();

@@ -10,52 +10,61 @@ bool goalTest(struct Node* goal, struct Node* current){
 }
 
 int normalDFS(struct Node* current, struct Node* goal, struct NodeList* myPath, struct NodeList* path){
+    bool done = false;
+    int bad = 0;
     _synch_start((void*)path);
     if(!empty_NL(path)){
         _synch_end((void*)path);
-        return 0;
+        printf("break out\n");
+        done = true;
     }
-    _synch_end((void*)path);
 
-    appendNode(myPath, current);
-
-    if (goalTest(goal, current)){
-        _synch_start((void*)path);
-        path = myPath;
-        printNodeList(path);
+    if (!done) {
         _synch_end((void*)path);
-        return 0;
-    }else{
-        _synch_start((void*)current);
-        if(updateVisited(current, true) < 0){
-            return -1;
-        }
-        _synch_end((void*)current);
+        appendNode(myPath, current);
 
-        struct EdgeListItem* currentEdgeItem = current->edges->head;
-        while (currentEdgeItem) {
-            struct Edge* currentEdge = currentEdgeItem->edge;
-            struct Node* adjacentNode = currentEdge->end;
-
-            bool alreadyVisited = false;
-            _synch_start((void*)adjacentNode);
-            alreadyVisited = visited(adjacentNode);
-            _synch_end((void*)adjacentNode);
-
-            if(!alreadyVisited){
-                normalDFS(adjacentNode, goal, myPath, path);
+        if (goalTest(goal, current)){
+            _synch_start((void*)path);
+            // use forloop in grc
+            path->head = myPath->head;
+            path->tail = myPath->tail;
+            printNodeList(path);
+            _synch_end((void*)path);
+            done = true; 
+        } else {
+            _synch_start((void*)current);
+            if (updateVisited(current, true) < 0){
+                _synch_end((void*)current);
+                bad = -1;
+                done = true;
             }
-            currentEdgeItem = currentEdgeItem->next;
+            if (!done) {
+                _synch_end((void*)current);
+                struct EdgeListItem* currentEdgeItem = current->edges->head;
+                while (currentEdgeItem) {
+                    struct Edge* currentEdge = currentEdgeItem->edge;
+                    struct Node* adjacentNode = end(currentEdge);
+
+                    _synch_start((void*)adjacentNode);
+                    if (!visited(adjacentNode)) {
+                        _synch_end((void*)adjacentNode);
+                        normalDFS(adjacentNode, goal, myPath, path);
+                    } else {
+                        _synch_end((void*)adjacentNode);
+                    }
+                    currentEdgeItem = currentEdgeItem->next;
+                }
+            }
         }
     }
-    return 0;
+    return bad;
 }
 
 void normalDFS_start(struct Node* current, struct Node* goal, struct NodeList* myPath, struct NodeList* path){
+    printf("Enters dfs_start:\n");
     struct NodeList* individual_nl = createNodeList();
     struct Node* node = myPath->head->node;
     appendNode(individual_nl, node);
-    
     normalDFS(current, goal, individual_nl, path);
 }
 
@@ -68,6 +77,7 @@ struct normalDFSArgs {
 };
 
 void *normalDFS_unwrapper(void *args) {
+    printf("In unwrapper\n");
     struct normalDFSArgs *fargs = (struct normalDFSArgs *) args;
 
     normalDFS_start(fargs->current, fargs->goal, fargs->myPath, fargs->path);
@@ -117,23 +127,27 @@ int main(){
     e8 = addEdge(g, node1, node4, 13.0);
     e9 = addEdge(g, node4, node8, 43.0);
 
-    struct Node* goal = node7; 
-    struct NodeList* possible_start = createNodeList();
+    struct Node* parent = node1;
+    struct Node* goal = node10; 
+    struct NodeList* children = createNodeList();
     struct NodeList* myPath = createNodeList();
+    appendNode(myPath, parent);
+    if (nodeEquals(parent, node10)) {
+        return 0;
+    } 
+    children = neighbors(parent);
     struct NodeList* path = createNodeList();
-    appendNode(possible_start, node1); //A
-    appendNode(possible_start, node9); //I
-    appendNode(possible_start, node8); //H
 
     // this is where it starts
-    int len_possible_start = length_NL(possible_start);
+    int len_possible_start = length_NL(children);
     pthread_t* threads = malloc(sizeof(pthread_t) * len_possible_start);
     
     // done by the compiler
     struct normalDFSArgs* dfsargs = malloc(sizeof(struct normalDFSArgs) * len_possible_start);
     
-    struct NodeListItem* currentNode = possible_start->head;
+    struct NodeListItem* currentNode = children->head;
     int i = 0;
+    printf("Before while\n");
     while (currentNode) {
         // done by the compiler
         dfsargs[i].current = currentNode->node;
@@ -142,13 +156,16 @@ int main(){
         dfsargs[i].path = path;
 
         pthread_create(threads + i, NULL, normalDFS_unwrapper, dfsargs + i);
+        printf("PARENT AFTER\n");
         currentNode = currentNode->next;
         i++;
     }
     
     for (int i = 0; i< len_possible_start; i++){
+        printf("Trying to join\n");
         pthread_join(threads[i], NULL);
     }
+    printf("Finishes join\n");
 
 }
 
