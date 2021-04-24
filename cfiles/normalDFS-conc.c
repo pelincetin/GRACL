@@ -161,10 +161,7 @@ int main(){
         i++;
     }
     
-    for (int i = 0; i< len_possible_start; i++){
-        printf("Trying to join\n");
-        pthread_join(threads[i], NULL);
-    }
+    hatch_end(threads, len_possible_start);
     printf("Finishes join\n");
 
 }

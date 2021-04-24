@@ -81,13 +81,12 @@ int hatch_start(int len, HOW_TO_PASS_FUNC, HOW_TO_PASS_ARGS, NODELIST?) {
     }
     // the function associated with them is func
     // func is called on the args within it and then node at the end from nodelist
-}
+} */
 
-int hatch_end(int len) {
-    // call pthread_join on the array
+int hatch_end(pthread_t* thread_arr, int len) {
+    int j;
     for (j = 0; j < len; j++) {
-        pthread_join(&arr[j], NULL);
-    }   
+        pthread_join(thread_arr[j], NULL);
+    }
+    return 0;  
 }
-
-*/
