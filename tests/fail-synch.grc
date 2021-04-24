@@ -1,5 +1,5 @@
 int main() {
-    Graph g = createGraph();
+    Graph g = createGraph(10);
     synch g { //Cannot synch on graph
         Node n = g.createNode("Node data");
         print(n.data());

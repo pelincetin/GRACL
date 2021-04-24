@@ -38,12 +38,6 @@ int main(){
     it[node10] = 10;
     it[node10] = 10; // insert same node twice -- node10 appended to end twice without issue
 
-    // test inserting a node from a different graph
-    Graph g2 = createGraph(10);
-    String nodedata11 = "noded11";
-    Node node11 = g2.createNode(nodedata11);
-    it[node11] = 11;
-
     // test includes
     if (!it.inInt(node1) || !it.inInt(node7) || !it.inInt(node10)) {
         success = False;
@@ -78,10 +72,6 @@ int main(){
     if (keys.length_NL() != 0) {
         success = False;
     }
-
-    // test making an it with a size of 0 or smaller
-    IntTable it2 = createIntTable(0);
-    IntTable it3 = createIntTable(-1);
     
     if (success) {
         print("SUCCESS");

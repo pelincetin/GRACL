@@ -1,14 +1,6 @@
 void printNodeList(NodeList nl) {
-    /*
     for (Node n in nl) {
         print(n.data());
-    }*/
-    int i = nl.length_NL();
-    while (i > 0){
-        Node n = nl.removeFirst_NL();
-        print(n.data());
-        nl.appendNode(n);
-        i = i - 1;
     }
 }
 
@@ -69,15 +61,10 @@ int main() {
     g.removeNodeGraph(node2);
     printNodeList(g.nodes()); // should print Hello
 
-    //addEdge(g, node1, node2, 5.0); // this line causes a segfault
     g.removeNodeGraph(node1);
     if (!(empty_NL(g.nodes()) == True)) {
         success = False;
     }    
-
-    // test making an graph with a size of 0 or smaller
-    Graph g2 = createGraph(0);
-    Graph g3 = createGraph(-1);
 
     if (success) {
         print("SUCCESS");

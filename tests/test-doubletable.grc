@@ -38,11 +38,6 @@ int main(){
     dt[node10] = 10.0;
     dt[node10] = 10.0; // insert same node twice -- node10 appended to end twice without issue
 
-    // test inserting a node from a different graph
-    Graph g2 = createGraph(10);
-    String nodedata11 = "noded11";
-    Node node11 = g2.createNode(nodedata11);
-    dt[node11] = 11.0;
 
     // test includes
     if (!dt.inDouble(node1) || !dt.inDouble(node7) || !dt.inDouble(node10)) {
@@ -78,10 +73,6 @@ int main(){
     if (keys.length_NL() != 0) {
         success = False;
     }
-
-    // test making an dt with a size of 0 or smaller
-    DoubleTable dt2 = createDoubleTable(0);
-    DoubleTable dt3 = createDoubleTable(-1);
     
     if(success) {
         print("SUCCESS");
