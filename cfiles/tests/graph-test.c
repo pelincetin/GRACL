@@ -136,7 +136,7 @@ int main() {
 
     // readd 2
 
-    //addEdge(g, node1, node2, 5.0); // this line causes a segfault
+    //addEdge(g, node1, node2, 5.0); // this line causes a MEM ERROR (CHECK FOR THIS)
     removeNodeGraph(g, node1);
     if (node1->id != 0) {
         success = false;

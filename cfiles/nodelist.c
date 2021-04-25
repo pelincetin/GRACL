@@ -169,7 +169,7 @@ bool includesNode(struct NodeList* nl, struct Node* n){
 }
 
 struct NodeList* neighbors(struct Node* node){
-    if (n->deleted) {
+    if (node->deleted) {
         fprintf(stderr, "neighbors: Node deleted\n");
         exit(1);
     }

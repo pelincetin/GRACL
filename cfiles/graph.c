@@ -153,7 +153,7 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
 
 struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_node, double edge_weight) {
     if ((start_node->deleted) || (end_node->deleted)) {
-        fprrintf(stderr, "addEdge: Start or end node deleted\n");
+        fprintf(stderr, "addEdge: Start or end node deleted\n");
         exit(1);
     }
     struct Edge* edge = malloc(sizeof(struct Edge));

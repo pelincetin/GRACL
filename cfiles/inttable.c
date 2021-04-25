@@ -55,7 +55,7 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 // TODO
 void _insertInt(struct IntTable* it, struct Node* n, int data) {
     if (n->deleted) {
-        fprintf("_insertInt: Node deleted\n");
+        fprintf(stderr, "_insertInt: Node deleted\n");
         exit(1);
     }
     if ((it->graph_id != -1) && (it->graph_id != n->parent_graph_id)) {
