@@ -1,0 +1,36 @@
+int start_routine(NodeList nl){
+    for (Node n in nl){
+        print(n.data());
+    }
+    return 0;
+}
+
+int main(){
+    Graph g;
+    Node node1;
+    Node node2;
+    Node node3;
+    Node node4;
+    Node node5;
+    Node node6;
+    Node node7;
+    Node node8;
+    Node node9;
+    NodeList nl1;
+    g = createGraph(10);
+    node1 = g.createNode("A");
+    node2 = g.createNode("B");
+    node3 = g.createNode("C");
+    node4 = g.createNode("D");
+    node5 = g.createNode("E");
+    node6 = g.createNode("F");
+    node7 = g.createNode("G");
+    node8 = g.createNode("H");
+    node9 = g.createNode("I");
+    nl1 = g.nodes();
+
+    hatch nl1 start_routine(nl1){
+        print("Code executed by the parent thread");
+    }
+    return 0;
+}
