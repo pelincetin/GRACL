@@ -163,10 +163,11 @@ int main(){
         currentNode = currentNode->next;
         i++;
     }
+    hatch_end(threads, len_possible_start);
     /* COMPILER END */
 
     /* C FOR HATCH */ 
-    hatch_end(threads, len_possible_start);
+ 
     printf("Finishes join\n");
 
 }

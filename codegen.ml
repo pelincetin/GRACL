@@ -423,6 +423,35 @@ let translate (globals, functions) =
 	  ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
 	  L.builder_at_end context merge_bb
 
+      | SHatch(nl, func, args, stmts) -> let argtypes = A.Node::(List.map (fun (t, _) -> t) args) in
+      (* Wrapper Struct *)
+      let hatch_t = L.named_struct_type context "hatch_args" in
+      let _       = L.struct_set_body hatch_t (Array.of_list (List.map ltype_of_typ argtypes)) false in 
+
+      (* Unwrapper Function *)
+      let unwrapper_func_t = L.function_type string_t [| string_t |] in
+      let unwrapper_func = L.define_function ("hatch_unwrapper_" ^ func) unwrapper_func_t the_module in
+      let unwrap_builder = L.builder_at_end context (L.entry_block unwrapper_func) in
+      let (fdef, _) = StringMap.find func function_decls in let hatching_func_t = L.type_of fdef in
+
+      let void_alloca = L.build_alloca string_t "void_ptr" unwrap_builder in
+      let struct_alloca = L.build_alloca (L.pointer_type hatch_t) "wrapper" unwrap_builder in
+      let void_ptr = L.build_store (L.param unwrapper_func 0) void_alloca unwrap_builder in
+      
+      let load_ptr = L.build_load void_alloca "void_ptr" unwrap_builder in
+      let ptr_cast = L.build_bitcast load_ptr (L.pointer_type hatch_t) "cast_ptr" unwrap_builder in
+      let ptr_store = L.build_store ptr_cast struct_alloca unwrap_builder in
+      
+      let init_arg i = 
+        let struct_load = L.build_load struct_alloca "struct_ptr" unwrap_builder in
+        let arg_gep = L.build_in_bounds_gep struct_load [|L.const_int i32_t 0; L.const_int i32_t i|] "arg_gep" unwrap_builder in
+        let arg_load = L.build_load arg_gep "arg" unwrap_builder in arg_load
+      in 
+      let func_args = Array.init (Array.length (L.params fdef)) (init_arg) in
+      let func_call = L.build_call fdef func_args (if L.return_type (L.return_type hatching_func_t) = void_t then "" else "result") unwrap_builder in
+
+      let _ = L.build_ret (L.const_null string_t) unwrap_builder in
+      builder
     in
 
     (* Build the code for each statement in the function *)

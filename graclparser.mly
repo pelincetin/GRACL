@@ -105,7 +105,7 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt                  { If($3, $5, $7)         }
   | FOR LPAREN typ ID IN expr RPAREN stmt                 { For($3, $4, $6, Block(LoclBind(Dec($3, $4))::$8::[BlockEnd]))    }                             
   | WHILE LPAREN expr RPAREN stmt                         { While($3, $5)          }
-  | HATCH ID ID LPAREN args_list RPAREN stmt              { Hatch($2, $3, $5, $7)  }
+  | HATCH expr ID LPAREN args_list RPAREN stmt            { Hatch($2, $3, List.rev $5, $7)  }
   | SYNCH ID stmt                                         { Synch($2, $3)          }
   | vdecl                                                 { LoclBind($1)           }
 

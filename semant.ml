@@ -76,11 +76,12 @@ let check (program) =
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec expr st = function
         Literal  l -> (Int, SLiteral l)
+      | Nodexpr    -> (Node, SId "_fakeNode")
       | Fliteral l -> (Double, SFliteral l)
       | Sliteral l -> (String, SSliteral l)
       | BoolLit l  -> (Bool, SBoolLit l)
       | Noexpr     -> (Void, SNoexpr)
-      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) (* TODO: TEST ERROR HANDLING FOR ACCESS/INSERT *)
+      | Id s       -> let (typ, name) = type_of_identifier s st in (typ , SId name) 
       | Access(table, node) -> let (tabletyp, tablename) = type_of_identifier table st and (nodetyp, nodename) = type_of_identifier node st in
         let check_access = function
         Node -> let access_call = function
@@ -175,8 +176,11 @@ let check (program) =
         | Nodelist | Edgelist as ltyp -> raise (Failure ("Cannot use " ^ string_of_typ t ^ " loop to iterate over " ^ string_of_typ ltyp))
         | _ as badt -> raise (Failure ("Cannot use for loop to iterate over " ^ string_of_typ badt))
         in check_list lt 
-	    (* A block is correct if each statement is correct and nothing
-	       follows any Return statement.  Nested blocks are flattened. *)   
+	    | Hatch(nle, fn, args, s) -> let (nlt, _) as nlexpr = expr st nle in 
+        let check_hatch = function
+        | Nodelist -> let _ = expr st (Call(fn, Nodexpr::args)) in SHatch(nlexpr, fn, List.map (expr st) args, check_stmt st s)
+        | _ -> raise (Failure ("Hatch must given a NodeList, not a " ^ string_of_typ nlt))
+        in check_hatch nlt
       | Block sl -> let st = StringMap.empty::st in
           let rec check_stmt_list st = function
               [Return _ as s] -> [check_stmt st s]

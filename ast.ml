@@ -21,6 +21,7 @@ type expr =
   | Access of string * string
   | Insert of string * string * expr
   | Noexpr
+  | Nodexpr
      
 type bind =  
     Dec of typ * string
@@ -36,7 +37,7 @@ type stmt =
   | If of expr * stmt * stmt
   | For of typ * string * expr * stmt 
   | While of expr * stmt
-  | Hatch of string * string * expr list * stmt 
+  | Hatch of expr * string * expr list * stmt 
   | Synch of string * stmt 
   | LoclBind of bind
 
@@ -97,6 +98,7 @@ let rec string_of_expr = function
   | Access(t, n) -> t ^ "[" ^ n ^ "]"
   | Insert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_expr e
   | Noexpr -> ""
+  | Nodexpr -> ""
 
 let string_of_typ = function
     Int -> "int"
@@ -125,12 +127,12 @@ let rec string_of_stmt = function
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | For(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-  | Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
+  | Hatch(nl, f, el, s) -> "hatch " ^ string_of_expr nl ^ " " ^
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
   | Synch(l, stmt) -> "synch " ^ l ^ " " ^ string_of_stmt stmt ^ "\n"
   | LoclBind(b) -> string_of_vdecl b
   | BlockEnd -> "BlockEnd\n"
-
+ 
 
 
 let string_of_fdecl fdecl =

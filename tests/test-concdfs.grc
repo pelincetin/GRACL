@@ -105,7 +105,7 @@ int main() {
         children = neighbors(parent);
         NodeList path = createNodeList();
         
-        hatch children normalDFS_start(current, goal, myPath, path) {
+        hatch children normalDFS_start(goal, myPath, path) {
             // parent doesnt want to do anything before join in this case
         }
     }

@@ -23,7 +23,7 @@ type sstmt =
   | SIf of sexpr * sstmt * sstmt
   | SFor of typ * string * sexpr * sstmt 
   | SWhile of sexpr * sstmt
-  | SHatch of string * string * expr list * stmt 
+  | SHatch of sexpr * string * sexpr list * sstmt 
   | SBlockEnd 
 
 type sbind = 
@@ -75,6 +75,8 @@ let rec string_of_sstmt = function
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SFor(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  | SHatch(nle, fn, args, s) -> "hatch " ^ string_of_sexpr nle ^ " " ^ fn 
+      ^ "(" ^ String.concat ", " (List.map string_of_sexpr args) ^ ") " ^ string_of_sstmt s
   | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function
