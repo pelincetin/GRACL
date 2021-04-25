@@ -60,6 +60,17 @@ int main() {
         success = false;
     }
     
+    removeNodeGraph(g, node1);
+    //start(edge1);
+    //end(edge3);
+    //updateEdge(edge1, 15.0);
+    //double bad_dub = weight(edge3);
+    double good_dub = weight(edge2);
+    removeNodeGraph(g, node3);
+    //start(edge2);
+    //double bad_dub2 = weight(edge2);
+    //edgeEquals(edge1, edge2);
+
     if (success) {
         printf("SUCCESS\n");
     } else {

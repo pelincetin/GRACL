@@ -21,14 +21,15 @@ int normalDFS(Node current, Node goal, NodeList myPath){
             }
             current = current.prec();
         }
-        printNodeList(myPath);
-    }else{
+        for (Node n in myPath) {
+            print(n.data());
+        }
+    } else {
         current.updateVisited(True);
-        for (Edge e in current.edges()){
-            Node adjacentNode = e.end();
-            alreadyVisited = adjacentNode.visited();
+        for (Node n in current.neighbors()) {
+            alreadyVisited = n.visited();
             if (!alreadyVisited){
-                normalDFS(adjacentNode, goal, myPath);
+                normalDFS(n, goal, myPath);
             }
         }
     }

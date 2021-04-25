@@ -54,6 +54,10 @@ struct IntTableItem* createIntTableItem(struct Node* n, int data) {
 // technically complexity could improve if we insert in a sorted manner
 // TODO
 void _insertInt(struct IntTable* it, struct Node* n, int data) {
+    if (n->deleted) {
+        fprintf(stderr, "_insertInt: Node deleted\n");
+        exit(1);
+    }
     if ((it->graph_id != -1) && (it->graph_id != n->parent_graph_id)) {
         fprintf(stderr, "_insertInt error: Cannot insert nodes from different graphs into the same IntTable\n");
         exit(1);

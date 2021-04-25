@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include "../graclstdlib.c"
-#include "tests/print-functions.c"
+#include "../../graclstdlib.c"
+#include "../tests/print-functions.c"
 
 bool goalTest(struct Node* goal, struct Node* current){
     return nodeEquals(current, goal);
@@ -66,7 +66,7 @@ void normalDFS_start(struct Node* current, struct Node* goal, struct NodeList* m
     struct Node* node = myPath->head->node;
     appendNode(individual_nl, node);
     normalDFS(current, goal, individual_nl, path);
-}
+} 
 
 /* COMPILER START */
 struct normalDFSArgs {
@@ -106,7 +106,7 @@ int main(){
     struct Edge* e7;
     struct Edge* e8;
     struct Edge* e9;
-    g = createGraph(12);
+    g = createGraph(4);
     node1 = createNode(g, "A");
     node2 = createNode(g, "B");
     node3 = createNode(g, "C");

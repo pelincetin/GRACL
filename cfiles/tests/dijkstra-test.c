@@ -62,15 +62,15 @@ struct NodeList* dijkstra(struct Graph* g, struct Node* source, struct Node* goa
             if (!includesNode(settledNodes, adjacentNode)) {
                 // If it's a shorter path to adjacentNode, update adjacentNode cost and prec
                 double newCost = currentNode->cost + currentEdge->weight;
-                printf("current node is ");
-                printf("%s\n", currentNode->data);
-                
+                //printf("current node is ");
+                //printf("%s\n", currentNode->data);
+                /*
                 printf("current node cost\n");
                 printf("%f\n", cost(currentNode));
                 printf("edgeweight");
                 printf("%f\n", newCost);
                 printf("adjacent node cost");
-                printf("%f\n", cost(adjacentNode));
+                printf("%f\n", cost(adjacentNode)); */
 
                 if (adjacentNode->cost == -1.0 || newCost < adjacentNode->cost) {
                     updateCost(adjacentNode, newCost);

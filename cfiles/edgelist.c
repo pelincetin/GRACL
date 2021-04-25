@@ -63,6 +63,10 @@ struct Edge* removeLast_EL(struct EdgeList* edge_list) {
 }
 
 void prependEdge(struct EdgeList* edge_list, struct Edge* e) {
+    if (e->deleted) {
+        fprintf(stderr, "prependEdge: Edge deleted\n");
+        exit(1);
+    }
     struct EdgeListItem *prepend_item = createEdgeListItem(e);
     struct EdgeListItem *head = edge_list->head;
     prepend_item->next = head;
@@ -127,6 +131,10 @@ int removeEdge(struct EdgeList* edge_list, struct Edge* e) {
 }
 
 void appendEdge(struct EdgeList* edge_list, struct Edge* e) {
+    if (e->deleted) {
+        fprintf(stderr, "appendEdge: Edge deleted\n");
+        exit(1);
+    }
     struct EdgeListItem* new_last = createEdgeListItem(e);
     if (!empty_EL(edge_list)) {
         // if list not empty;

@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g -Wall
 
 .PHONY: all
-all: node-test edge-test nodelist-test edgelist-test graph-test concurrency-test inttable-test doubletable-test dijkstra-test
+all: node-test edge-test nodelist-test edgelist-test graph-test concurrency-test inttable-test doubletable-test dijkstra-test normaldfs-test hatch-test
 
 .PHONY: node-test
 node-test: node-test.c
@@ -40,6 +40,14 @@ doubletable-test: doubletable-test.c
 dijkstra-test: dijkstra-test.c
 	$(CC) $(CFLAGS) -pthread -o dijkstra-test dijkstra-test.c
 
+.PHONY: normaldfs-test
+normaldfs-test: normalDFS-conc.c
+	$(CC) $(CFLAGS) -pthread -o normaldfs-test normalDFS-conc.c
+
+.PHONY: hatch-test
+hatch-test: hatch-test.c
+	$(CC) $(CFLAGS) -pthread -o hatch-test hatch-test.c
+
 .PHONY: clean
 clean:
-	rm -f *.o node-test edge-test edgelist-test nodelist-test graph-test inttable-test doubletable-test dijkstra-test concurrency-test
+	rm -f *.o node-test edge-test edgelist-test nodelist-test graph-test inttable-test doubletable-test dijkstra-test concurrency-test normaldfs-test hatch-test

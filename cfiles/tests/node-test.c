@@ -94,6 +94,24 @@ int main() {
         success = false;
     }
 
+    removeNodeGraph(g, node1);
+    removeNodeGraph(g, node2);
+
+    // these (as desired, error out)
+    //struct Node* parent = prec(node1);
+    //setPrec(node1, node2);
+    //char* dat = data(node1);
+    //bool vis = visited(node2);
+    //struct Edgelist* edge = edges(node1);
+    //double cost1 = cost(node2);
+    //incrementCost(node2);
+    //decrementCost(node1);
+    //updateCost(node1, 3.0);
+    //struct Edge* e = getEdge(node1, node2);
+    //bool bad_test = nodeEquals(node1, node2);
+    //updateVisited(node1, true);
+    //updateData(node2, "hi");
+
 
     if (success) {
         printf("SUCCESS\n");

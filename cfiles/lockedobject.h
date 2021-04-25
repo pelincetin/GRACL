@@ -14,6 +14,7 @@ struct Node {
     struct Node* precursor;
     double cost; 
     int parent_graph_id;
+    bool deleted; 
 };
 
 struct Edge {
@@ -26,6 +27,7 @@ struct Edge {
     double weight; 
     struct Node* start; 
     struct Node* end;
+    bool deleted; 
 };
 
 struct EdgeListItem {
@@ -64,6 +66,7 @@ struct Graph
     int size;
     int id_num;
     int graph_id_local;
+    int occupied;
 };
 
 struct IntTableItem {
