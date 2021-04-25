@@ -30,12 +30,18 @@ let translate (globals, functions) =
 
   (* Get types from the context *)
   let i32_t      = L.i32_type    context
+  and i16_t      = L.i16_type    context 
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and double_t   = L.double_type context
   and void_t     = L.void_type   context
   and i64_t      = L.i64_type    context in
-  let mutex_t    = L.struct_type context [| i64_t; L.array_type i8_t 56 |] in
+  let pthread_list = L.named_struct_type context "pthread_list" in
+  let pthread_list_pointer = L.pointer_type pthread_list in
+  let _          = L.struct_set_body pthread_list [|pthread_list_pointer; pthread_list_pointer|] false in 
+  let mutex_s    = L.struct_type context [|i32_t; i32_t; i32_t; i32_t; i32_t; i16_t; i16_t; pthread_list|] in
+  let mutex_t    = L.named_struct_type context "Mutex" in
+  let _ = L.struct_set_body mutex_t [| mutex_s |] false in
   let edgelistitem_t = L.named_struct_type context "EdgeListItem" in
   let nodelistitem_t = L.named_struct_type context "NodeListItem" in
   let node_t     = L.named_struct_type context "Node" in
@@ -44,8 +50,8 @@ let translate (globals, functions) =
   let edge_pointer = L.pointer_type edge_t in
   let edgelistitem_pointer = L.pointer_type edgelistitem_t in
   let nodelistitem_pointer = L.pointer_type nodelistitem_t in
-  let edgelist_t = L.struct_type context [| mutex_t, edgelistitem_pointer; edgelistitem_pointer|] in
-  let nodelist_t = L.struct_type context [| mutex_t, nodelistitem_pointer; nodelistitem_pointer|] in
+  let edgelist_t = L.struct_type context [| mutex_t; edgelistitem_pointer; edgelistitem_pointer|] in
+  let nodelist_t = L.struct_type context [| mutex_t; nodelistitem_pointer; nodelistitem_pointer|] in
   let edgelist_pointer = L.pointer_type edgelist_t in 
   let nodelist_pointer = L.pointer_type nodelist_t in 
   let _ = L.struct_set_body edgelistitem_t [|edge_pointer; edgelistitem_pointer; edgelistitem_pointer|] false in
@@ -290,7 +296,7 @@ let translate (globals, functions) =
         L.build_call synch_start_func [| void |] "synch_start" builder
       | SCall("_synch_end", [e]) -> 
         let void = L.build_bitcast (expr builder e) string_t "void_ptr" builder in
-        L.build_call synch_end_func [| void |] "synch_end" builder
+        L.build_call synch_end_func [| void |] "synch_end" builder      
       | SCall("doubleToString", [e]) -> 
         let arr = (L.build_alloca (L.array_type i8_t 1000) "floatarr" builder) in
         let arrptr =  L.build_in_bounds_gep arr [|L.const_int i32_t 0; L.const_int i32_t 0|] "arrptr" builder in
@@ -353,9 +359,10 @@ let translate (globals, functions) =
         let item_alloca = L.build_alloca (if t = A.Node then nodelistitem_pointer else edgelistitem_pointer) "item" builder and
         _ = L.build_store (expr builder e) list_alloca builder in
         let list_load = L.build_load list_alloca "list" builder in
-        let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "list_gep" builder in
+        let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "list_gep" builder in
         let list_pointer = L.build_load list_gep "item_ptr" builder in
         let _ = L.build_store list_pointer item_alloca builder in
+        
 
 
         let pred_bb = L.append_block context "for" the_function in 
@@ -383,7 +390,7 @@ let translate (globals, functions) =
 
         let merge_bb = L.append_block context "formerge" the_function in
         ignore(L.build_cond_br bool_val body_bb merge_bb pred_builder);
-        L.builder_at_end context merge_bb
+        L.builder_at_end context merge_bb 
 
       | SIf (predicate, then_stmt, else_stmt) ->
          let bool_val = expr builder predicate in
