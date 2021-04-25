@@ -66,6 +66,7 @@ let function_decls =
         (Void, "appendNode", [(Nodelist, "nl"); (Node, "n")]);
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
         (Bool, "includesNode", [(Nodelist, "nl"); (Node, "n")]);
+        (NodeList "neighbors", [(Node, "node")]);
 
         (* Edgelist Functions *)
         (Edge, "head_EL", [Edgelist, "el"]);

@@ -68,7 +68,7 @@ void normalDFS_start(struct Node* current, struct Node* goal, struct NodeList* m
     normalDFS(current, goal, individual_nl, path);
 }
 
-//THIS HAS TO BE DONE BY THE COMPILER
+/* COMPILER START */
 struct normalDFSArgs {
     struct Node* current;
     struct Node* goal; 
@@ -83,7 +83,7 @@ void *normalDFS_unwrapper(void *args) {
     normalDFS_start(fargs->current, fargs->goal, fargs->myPath, fargs->path);
     return NULL;
 }
-
+/* COMPILER END */
 
 int main(){
     struct Graph* g;
@@ -138,8 +138,11 @@ int main(){
     children = neighbors(parent);
     struct NodeList* path = createNodeList();
 
-    // this is where it starts
     int len_possible_start = length_NL(children);
+
+    /* user passes list of nodes, functions, arguments to compiler */
+
+    /* COMPILER START */
     pthread_t* threads = malloc(sizeof(pthread_t) * len_possible_start);
     
     // done by the compiler
@@ -160,11 +163,10 @@ int main(){
         currentNode = currentNode->next;
         i++;
     }
-    
-    for (int i = 0; i< len_possible_start; i++){
-        printf("Trying to join\n");
-        pthread_join(threads[i], NULL);
-    }
+    /* COMPILER END */
+
+    /* C FOR HATCH */ 
+    hatch_end(threads, len_possible_start);
     printf("Finishes join\n");
 
 }
