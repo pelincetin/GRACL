@@ -147,7 +147,6 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
 
     // null out key
     g->hashArray[n->id % g->size].key = NULL;
-    g->occupied--;
     return 0;
 }
 

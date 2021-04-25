@@ -106,7 +106,7 @@ int main(){
     struct Edge* e7;
     struct Edge* e8;
     struct Edge* e9;
-    g = createGraph(12);
+    g = createGraph(4);
     node1 = createNode(g, "A");
     node2 = createNode(g, "B");
     node3 = createNode(g, "C");

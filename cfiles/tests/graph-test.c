@@ -34,10 +34,15 @@ int main() {
     char ahmed[] = "ahmed\n";
     bool success = true;
     
-    g = createGraph(100);
+    g = createGraph(3);
     node1 = createNode(g, hello);
     node2 = createNode(g, goodbye);
     node3 = createNode(g, ahmed);
+    struct Node* node4 = createNode(g, "D");
+    struct Node* node5 = createNode(g, "E");
+    struct Node* node6 = createNode(g, "F");
+    struct Node* node7 = createNode(g, "G"); 
+    struct Node* node8 = createNode(g, "H"); 
 
     nl1 = nodes(g);
     if (!(length_NL(nl1) == 3)) {
@@ -74,6 +79,8 @@ int main() {
     removeNodeGraph(g, node2);
     printNodeList(nodes(g)); // should print Hello
     printEdgeList(edges(node1)); // should print nothing
+
+    // readd 2
 
     //addEdge(g, node1, node2, 5.0); // this line causes a segfault
     removeNodeGraph(g, node1);
