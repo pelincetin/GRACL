@@ -13,4 +13,13 @@ After remove edge (list should be yo goodbye): Yo
 Goodbye
 
 
+Start node: Yo
+End node: Goodbye
+Weight: 4.800000
+Start node: Goodbye
+End node: Yo
+Weight: 4.800000
+Start node: Hello
+End node: Goodbye
+Weight: 4.800000
 SUCCESS

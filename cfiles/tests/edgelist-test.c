@@ -8,7 +8,7 @@ int main() {
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
     char yo[] = "Yo\n";
-    struct Graph* g = createGraph(100);
+    struct Graph* g = createGraph(2);
     struct Node* n1 = createNode(g, hello);
     struct Node* n2 = createNode(g, goodbye);
     struct Node* n3 = createNode(g, yo);
@@ -21,11 +21,13 @@ int main() {
     if (!empty_EL(el)) {
         success = false; 
     }
+
     appendEdge(el, e1);
     prependEdge(el, e2);
     if (!(length_EL(el)==2)) {
         success = false; 
     }
+
     prependEdge(el, e3);
     if (!(length_EL(el)==3)) {
         success = false; 
@@ -65,6 +67,34 @@ int main() {
     if (!empty_EL(el)) {
         success = false; 
     }
+
+    struct Edge* e4 = addEdge(g, n3, n2, 4.8);
+    struct Edge* e5 = addEdge(g, n2, n3, 4.8);
+    struct Edge* e6 = addEdge(g, n1, n2, 4.8);
+    appendEdge(el, e4);
+    appendEdge(el, e5);
+    appendEdge(el, e6);
+    removeEdgeGraph(g, e4);
+    printEdge(head_EL(el));
+    printf("\n");
+
+    removeFirst_EL(el);
+    //Breaks the program, should print prependEdge: Edge  deleted
+    //prependEdge(el, e4);
+
+    //Breaks the program, should print appendEdge: Edge  deleted
+    //appendEdge(el, e4);
+    printEdge(head_EL(el));
+    printf("\n");
+
+    removeEdge(el, e5);
+    printEdge(tail_EL(el));
+    printf("\n");
+
+    removeEdge(el, e6);
+
+    //this will give an error because it's empty
+    //printEdge(head_EL(el));
 
     if (success) {
         printf("SUCCESS\n");

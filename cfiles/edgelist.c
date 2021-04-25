@@ -6,7 +6,7 @@ struct EdgeList* createEdgeList() {
     edge_list->tail = NULL;
     if (pthread_mutex_init(&edge_list->lock, NULL) !=0) {
         fprintf(stderr, "createEdgeList: Failure to initialize mutex\n");
-        exit(1); 
+        exit(1);
     }
     return edge_list;
 }
