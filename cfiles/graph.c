@@ -19,7 +19,7 @@ struct Graph* createGraph(int size) {
     graph->size = size;
     graph->occupied = 0;
     graph->nodes = createNodeList();
-    graph->id_num = 1;
+    graph->id_num = 0;
     graph->graph_id_local = graph_id;
     incrementGraphId();
     return graph;
@@ -44,6 +44,7 @@ struct Node* createNode(struct Graph* g, char* data) {
     struct Node* node = malloc(sizeof(struct Node));
     struct EdgeList* el = createEdgeList();
     node->data = data;
+    node->deleted = false; 
     node->visited = false;
     node->cost = -1.0;
     node->precursor = malloc(sizeof(struct Node));
@@ -93,6 +94,7 @@ int removeEdgeGraph(struct Graph* g, struct Edge* e) {
     struct Node* start_node = start(e);
     edge_list = start_node->edges;
     removeEdge(edge_list, e);
+    e->deleted = true;
     return 0;
 }
 
@@ -104,12 +106,10 @@ int removeEdgeGraph(struct Graph* g, struct Edge* e) {
  * for all edges of node to delete, delete these from other value lists
  */
 int removeNodeGraph(struct Graph* g, struct Node* n) {
-    struct NodeList* all_nodes;
     struct EdgeList* values;
     struct EdgeListItem* list_item = NULL; 
 
-    all_nodes = nodes(g);
-    removeNode(all_nodes, n);
+    removeNode(g->nodes, n);
 
     // get values
     values = g->hashArray[n->id % g->size].value;
@@ -147,10 +147,15 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
 
     // null out key
     g->hashArray[n->id % g->size].key = NULL;
+    n->deleted = true;
     return 0;
 }
 
 struct Edge* addEdge(struct Graph* g, struct Node* start_node, struct Node* end_node, double edge_weight) {
+    if ((start_node->deleted) || (end_node->deleted)) {
+        fprrintf(stderr, "addEdge: Start or end node deleted\n");
+        exit(1);
+    }
     struct Edge* edge = malloc(sizeof(struct Edge));
     edge->start = start_node;
     edge->end = end_node;

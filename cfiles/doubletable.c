@@ -54,6 +54,10 @@ struct DoubleTableItem* createDoubleTableItem(struct Node* n, double data) {
 // technically complexity could improve if we insert in a sorted manner
 // TODO
 void _insertDouble(struct DoubleTable* dt, struct Node* n, double data) {
+    if (n->deleted) {
+        fprintf("_insertInt: Node deleted\n");
+        exit(1);
+    }
     if ((dt->graph_id != -1) && (dt->graph_id != n->parent_graph_id)) {
         fprintf(stderr, "_insertDouble error: Cannot insert nodes from different graphs into the same DoubleTable\n");
         exit(1);

@@ -63,6 +63,10 @@ struct Node* removeLast_NL(struct NodeList* node_list) {
 } 
 
 void prependNode(struct NodeList* node_list, struct Node* e) {
+    if (e->deleted) {
+        fprintf(stderr, "prependNode: Node deleted\n");
+        exit(1);
+    }
     struct NodeListItem* prepend_item = createNodeListItem(e);
     if (!node_list->head) {
         // if list is empty
@@ -95,6 +99,10 @@ int length_NL(struct NodeList* node_list) {
 }
 
 void appendNode(struct NodeList* node_list, struct Node* n) {
+    if (n->deleted) {
+        fprintf(stderr, "appendNode: Node deleted\n");
+        exit(1);
+    }
     struct NodeListItem* new_last = createNodeListItem(n);
     if (!empty_NL(node_list)) {
         // if list not empty;
@@ -161,6 +169,10 @@ bool includesNode(struct NodeList* nl, struct Node* n){
 }
 
 struct NodeList* neighbors(struct Node* node){
+    if (n->deleted) {
+        fprintf(stderr, "neighbors: Node deleted\n");
+        exit(1);
+    }
     struct EdgeList* edges = node->edges;
     struct NodeList* neighbors = createNodeList();
     struct EdgeListItem* current = edges->head;
