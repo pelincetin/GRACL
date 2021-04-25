@@ -1,7 +1,5 @@
-int start_routine(NodeList nl){
-    for (Node n in nl){
-        print(n.data());
-    }
+int start_routine(Node n){
+    print(n.data());
     return 0;
 }
 
@@ -29,7 +27,7 @@ int main(){
     node9 = g.createNode("I");
     nl1 = g.nodes();
 
-    hatch nl1 start_routine(nl1){
+    hatch nl1 start_routine(){
         print("Code executed by the parent thread");
     }
     return 0;
