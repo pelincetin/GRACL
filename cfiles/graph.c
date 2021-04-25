@@ -55,21 +55,21 @@ struct Node* createNode(struct Graph* g, char* data) {
     int id_node = node->id;
     g->hashArray[id_node % size_old].key = node;
     g->hashArray[id_node % size_old].value = el;
-    graph->occupied++;
-    if (graph->occupied == graph->size) {
+    g->occupied++;
+    if (g->occupied == g->size) {
         int size_new = 2*size_old;
-        graph->size = size_new;
+        g->size = size_new;
         // save old array
         struct DataItem* arr = g->hashArray;
         // now calloc new double array
-        struct DataItem* dnew = malloc(sizeof(struct DataItem) * size_new;
+        struct DataItem* dnew = malloc(sizeof(struct DataItem) * size_new);
         for (int i = 0; i < size_new; i++) {
             dnew[i].key = NULL;
             dnew[i].value = NULL;
         } 
         for (int i = 0; i < size_old; i++) {
-            dnew[i].key = dold[i].key;
-            dnew[i].value = dold[i].value;
+            dnew[i].key = arr[i].key;
+            dnew[i].value = arr[i].value;
         } 
         g->hashArray = dnew;    
     }
