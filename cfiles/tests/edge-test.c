@@ -68,7 +68,7 @@ int main() {
     double good_dub = weight(edge2);
     removeNodeGraph(g, node3);
     //start(edge2);
-    //double bad_dub = weight(edge2);
+    //double bad_dub2 = weight(edge2);
     //edgeEquals(edge1, edge2);
 
     if (success) {
