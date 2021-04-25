@@ -120,7 +120,6 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     // iterate through values and removeEdgeGraph for each
     while (list_item) {
         removeEdgeGraph(g, list_item->edge);
-        list_item->edge->deleted = true;
         list_item = list_item->next;
     }
     // null out the values
@@ -138,12 +137,7 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
     
     while (list_item) {
         struct Edge* e = list_item->edge;
-        struct Node* end_n = end(e);
-        values = g->hashArray[end_n->id % g->size].value;
-        if (values) {
-            removeEdge(values, e);
-        }
-        e->deleted = true;
+        removeEdgeGraph(g, e);
         list_item = list_item->next;
     }
 
