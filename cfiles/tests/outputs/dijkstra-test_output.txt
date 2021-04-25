@@ -1,0 +1,33 @@
+Path should be A-B-D-F
+A B D F 
+
+Path should be A-B-D-E
+A B D E 
+
+Path should be E
+E 
+
+Path should not exist
+
+
+Path should be A-B
+A B 
+
+Path should not exist
+
+
+Path should be D-E
+D E 
+
+Path should be B-D-F
+B D F 
+
+Path should be B-D-E
+B D E 
+
+Path should be D
+D 
+
+Path should be C
+C 
+

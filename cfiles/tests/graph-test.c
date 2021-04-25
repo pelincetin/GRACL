@@ -59,13 +59,15 @@ int main() {
     }
 
     removeNodeGraph(g, node3);
-    //this line should break the program
+    //Breaks the program, should print edges: Node deleted
     //struct EdgeList* el1 = edges(node3);
     //printEdgeList(el1);
 
-    //this should break the program
+    //Breaks the program, should print weight:Edge deleted
     //double weight_e3 = weight(e3);
     //printf("%f", weight_e3);
+
+    //Breaks the program, should print weight:Edge deleted
     //double weight_e5 = weight(e5);
     //printf("%f", weight_e5);
 
@@ -108,34 +110,34 @@ int main() {
         success = false;
     }
 
-    //make an edge with two deleted nodes
-    //make an edge with one deleted node
-
-    // what if user adds back in node1? THEY CAN'T HA 
+    // Check that the user can't add back node1 
     node8 = createNode(g, "C");
     if (node8->id != 8) {
         success = false;
     }
     node7 = createNode(g, "H");
     e11 = addEdge(g, node8, node7, 23.0);
+
     //should print C
     printf("%s\n", data(start(e11)));
+
     // Remove the edge and make sure nothing happened to the node
     removeEdgeGraph(g, e11);
-    //this should break the program
+
+    //Breaks the program, should print start: Edge deleted
     //printf("%s\n", data(start(e11)));
     printf("%s\n", data(node7));
 
-    //should break the program because the nodes are deleted
+    //Breaks the program, should print addEdge: Start or end node deleted
     //e11 = addEdge(g, node5, node4, 23.0);
 
     printNodeList(nodes(g)); 
 
-    //this will break bc this is already deleted
+    //Breaks the program, should print nodeEquals: Node deleted
     //removeNodeGraph(g, node3);
-    //remove the same node twice
 
     // test making an graph with a size of 0 or smaller
+    // Breaks the program, Error: Graph must have be at least size 1 or larger
     //struct Graph* g2 = createGraph(0);
     //struct Graph* g3 = createGraph(-1);
 
