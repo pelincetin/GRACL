@@ -66,7 +66,7 @@ void normalDFS_start(struct Node* current, struct Node* goal, struct NodeList* m
     struct Node* node = myPath->head->node;
     appendNode(individual_nl, node);
     normalDFS(current, goal, individual_nl, path);
-}
+} 
 
 /* COMPILER START */
 struct normalDFSArgs {
