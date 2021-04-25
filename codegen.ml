@@ -36,6 +36,7 @@ let translate (globals, functions) =
   and double_t   = L.double_type context
   and void_t     = L.void_type   context
   and i64_t      = L.i64_type    context in
+  let pthread_attr = L.struct_type context [| i64_t; (L.array_type i8_t 48) |] in 
   let pthread_list = L.named_struct_type context "pthread_list" in
   let pthread_list_pointer = L.pointer_type pthread_list in
   let _          = L.struct_set_body pthread_list [|pthread_list_pointer; pthread_list_pointer|] false in 
@@ -92,6 +93,15 @@ let translate (globals, functions) =
     | A.Doubletable -> doubletable_pointer
     | A.Inttable -> inttable_pointer
   in
+
+  let size_of_typ = function
+      A.Int   -> 4
+    | A.Bool  -> 1
+    | A.Double -> 8
+    | A.Void  -> 0
+    | _ -> 8
+  in
+
 
   let int_format_str = let str = L.define_global "fmt" (L.const_stringz context "%d\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
      and float_format_str = let str = L.define_global "cast" (L.const_stringz context "%f") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
@@ -436,11 +446,11 @@ let translate (globals, functions) =
 
       let void_alloca = L.build_alloca string_t "void_ptr" unwrap_builder in
       let struct_alloca = L.build_alloca (L.pointer_type hatch_t) "wrapper" unwrap_builder in
-      let void_ptr = L.build_store (L.param unwrapper_func 0) void_alloca unwrap_builder in
+      let _ = L.build_store (L.param unwrapper_func 0) void_alloca unwrap_builder in
       
       let load_ptr = L.build_load void_alloca "void_ptr" unwrap_builder in
       let ptr_cast = L.build_bitcast load_ptr (L.pointer_type hatch_t) "cast_ptr" unwrap_builder in
-      let ptr_store = L.build_store ptr_cast struct_alloca unwrap_builder in
+      let _ = L.build_store ptr_cast struct_alloca unwrap_builder in
       
       let init_arg i = 
         let struct_load = L.build_load struct_alloca "struct_ptr" unwrap_builder in
@@ -448,10 +458,106 @@ let translate (globals, functions) =
         let arg_load = L.build_load arg_gep "arg" unwrap_builder in arg_load
       in 
       let func_args = Array.init (Array.length (L.params fdef)) (init_arg) in
-      let func_call = L.build_call fdef func_args (if L.return_type (L.return_type hatching_func_t) = void_t then "" else "result") unwrap_builder in
+      let _ = L.build_call fdef func_args (if L.return_type (L.return_type hatching_func_t) = void_t then "" else "result") unwrap_builder in
 
       let _ = L.build_ret (L.const_null string_t) unwrap_builder in
-      builder
+
+      (* Hatch Threads *)
+      let length_alloca = L.build_alloca i32_t "nl_length" builder in
+      let list_length = expr builder (A.Int, SCall("length_NL", [nl])) in
+      let _ = L.build_store list_length length_alloca builder in
+      
+      let pthreads_alloca = L.build_alloca (L.pointer_type i64_t) "pthread_array" builder in
+      let args_alloca = L.build_alloca (L.pointer_type hatch_t) "args_array" builder in
+      let malloc_func_t = L.function_type string_t [| i64_t |] in
+      let malloc_func = L.declare_function "malloc" malloc_func_t the_module in
+
+      let build_malloc numval typ =  
+        let length_load = L.build_load length_alloca "length" builder in
+        let sext = L.build_sext length_load i64_t "sext_length" builder in
+        let mul = L.build_mul numval sext "bytes" builder in
+        let malloc = L.build_call malloc_func [| mul |] "malloc" builder (*L.build_array_malloc string_t mul "malloc" builder*) in 
+        let bitcast = L.build_bitcast malloc typ "cast_mem" builder in
+      bitcast in
+      let _ = L.build_store (build_malloc (L.const_int i64_t 8) (L.pointer_type i64_t)) pthreads_alloca builder in
+      let _ = L.build_store (build_malloc (L.const_int i64_t (List.fold_left (fun i t -> i + size_of_typ t) 0 argtypes)) (L.pointer_type hatch_t)) args_alloca builder in
+      
+      let i_alloca = L.build_alloca i32_t "i" builder in
+      let _ = L.build_store (L.const_int i32_t 0) i_alloca builder in
+       
+      (* For Loop *) 
+      let list_alloca = L.build_alloca nodelist_pointer "list" builder in
+        let item_alloca = L.build_alloca nodelistitem_pointer "item" builder and
+        _ = L.build_store (expr builder nl) list_alloca builder in
+        let list_load = L.build_load list_alloca "list" builder in
+        let list_gep = L.build_in_bounds_gep list_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "list_gep" builder in
+        let list_pointer = L.build_load list_gep "item_ptr" builder in
+        let _ = L.build_store list_pointer item_alloca builder in
+        
+
+        let pred_bb = L.append_block context "hatch_for" the_function in 
+        ignore(L.build_br pred_bb builder);
+
+
+        let body_bb = L.append_block context "hatch_for_body" the_function in
+        let endfor_bb = L.append_block context "hatch_end_for" the_function in
+        let body_builder = L.builder_at_end context body_bb in 
+        let item_load = L.build_load item_alloca "item" body_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 0|] "item_gep" body_builder in
+        let set_up_struct ld num = 
+          let load_struct = L.build_load args_alloca "arg" body_builder in
+          let load_i = L.build_load i_alloca "i" body_builder in
+          let sext = L.build_sext load_i i64_t "i" body_builder in
+          let gep1 = L.build_in_bounds_gep load_struct [| sext |] "gep1" body_builder in
+          let field_gep = L.build_in_bounds_gep gep1 [| L.const_int i32_t 0; L.const_int i32_t num |] "field_gep" body_builder in
+          let _ = L.build_store ld field_gep body_builder in () 
+        in 
+        let _ = set_up_struct (L.build_load item_gep "val" body_builder) 0 in
+        let _ = Array.init (Array.length (L.params fdef) - 1) (fun x -> set_up_struct (expr body_builder (List.nth args x)) (x + 1)) in
+
+        let load_pthreads = L.build_load pthreads_alloca "pthreads" body_builder in
+        let load_i = L.build_load i_alloca "i" body_builder in
+        let sext = L.build_sext load_i i64_t "i" body_builder in
+        let pthread_gep = L.build_in_bounds_gep load_pthreads [| sext |] "pthread_gep" body_builder in
+        let load_args = L.build_load args_alloca "args" body_builder in
+        let load_i = L.build_load i_alloca "i" body_builder in
+        let sext = L.build_sext load_i i64_t "i" body_builder in
+        let args_gep = L.build_in_bounds_gep load_args [| sext |] "args_gep" body_builder in
+        let void_cast = L.build_bitcast args_gep string_t "cast_ptr" body_builder in
+
+        let pthread_func_t = L.function_type i32_t [| (L.pointer_type i64_t); (L.pointer_type pthread_attr); (L.pointer_type (L.function_type string_t [| string_t |])); string_t |] in
+        let pthread_func = L.declare_function "pthread_create" pthread_func_t the_module in
+        let _ = L.build_call pthread_func [| pthread_gep; (L.const_pointer_null (L.pointer_type pthread_attr)); unwrapper_func; void_cast |] "pthread_create" body_builder in
+        add_terminal body_builder (L.build_br endfor_bb);
+        
+        
+        let end_builder = L.builder_at_end context endfor_bb in 
+        let item_load = L.build_load item_alloca "item" end_builder in
+        let item_gep = L.build_in_bounds_gep item_load [|L.const_int i32_t 0; L.const_int i32_t 1|] "item_gep" end_builder in
+        let next_item_load = L.build_load item_gep "next" end_builder in
+        let _ = L.build_store next_item_load item_alloca end_builder in
+        let load_i = L.build_load i_alloca "i" end_builder in
+        let add_i = L.build_nsw_add load_i (L.const_int i32_t 1) "add_one" end_builder in
+        let _ = L.build_store add_i i_alloca end_builder in
+        add_terminal end_builder (L.build_br pred_bb);
+
+        let pred_builder = L.builder_at_end context pred_bb in
+        let bool_val = let item_load = L.build_load item_alloca "item" pred_builder in 
+          L.build_is_not_null item_load "bool" pred_builder in                
+
+        let parent_bb = L.append_block context "parent_actions" the_function in
+        let merge_bb = L.append_block context "hatch_formerge" the_function in
+        let parent_builder = L.builder_at_end context parent_bb in 
+        add_terminal (stmt (parent_builder) stmts) (L.build_br merge_bb);
+        ignore(L.build_cond_br bool_val body_bb parent_bb pred_builder);
+        let merge_builder = L.builder_at_end context merge_bb in
+
+        let load_threads = L.build_load pthreads_alloca "threads" merge_builder in
+        let load_length = L.build_load length_alloca "length" merge_builder in
+        let hatch_end_func_t = L.function_type i32_t [| (L.pointer_type i64_t); i32_t |] in
+        let hatch_end_func = L.declare_function "hatch_end" hatch_end_func_t the_module in
+        let _ = L.build_call hatch_end_func [| load_threads; load_length |] "hatch_end" merge_builder in
+        merge_builder
     in
 
     (* Build the code for each statement in the function *)
