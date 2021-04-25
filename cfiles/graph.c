@@ -131,16 +131,11 @@ int removeNodeGraph(struct Graph* g, struct Node* n) {
         if (values) {
             removeEdge(values, e);
         }
-        free(e);
         list_item = list_item->next;
     }
 
     // null out key
     g->hashArray[hashCode(g, n)].key = NULL;
-
-    // free the node memory? 
-    free(n);
-
     return 0;
 }
 
