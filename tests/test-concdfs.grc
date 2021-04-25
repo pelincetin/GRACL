@@ -3,50 +3,44 @@ bool goalTest(Node goal, Node current) {
 }
 
 int normalDFS(Node current, Node goal, NodeList myPath, NodeList path){
-    bool done = false;
-    int bad = 0;
+    bool done = False;
     synch path {
         if (!path.empty_NL()) {
-            print("break out\n");
-            done = true;
+            print("break out");
+            done = True;
         }
     }
     if (!done) {
         myPath.appendNode(current);
-        if (goalTest(goal, current)) {
+        if (goalTest(goal, current)) {  
             synch path {
-                // use forloop in grc
-                for (node n in path) {
-                    print(n.data);
+                for (Node n in path) {
+                    print(n.data());
                 }
             }
-            done = true; 
+            done = True; 
         } else {
             synch current {
-                if (updateVisited(current, true) < 0) {
-                    bad = -1;
-                    done = true;
-                }
+                current.updateVisited(True);
             }
             if (!done) {
-                EdgeList edges = current.edges()
-                // should use neighbors
-                NodeList neighbors = current.neighbors()
+                EdgeList edges = current.edges();
+                NodeList neighbors = current.neighbors();
                 for (Node n in neighbors) {
                     synch n {
                         if (!n.visited()) {
-                            normalDFS(adjacentNode, goal, myPath, path);
+                            normalDFS(n, goal, myPath, path);
                         } 
                     }
                 }
             }
-        }
+        } 
     }
-    return bad;
+    return 0;
 }
 
 void normalDFS_start(Node current, Node goal, NodeList myPath, NodeList path){
-    printf("Enters dfs_start:\n");
+    print("Enters dfs_start: ");
     NodeList individual_nl = createNodeList();
     for (Node n in myPath) {
         individual_nl.appendNode(n);
@@ -56,7 +50,7 @@ void normalDFS_start(Node current, Node goal, NodeList myPath, NodeList path){
 
 int main() {
     Graph g;
-    bool done = false; 
+    bool done = False; 
     Node node1;
     Node node2;
     Node node3;
@@ -67,10 +61,10 @@ int main() {
     Node node8;
     Node node9;
     Node node10;
-    Node e1;
-    Node e2;
-    Node e3;
-    Node e4;
+    Edge e1;
+    Edge e2;
+    Edge e3;
+    Edge e4;
     Edge e5;
     Edge e6;
     Edge e7;
@@ -96,27 +90,24 @@ int main() {
     e7 = g.addEdge(node6, node10, 43.0);
     e8 = g.addEdge(node1, node4, 13.0);
     e9 = g.addEdge(node4, node8, 43.0);
-
+    
     Node parent = node1;
     Node goal = node10; 
     NodeList children = createNodeList();
     NodeList myPath = createNodeList();
     myPath.appendNode(parent);
-    if (parent.nodeEquals(node10)) {
+    if (parent.nodeEquals(goal)) {
         for (Node n in myPath) {
             print(n.data());
         }
+    
     } else {
         children = neighbors(parent);
-        struct NodeList path = createNodeList();
+        NodeList path = createNodeList();
+        
         hatch children normalDFS_start(current, goal, myPath, path) {
             // parent doesnt want to do anything before join in this case
         }
     }
+    
 }
-
-/* TODO
-1. get every single warning, get this c program to work
-2. run clang on it --> .ll file
-3. add the type to codegen 
-*/

@@ -83,6 +83,8 @@ int hatch_start(int len, HOW_TO_PASS_FUNC, HOW_TO_PASS_ARGS, NODELIST?) {
     // func is called on the args within it and then node at the end from nodelist
 } */
 
+
+
 int hatch_end(pthread_t* thread_arr, int len) {
     int j;
     for (j = 0; j < len; j++) {

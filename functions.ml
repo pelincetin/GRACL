@@ -27,8 +27,8 @@ let function_decls =
         
         (* Node Functions *)
         (String, "data", [Node, "n"]);   
-        (Nodelist, "neighbors", [Node, "n"]); (* TODO: NEEDS TESTING *)  
-        (Edgelist, "edges", [Node, "n"]);     (* TODO: NEEDS TESTING *)  
+        (Nodelist, "neighbors", [Node, "n"]);  
+        (Edgelist, "edges", [Node, "n"]);     
         (Bool, "visited", [Node, "n"]);    
         (Node, "updateData", [(Node, "n"); (String, "s")]); 
         (Node, "updateVisited", [(Node, "n"); (Bool, "b")]);
@@ -41,7 +41,7 @@ let function_decls =
         (Bool, "nodeEquals", [(Node, "n1"); (Node, "n2")]);
         (Edge, "getEdge", [(Node, "n1"); (Node, "n2")]);
 
-        (* Edge Functions *)                  (* TODO: TEST ALL OF THIS *)
+        (* Edge Functions *)                  
         (Void, "updateEdge", [(Edge, "e"); (Double, "d")]);
         (Node, "start", [Edge, "e"]);
         (Node, "end", [Edge, "e"]);
@@ -66,7 +66,7 @@ let function_decls =
         (Void, "appendNode", [(Nodelist, "nl"); (Node, "n")]);
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
         (Bool, "includesNode", [(Nodelist, "nl"); (Node, "n")]);
-        (NodeList "neighbors", [(Node, "node")]);
+        (Nodelist, "neighbors", [(Node, "node")]);
 
         (* Edgelist Functions *)
         (Edge, "head_EL", [Edgelist, "el"]);
