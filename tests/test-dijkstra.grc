@@ -84,10 +84,8 @@ NodeList dijkstra(Graph g, Node source, Node goal) {
 
 
 int printNl(NodeList nl){
-    if(!nl.empty_NL()){
-        for (Node n in nl){
+    for (Node n in nl) { 
         print(n.data());
-    }
     }
     return 0;
 }
