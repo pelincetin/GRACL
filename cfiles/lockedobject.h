@@ -64,6 +64,7 @@ struct Graph
     int size;
     int id_num;
     int graph_id_local;
+    int occupied;
 };
 
 struct IntTableItem {
