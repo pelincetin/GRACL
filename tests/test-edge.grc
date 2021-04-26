@@ -20,14 +20,17 @@ int main() {
     if (edge2.weight() != 16.300000) {
         success = False; 
     }
+
     edge2.updateEdge(90.1);
     if (edge2.weight() != 90.100000) {
         success = False; 
     }
+
     edge2.updateEdge(-90.1);
     if (edge2.weight() != -90.100000) {
         success = False; 
     }
+
     edge2.updateEdge(infinity);
     if (edge2.weight() != infinity) {
         success = False; 
