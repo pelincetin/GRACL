@@ -1,0 +1,112 @@
+bool threads_done = False; 
+
+void bfs(Node start, NodeList visited_list, NodeList to_visit) {
+    NodeList path = createNodeList();
+    bool final_path_found = False;
+    for (Node n in visited_list) {
+        path.appendNode(n);
+    }
+    for (Node n in start.neighbors()) {
+        if (!threads_done && !visited(n)) {
+            to_visit.appendNode(n);
+        }
+        else {
+            threads_done = True;
+            final_path_found = True;
+            path.appendNode(n);
+            for (Node n in path) {
+                print(n.data());
+            }
+        }
+    }
+    if (!threads_done) {
+        Node next = removeFirst_NL(to_visit);
+        synch next {
+            updateVisited(next, True);
+        }
+        path.appendNode(next);
+        if(!threads_done){
+            bfs(next, path, to_visit);
+        }
+    }
+    return;
+}
+
+void bidirectional_search(Node start) {
+    NodeList path = createNodeList();
+    path.appendNode(start);
+    NodeList to_visit = createNodeList();
+    bfs(start, path, to_visit);
+    print("Threads collide");
+    return;
+}
+
+int main() {
+    Graph g = createGraph(12);
+
+    Node node1 = g.createNode("A");
+    Node node2 = g.createNode("B");
+    Node node3 = g.createNode("C");
+    Node node4 = g.createNode("D");
+    Node node5 = g.createNode("E");
+    Node node6 = g.createNode("F");
+    Node node7 = g.createNode("G");
+    Node node8 = g.createNode("H");
+    Node node9 = g.createNode("I");
+    Node node10 = g.createNode("J");
+    Node node15 = g.createNode("O");
+
+    //A->B, A->C, A->D
+    Edge e1 = g.addEdge(node1, node2, 14.0);
+    Edge e2 = g.addEdge(node1, node3, 14.0);
+    Edge e3 = g.addEdge(node1, node4, 14.0);
+
+
+    Edge e4 = g.addEdge(node2, node1, 14.0);
+    Edge e5 = g.addEdge(node3, node1, 14.0);
+    Edge e6 = g.addEdge(node4, node1, 14.0);
+    Edge e7 = g.addEdge(node2, node5, 14.0);
+    Edge e8 = g.addEdge(node5, node2, 14.0);
+    Edge e9 = g.addEdge(node3, node6, 14.0);
+    Edge e10 = g.addEdge(node6, node3, 14.0);
+    Edge e11 = g.addEdge(node4, node7, 14.0);
+    Edge e12 = g.addEdge(node7, node4, 14.0);
+
+    // E->H, H->E
+    Edge e13 = g.addEdge(node5, node8, 14.0);
+    Edge e14 = g.addEdge(node8, node5, 14.0);
+    
+    //f->i, i->f
+    Edge e15 = g.addEdge(node6, node9, 14.0);
+    Edge e16 = g.addEdge(node9, node6, 14.0);
+
+    // G->J, J->G 
+    Edge e17 = g.addEdge(node7, node10, 14.0);
+    Edge e18 = g.addEdge(node10, node7, 14.0);
+
+    //H->O, O->H
+    Edge e19 = g.addEdge(node8, node15, 14.0);
+    Edge e20 = g.addEdge(node15, node8, 14.0);
+
+    // I-->O
+    // O->I
+    Edge e21 = g.addEdge(node9, node15, 14.0);
+    Edge e22 = g.addEdge(node15, node9, 14.0);
+
+    // j->o, o->j
+    Edge e23 = g.addEdge(node10, node15, 14.0);
+    Edge e24 = g.addEdge(node15, node10, 14.0);
+
+    Node start = node1;
+    Node goal = node15;
+    updateVisited(goal, True);
+    updateVisited(start, True);
+    NodeList starters = createNodeList();
+    starters.appendNode(start);
+    starters.appendNode(goal);
+
+    hatch starters bidirectional_search() {
+        print("Parent process waiting for threads to join...");
+    } 
+    return 0;
+}
