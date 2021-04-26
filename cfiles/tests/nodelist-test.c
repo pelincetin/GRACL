@@ -62,6 +62,34 @@ int main()
         success = false;
     }
 
+    // head_NL
+    // tail_NL
+    // removeFirst_NL
+    // removeLast_NL
+    // prependNode
+    // empty_NL
+    // length_NL
+    // appendNode
+    // removeNode
+    // includesNode
+    // neighbors
+    struct Node* node3 = createNode(g, "A");
+    struct Node* node4 = createNode(g, "B");
+    struct Node* node5 = createNode(g, "C");  
+    appendNode(nl, node3);
+    appendNode(nl, node4);
+    appendNode(nl, node5);
+
+    removeNodeGraph(g, node4);
+    removeNode(nl, node4);
+    //appendNode(nl, node4);
+    //prependNode(nl, node4);
+    removeNodeGraph(g, node3); 
+    //neighbors(node3);
+    if (!includesNode(nl, node3)) {
+        success = false; 
+    }
+
     if (success) {
         printf("SUCCESS\n");
     }
