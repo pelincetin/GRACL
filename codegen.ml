@@ -26,7 +26,7 @@ let translate (globals, functions) =
   
   (* Create the LLVM compilation module into which
      we will generate code *)
-  let the_module = L.create_module context "GRACL" in (* TODO: Dispose of module? *)
+  let the_module = L.create_module context "GRACL" in 
 
   (* Get types from the context *)
   let i32_t      = L.i32_type    context
@@ -107,13 +107,13 @@ let translate (globals, functions) =
      and float_format_str = let str = L.define_global "cast" (L.const_stringz context "%f") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]  
      and string_format_str = let str = L.define_global "fmt" (L.const_stringz context "%s\n") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|] in
 
-  (* Create a map of global variables after creating each, initialize as needed *)                   (* TODO: Globals have default values? *)
+  (* Create a map of global variables after creating each, initialize as needed *)                  
   let global_vars : L.llvalue StringMap.t =
     let global_var m  = function
     | SDec(t, n) ->
-      let defaultinit = match t with                                           (* TODO: ERROR CASE FOR NO MATCH *)
+      let defaultinit = match t with                                          
           A.Double -> L.const_float (ltype_of_typ t) 0.0
-        | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                        (* TODO: HANDLE STRINGS *)
+        | A.String -> let str = L.define_global "str" (L.const_stringz context "") the_module in L.const_in_bounds_gep str [|L.const_int i32_t 0; L.const_int i32_t 0|]                      
         | A.Int | A.Bool -> L.const_int (ltype_of_typ t) 0
         | _ -> L.const_pointer_null (ltype_of_typ t)
       in StringMap.add n (L.define_global n defaultinit the_module) m 
@@ -144,8 +144,8 @@ let translate (globals, functions) =
 	  let e1' = constexpr e1
 	  and e2' = constexpr e2 in
 	  (match op with
-	    A.Add     -> L.const_add                                    (* TODO: MENTION OVERFLOW BEHAVIOR *)
-	  | A.Sub     -> L.const_sub                                   (*TODO:ADD MODULO*)
+	    A.Add     -> L.const_add                                   
+	  | A.Sub     -> L.const_sub                                 
 	  | A.Mult    -> L.const_mul
     | A.Div     -> L.const_sdiv
     | A.Mod     -> L.const_srem
