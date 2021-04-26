@@ -51,8 +51,7 @@ int main(){
         i++;
     }
 
-    pthread_join(tid[0], NULL);
-    pthread_join(tid[1], NULL);
+    hatch_end(tid, 2);
     synch_destroy(pm);
 
     return 0;
