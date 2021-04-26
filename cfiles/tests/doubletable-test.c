@@ -79,8 +79,16 @@ int main(){
     if(!inDouble(dt, node4)){
         success = false;
     }
+    if (_getDouble(dt, node4) != 4.0) {
+        success = false;
+    }
+    // line should fault out 
+    //_insertDouble(dt, node4, 18.0);
+    deleteDouble(dt, node4);
+    if (inDouble(dt, node4)) {
+        success = false;
+    }
 
-    
     // test delete
     deleteDouble(dt, node1);
     deleteDouble(dt, node2);

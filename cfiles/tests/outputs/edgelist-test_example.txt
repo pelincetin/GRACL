@@ -16,8 +16,8 @@ Goodbye
 Start node: Yo
 End node: Goodbye
 Weight: 4.800000
-Start node: Goodbye
-End node: Yo
+Start node: Hello
+End node: Goodbye
 Weight: 4.800000
 Start node: Hello
 End node: Goodbye
