@@ -35,7 +35,9 @@ NodeList getShortestPath(Node source, Node goal, NodeList nl) {
             if(current.nodeEquals(source)){
                 notfound = False;
             }
-            current = current.prec();
+            if(notfound == True){
+                current = current.prec();
+            }
         }
     }
     return path;
@@ -84,15 +86,17 @@ NodeList dijkstra(Graph g, Node source, Node goal) {
 
 
 int printNl(NodeList nl){
-    for (Node n in nl) { 
+    if(!nl.empty_NL()){
+            for (Node n in nl) { 
         print(n.data());
+        }
     }
     return 0;
 }
 
 // TEST!
 int main(){
-    Graph g = createGraph(6);
+    Graph g = createGraph(15);
 
     Node nodeA = g.createNode("A");
     Node nodeB = g.createNode("B");
@@ -100,7 +104,17 @@ int main(){
     Node nodeD = g.createNode("D"); 
     Node nodeE = g.createNode("E");
     Node nodeF = g.createNode("F");
-    
+    Node nodeG = g.createNode("G");
+    Node nodeH = g.createNode("H");
+    Node nodeI = g.createNode("I");
+    Node nodeJ = g.createNode("J"); 
+    Node nodeK = g.createNode("K");
+    Node nodeL = g.createNode("L");
+    Node nodeM = g.createNode("M");
+    Node nodeN = g.createNode("N");
+    Node nodeO = g.createNode("O");
+
+
     Edge e1 = g.addEdge(nodeA, nodeB, 10.0);
     Edge e2 = g.addEdge(nodeA, nodeC, 15.0);
     Edge e3 = g.addEdge(nodeB, nodeD, 12.0);
@@ -109,51 +123,87 @@ int main(){
     Edge e6 = g.addEdge(nodeD, nodeE, 2.0);
     Edge e7 = g.addEdge(nodeD, nodeF, 1.0); 
     Edge e8 = g.addEdge(nodeF, nodeE, 5.0);
-    
+    Edge e9 = g.addEdge(nodeF, nodeN, 1.0);
+    Edge e10 = g.addEdge(nodeN, nodeL, 20.0);
+    Edge e12 = g.addEdge(nodeN, nodeH, 2.0);
+    Edge e13 = g.addEdge(nodeH, nodeJ, 5.0);
+    Edge e14 = g.addEdge(nodeH, nodeI, 10.0);
+    Edge e15 = g.addEdge(nodeJ, nodeI, 3.0);
+    Edge e16 = g.addEdge(nodeI, nodeG, 4.0);
+    Edge e17 = g.addEdge(nodeA, nodeG, 45.0);
+    Edge e18 = g.addEdge(nodeI, nodeK, 2.0);
+    Edge e19 = g.addEdge(nodeK, nodeG, 1.0);
+    Edge e20 = g.addEdge(nodeE, nodeM, 10.0);
+    Edge e21 = g.addEdge(nodeC, nodeM, 8.0);
+    Edge e22 = g.addEdge(nodeM, nodeO, 5.0);
+    Edge e23 = g.addEdge(nodeO, nodeJ, 2.0);
+    Edge e24 = g.addEdge(nodeJ, nodeM, 3.0);
+    Edge e25 = g.addEdge(nodeM, nodeJ, 10.0);
 
-    //print("Path should be A-B-D-F");
+   
+    print("Path should be A-B-D-F");
     NodeList path = dijkstra(g, nodeA, nodeF);
     printNl(path);
     
-    //print("Path should be A-B-D-E");
+    print("Path should be A-B-D-E");
     path = dijkstra(g, nodeA, nodeE);
     printNl(path);
 
-    //print("Path should be E");
+    print("Path should be E");
     path = dijkstra(g, nodeE, nodeE);
     printNl(path);
 
-    //print("Path should be A-B");
+    print("Path should be A-B");
     path = dijkstra(g, nodeA, nodeB);
     printNl(path);
 
-    //print("Path should be D-E");
+    print("Path should be D-E");
     path = dijkstra(g, nodeD, nodeE);
     printNl(path);
 
-    //print("Path should be B-D-F");
+    print("Path should be B-D-F");
     path = dijkstra(g, nodeB, nodeF);
     printNl(path);
 
-    //print("Path should be B-D-E");
+    print("Path should be B-D-E");
     path = dijkstra(g, nodeB, nodeE);
     printNl(path);
 
-    //print("Path should be D");
+    print("Path should be D");
     path = dijkstra(g, nodeD, nodeD);
     printNl(path);
 
-    //print("Path should be C");
+    print("Path should be C");
     path = dijkstra(g, nodeC, nodeC);
     printNl(path);
     
-    //print("Path should not exist");
+    print("Path should not exist");
     path = dijkstra(g, nodeB, nodeC);
     printNl(path);
 
-    //print("Path should not exist");
+    print("Path should not exist");
     path = dijkstra(g, nodeF, nodeA);
     printNl(path); 
+
+    print("Path should be A-B-D-F-N-H-I-K-G");
+    path = dijkstra(g, nodeA, nodeG);
+    printNl(path); 
+
+    print("Path should be M-O-J-I-K");
+    path = dijkstra(g, nodeM, nodeK);
+    printNl(path);
+
+    print("Path should not exist");
+    path = dijkstra(g, nodeK, nodeM);
+    printNl(path);
+
+    print("Path should be I-K-G");
+    path = dijkstra(g, nodeI, nodeG);
+    printNl(path);
+
+    print("Path should be C-M-O");
+    path = dijkstra(g, nodeC, nodeO);
+    printNl(path);
 
     return 0;
 }
