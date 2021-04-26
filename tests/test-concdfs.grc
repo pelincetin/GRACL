@@ -7,39 +7,31 @@ bool goal_found = False;
 int normalDFS(Node current, Node goal, NodeList myPath, NodeList path) {
     bool done = False;
     if (goal_found) {
-        print("break out");
         done = True;
     }
-    if (!done) {
+    if (!done && !goal_found) {
         myPath.appendNode(current);
-        for (Node n in myPath) {
-            print(n.data());
-        }
         if (goalTest(goal, current)) { 
             print("Found goal, goal path:"); 
-            synch path {
-                for (Node n in path) {
-                    print(n.data());
-                }
-                goal_found = True; 
+            for (Node n in myPath) {
+                print(n.data());
             }
+            goal_found = True;
+            done = True; 
         } else {
-            if (!done) {
+            if (!done && !goal_found) {
                 NodeList neighbors = current.neighbors();
                 for (Node n in neighbors) {
-                    print(n.data());
-                    print("waiting 2");
                     bool recurse = False; 
                     synch n {
-                        if (!n.visited()) {
+                        if (!n.visited() && !goal_found) {
                             recurse = True; 
                             n.updateVisited(True);
                         } 
                     }
-                    if (recurse) {
+                    if (recurse && !goal_found) {
                         normalDFS(n, goal, myPath, path);
                     }
-                    print("release 2");
                 }
             }
         } 
@@ -91,18 +83,54 @@ int main() {
     node8 = g.createNode("H");
     node9 = g.createNode("I");
     node10 = g.createNode("J");
+    Node node11 = g.createNode("K");
+    Node node12 = g.createNode("L");
+    Node node13 = g.createNode("M");
+    Node node14 = g.createNode("N");
+    Node node15 = g.createNode("O");
+    Node node16 = g.createNode("P");
+    Node node17 = g.createNode("Q");
+    Node node18 = g.createNode("R");
+    Node node19 = g.createNode("S");
+    Node node20 = g.createNode("T");
+    Node node21 = g.createNode("U");
+    Node node22 = g.createNode("V");
+    Node node23 = g.createNode("W");
+    Node node24 = g.createNode("X");
+    Node node25 = g.createNode("Y");
+
     e1 = g.addEdge(node1, node2, 14.0);
     e2 = g.addEdge(node2, node5, 13.0);
     e3 = g.addEdge(node5, node9, 43.0);
+    Edge e10 = g.addEdge(node9, node11, 5.0);
+    Edge e11 = g.addEdge(node11, node12, 2.0);
+    Edge e12 = g.addEdge(node12, node13, 3.333);
+    Edge e13 = g.addEdge(node13, node14, 3.333);
+    Edge e14 = g.addEdge(node13, node15, 3.333);
+    Edge e15 = g.addEdge(node14, node15, 0.45);
+
     e4 = g.addEdge(node1, node3, 13.0);
     e5 = g.addEdge(node3, node6, 43.0);
     e6 = g.addEdge(node3, node7, 13.0);
+    Edge e16 = g.addEdge(node7, node16, 8.0);
+    Edge e17 = g.addEdge(node7, node17, 1.35);
+    Edge e18 = g.addEdge(node17, node18, 5.77777);
+    Edge e19 = g.addEdge(node18, node19, 5.5);
+    Edge e20 = g.addEdge(node19, node17, -45.0);
+
     e7 = g.addEdge(node6, node10, 43.0);
+    Edge e21 = g.addEdge(node10, node20, -5.0);
+    Edge e22 = g.addEdge(node10, node21, -3.0);
+    Edge e23 = g.addEdge(node21, node22, 100.);
+    Edge e24 = g.addEdge(node20, node23, 66.0);
+
     e8 = g.addEdge(node1, node4, 13.0);
     e9 = g.addEdge(node4, node8, 43.0);
-    
+    Edge e25 = g.addEdge(node8, node24, 1000.);
+    Edge e26 = g.addEdge(node24, node25, 66.0);
+  
     Node parent = node1;
-    Node goal = node10; 
+    Node goal = node23; 
     NodeList children = createNodeList();
 
     NodeList myPath = createNodeList();
@@ -115,9 +143,6 @@ int main() {
     
     } else {
         children = neighbors(parent);
-        for (Node n in children) {
-            print(n.data());
-        }
         NodeList path = createNodeList();
         
         hatch children normalDFS_start(goal, myPath, path) {
