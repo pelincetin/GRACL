@@ -66,6 +66,7 @@ int main() {
     //updateEdge(edge1, 15.0);
     //double bad_dub = weight(edge3);
     double good_dub = weight(edge2);
+    printf("%f\n", good_dub);
     removeNodeGraph(g, node3);
     //start(edge2);
     //double bad_dub2 = weight(edge2);
