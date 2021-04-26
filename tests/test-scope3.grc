@@ -1,0 +1,13 @@
+int main() {
+    if (True) {
+        int a = 42; //checks variable declaration/initialization in blocks
+        printi(a); 
+        int b;
+        b = 13;
+        printi(b);
+    }
+    else {
+        int a = 43;
+    }
+
+}

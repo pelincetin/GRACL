@@ -1,64 +1,109 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../edgelist.c"
+#include "../../graclstdlib.c"
 #include "print-functions.c"
 
 int main() {
     //Make two nodes to be start and end for edge
     char hello[] = "Hello\n";
     char goodbye[] = "Goodbye\n";
-    struct Node* n1 = malloc(sizeof(struct Node));
-    struct Node* n2 = malloc(sizeof(struct Node));
-    struct Edge* e1 = malloc(sizeof(struct Edge));
-    struct Edge* e2 = malloc(sizeof(struct Edge));
-    n1->data = hello;
-    n1->visited = false;
-    n1->id=id_num;
-    id_num++;
-    n2->data = goodbye;
-    n2->visited = false;
-    n2->id=id_num;
-    id_num++;
-
-    e1->weight = 15.3;
-    e1->start = n1;
-    e1->end = n2;
-    
-    e2->weight = 3.7;
-    e2->start = n2;
-    e2->end = n1;
+    char yo[] = "Yo\n";
+    struct Graph* g = createGraph(2);
+    struct Node* n1 = createNode(g, hello);
+    struct Node* n2 = createNode(g, goodbye);
+    struct Node* n3 = createNode(g, yo);
+    struct Edge* e1 = addEdge(g, n1, n2, 15.3);
+    struct Edge* e2 = addEdge(g, n2, n1, 3.7);
+    struct Edge* e3 = addEdge(g, n3, n2, 4.8);
+    bool success = true;
 
     struct EdgeList* el = createEdgeList();
-    printf("Should be true: %s", empty_EL(el) ? "true\n" : "false\n");
+    if (!empty_EL(el)) {
+        success = false; 
+    }
 
-    printf("Append edge with start 'hello'\n");
     appendEdge(el, e1);
-    printf("Prepend edge with start 'goodbye'\n");
     prependEdge(el, e2);
-    printf("List should be goodbye hello: \n");
-    printEdgeList(el);
-    printf("Weight of head should be 3.7: %f\n", head_EL(el)->weight);
-    printf("Weight of tail should be 15.3: %f\n", tail_EL(el)->weight);
-    printf("Length should be 2: %d\n", length_EL(el));
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
+
+    prependEdge(el, e3);
+    if (!(length_EL(el)==3)) {
+        success = false; 
+    }
     
     removeFirst_EL(el);
-    printf("After remove first (list should be hello): ");
+    printf("After remove first (list should be goodbye hello): ");
     printEdgeList(el);
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
 
-    printf("Prepend edge with start 'goodbye'\n");
-    prependEdge(el, e2);
+    prependEdge(el, e3);
     removeLast_EL(el);
-    printf("After remove last (list should be goodbye): ");
+    printf("After remove last (list should be yo goodbye): ");
     printEdgeList(el);
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
 
-    printf("Append edge with start 'hello'\n");
-    appendEdge(el, e1);
     removeEdge(el, e1);
-    printf("After remove edge with start hello (list should be goodbye): ");
+    printf("After remove edge (list should be yo goodbye): ");
     printEdgeList(el); 
     printf("\n");
+    if (!(length_EL(el)==2)) {
+        success = false; 
+    }
+
+    removeEdge(el, e2);
+    if (!(length_EL(el)==1)) {
+        success = false; 
+    }
+
+    removeEdge(el, e3);
+    if (!empty_EL(el)) {
+        success = false; 
+    }
+
+    struct Edge* e4 = addEdge(g, n3, n2, 4.8);
+    struct Edge* e5 = addEdge(g, n2, n3, 4.8);
+    struct Edge* e6 = addEdge(g, n1, n2, 4.8);
+    appendEdge(el, e4);
+    appendEdge(el, e5);
+    appendEdge(el, e6);
+    removeEdgeGraph(g, e4);
+    printEdge(head_EL(el));
+    printf("\n");
+
+    removeEdge(el, e4);
+    removeEdgeGraph(g, e5);
+    removeFirst_EL(el);
+    //Breaks the program, should print prependEdge: Edge  deleted
+    //prependEdge(el, e4);
+
+    //Breaks the program, should print appendEdge: Edge  deleted
+    //appendEdge(el, e4);
+    printEdge(head_EL(el));
+    printf("\n");
+
+    //removeEdge(el, e5);
+    printEdge(tail_EL(el));
+    printf("\n");
+
+    removeEdge(el, e6);
+
+    //this will give an error because it's empty
+    //printEdge(head_EL(el));
+
+    if (success) {
+        printf("SUCCESS\n");
+    }
+    else {
+        printf("FAILURE\n");
+    }
 
     return 0;
 }

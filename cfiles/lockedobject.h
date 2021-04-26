@@ -3,23 +3,18 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-
-/* Can pass a pointer from a lockednode to a lockedobject safely
- * All objects should look like lockednode -- no need for plain node
- * Need a cast operation to make llvm types happy */
-int id_num = 1;
-int SIZE = 500;
-
-struct Object {
-    pthread_mutex_t lock;
-};
-
+int graph_id = 1;
+    
 struct Node {
     pthread_mutex_t lock;
     int id; // Only used under the hood
     char *data;
     bool visited;
     struct EdgeList* edges;
+    struct Node* precursor;
+    double cost; 
+    int parent_graph_id;
+    bool deleted; 
 };
 
 struct Edge {
@@ -32,6 +27,7 @@ struct Edge {
     double weight; 
     struct Node* start; 
     struct Node* end;
+    bool deleted; 
 };
 
 struct EdgeListItem {
@@ -41,6 +37,7 @@ struct EdgeListItem {
 };
 
 struct EdgeList {
+    pthread_mutex_t lock;
     struct EdgeListItem* head;
     struct EdgeListItem* tail;
 };
@@ -52,32 +49,61 @@ struct NodeListItem {
 };
 
 struct NodeList {
+    pthread_mutex_t lock;
     struct NodeListItem* head;
     struct NodeListItem* tail;
 };
 
 struct DataItem {
     struct Node* key;
-    struct NodeList* value;
+    struct EdgeList* value;
 };
 
 struct Graph
 {
     struct DataItem* hashArray; 
+    struct NodeList* nodes;
+    int size;
+    int id_num;
+    int graph_id_local;
+    int occupied;
 };
 
-// struct DoubleTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct IntTableItem {
+    struct IntTableItem* next;  
+    struct IntTableLLItem* entry;
+};
 
-// struct IntTable
-// {
-//     pthread_mutex_t lock;
-//     struct DataItem* hashArray[SIZE]; 
-//     struct DataItem* dummyItem;
-//     struct DataItem* item;
-// };
+struct IntTableLLItem {
+    struct Node* key;
+    int value;
+};
+
+struct DoubleTableItem {
+    struct DoubleTableItem* next;  
+    struct DoubleTableLLItem* entry;
+};
+
+struct DoubleTableLLItem {
+    struct Node* key;
+    double dub;
+};
+
+struct IntTable
+{
+    pthread_mutex_t lock;
+    struct IntTableItem* arr; 
+    struct NodeList* keys;
+    int size;
+    int graph_id;
+};
+
+struct DoubleTable
+{
+    pthread_mutex_t lock;
+    struct DoubleTableItem* arr;
+    struct NodeList* keys;
+    int size;
+    int doubleId;
+    int graph_id;
+};

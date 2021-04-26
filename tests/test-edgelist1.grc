@@ -1,0 +1,37 @@
+void printEdgeList(EdgeList el) {
+    int i = el.length_EL();
+    while (i > 0){
+        Edge e = el.removeFirst_EL();
+        print(e.start().data());
+        el.appendEdge(e);
+        i = i - 1;
+    }
+}
+
+int main() {
+    Graph g = createGraph(5);
+        
+    String hello = "Hello";
+    String goodbye = "Goodbye";
+
+    Node n1 = g.createNode(hello);
+    Node n2 = g.createNode(goodbye);
+
+    Edge e1 = g.addEdge(n1, n2, 15.3);
+    Edge e2 = g.addEdge(n2, n1, 3.7);
+    EdgeList el = createEdgeList();
+    
+    print("Empty should be true:");
+    if (el.empty_EL()) {
+        print("true");
+    } else {
+        print("false");
+    }
+    
+    print("Append edge with start 'hello'");
+    el.appendEdge(e1);
+    print("Prepend edge with start 'goodbye'");
+    el.prependEdge(e2);
+    print("List should be goodbye hello:");
+    printEdgeList(el);
+}

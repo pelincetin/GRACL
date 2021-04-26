@@ -1,0 +1,9 @@
+int main() {
+    Node n;
+    {
+        Graph g = createGraph(5);
+        n = g.createNode("Hello there");
+    }
+    int g = 5; //Graph g out of scope
+    print(n.data()); //Even though graph cannot be referenced, node (in graph) persists
+}

@@ -1,0 +1,10 @@
+After remove first (list should be goodbye hello): 
+Goodbye
+Hello
+After remove last (list should be yo goodbye): 
+Yo
+Goodbye
+After remove edge (list should be yo goodbye): 
+Yo
+Goodbye
+SUCCESS

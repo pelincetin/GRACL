@@ -1,0 +1,11 @@
+int a = 5;
+void foo (int a) {
+    printi(a); //hides global
+    int a = 10;
+    printi(a); //hides formal
+}
+int main() {
+    printi(a);
+    foo(7);
+    foo(a);
+}

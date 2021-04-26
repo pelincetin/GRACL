@@ -1,0 +1,73 @@
+bool alreadyVisited;
+Node source;
+
+void printNodeList(NodeList nl){
+    for (Node n in nl){
+        print(n.data());
+    }
+}
+
+bool goalTest(Node goal, Node current){
+    return current.nodeEquals(goal);
+}
+
+int normalDFS(Node current, Node goal, NodeList myPath){
+    if (goalTest(goal, current)){
+        bool notfound = True;
+        while (notfound) {
+            myPath.prependNode(current); 
+            if(current.nodeEquals(source)){
+                notfound = False;
+            }
+            current = current.prec();
+        }
+        for (Node n in myPath) {
+            print(n.data());
+        }
+    } else {
+        current.updateVisited(True);
+        for (Node n in current.neighbors()) {
+            alreadyVisited = n.visited();
+            if (!alreadyVisited){
+                normalDFS(n, goal, myPath);
+            }
+        }
+    }
+
+    return 0;
+}
+
+int main(){
+    Graph g = createGraph(12);
+    Node node1 = g.createNode("A");
+    Node node2 = g.createNode("B");
+    Node node3 = g.createNode("C");
+    Node node4 = g.createNode("D");
+    Node node5 = g.createNode("E");
+    Node node6 = g.createNode("F");
+    Node node7 = g.createNode("G");
+    Node node8 = g.createNode("H");
+    Node node9 = g.createNode("I");
+    Node node10 = g.createNode("J");
+    Edge e1 = g.addEdge(node1, node2, 14.0);
+    Edge e2 = g.addEdge(node2, node5, 13.0);
+    Edge e3 = g.addEdge(node5, node9, 43.0);
+    Edge e4 = g.addEdge(node1, node3, 13.0);
+    Edge e5 = g.addEdge(node3, node6, 43.0);
+    Edge e6 = g.addEdge(node3, node7, 13.0);
+    Edge e7 = g.addEdge(node6, node10, 43.0);
+    Edge e8 = g.addEdge(node1, node4, 13.0);
+    Edge e9 = g.addEdge(node4, node8, 43.0);
+    node2.setPrec(node1);
+    node5.setPrec(node2);
+    node9.setPrec(node5);
+    node3.setPrec(node1);
+    node6.setPrec(node3);
+    node7.setPrec(node3);
+    node10.setPrec(node6);
+    node4.setPrec(node1);
+    node8.setPrec(node4);
+    NodeList myPath = createNodeList();
+    source = node1;
+    normalDFS(node1, node10, myPath);
+}

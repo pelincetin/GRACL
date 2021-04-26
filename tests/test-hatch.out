@@ -1,0 +1,11 @@
+Code executed by the parent thread
+A
+B
+C
+D
+E
+F
+G
+H
+I
+Concurrency causes non-deterministic output, so this test is expected to fail

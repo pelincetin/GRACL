@@ -1,22 +1,25 @@
-Should be true: true
-Append edge with start 'hello'
-Prepend edge with start 'goodbye'
-List should be goodbye hello: 
-Goodbye
+After remove first (list should be goodbye hello): Goodbye
 
 Hello
 
-Weight of head should be 3.7: 3.700000
-Weight of tail should be 15.3: 15.300000
-Length should be 2: 2
-After remove first (list should be hello): Hello
+
+After remove last (list should be yo goodbye): Yo
+
+Goodbye
 
 
-Prepend edge with start 'goodbye'
-After remove last (list should be goodbye): Goodbye
+After remove edge (list should be yo goodbye): Yo
+
+Goodbye
 
 
-Append edge with start 'hello'
-After remove edge with start hello (list should be goodbye): Goodbye
-
-
+Start node: Yo
+End node: Goodbye
+Weight: 4.800000
+Start node: Hello
+End node: Goodbye
+Weight: 4.800000
+Start node: Hello
+End node: Goodbye
+Weight: 4.800000
+SUCCESS

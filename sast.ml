@@ -1,6 +1,7 @@
 (* Semantically-checked Abstract Syntax Tree and functions for printing it *)
 
 open Ast
+module StringMap = Map.Make(String)
 
 type sexpr = typ * sx
 and sx =
@@ -13,8 +14,6 @@ and sx =
   | SUnop of uop * sexpr
   | SAssign of string * sexpr
   | SCall of string * sexpr list
-  | SAccess of string * string
-  | SInsert of string * string * sexpr
   | SNoexpr
 
 type sstmt =
@@ -22,11 +21,10 @@ type sstmt =
   | SExpr of sexpr
   | SReturn of sexpr
   | SIf of sexpr * sstmt * sstmt
-  | SNodeFor of string * string * sstmt 
-  | SEdgeFor of string * string * sstmt 
+  | SFor of typ * string * sexpr * sstmt 
   | SWhile of sexpr * sstmt
-  | SHatch of string * string * expr list * stmt 
-  | SSynch of string * sstmt list
+  | SHatch of sexpr * string * sexpr list * sstmt 
+  | SBlockEnd 
 
 type sbind = 
     SDec of typ * string
@@ -63,9 +61,7 @@ let rec string_of_sexpr (t, e) =
   | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
   | SCall(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
-  | SAccess(t, n) -> t ^ "[" ^ n ^ "]"
-  | SInsert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_sexpr e
-  | SNoexpr -> ""
+  | SNoexpr -> "SNOEXPR"
 				  ) ^ ")"				     
 
 let rec string_of_sstmt = function
@@ -78,12 +74,10 @@ let rec string_of_sstmt = function
   | SIf(e, s1, s2) ->  "if (" ^ string_of_sexpr e ^ ")\n" ^
       string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
-  | SNodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  | SEdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_sstmt s
-  (*| Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
-      f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ") " ^ string_of_sstmt s *)
-  | SSynch(l, stmts) -> "synch " ^ l ^ 
-      "{\n" ^ String.concat "" (List.map string_of_sstmt stmts) ^ "}\n"
+  | SFor(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  | SHatch(nle, fn, args, s) -> "hatch " ^ string_of_sexpr nle ^ " " ^ fn 
+      ^ "(" ^ String.concat ", " (List.map string_of_sexpr args) ^ ") " ^ string_of_sstmt s
+  | SBlockEnd -> "SBlockEnd\n" 
 
 let string_of_svdecl = function
 | SDec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"

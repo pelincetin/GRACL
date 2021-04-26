@@ -1,16 +1,11 @@
-Hello
-
-Goodbye
-
-Start node: Hello
-End node: Goodbye
-Weight: 14.000000Start node: Goodbye
-End node: Hello
-Weight: 13.000000Hello
-
-Goodbye
-
-Now I should print 0
-0
-0
-0
+id: 1 data: B
+id: 3 data: D
+id: 4 data: E
+id: 5 data: F
+id: 6 data: G
+id: 7 data: H
+C
+H
+id: 8 data: C
+id: 9 data: H
+SUCCESS

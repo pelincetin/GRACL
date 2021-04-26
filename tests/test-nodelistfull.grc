@@ -1,0 +1,81 @@
+void printNodeList(NodeList nl) {
+    /*
+    for (Node n in nl) {
+        print(n.data());
+    }*/
+    int i = nl.length_NL();
+    while (i > 0){
+        Node n = nl.removeFirst_NL();
+        print(n.data());
+        nl.appendNode(n);
+        i = i - 1;
+    }
+}
+
+
+int main()
+{
+    Graph g = createGraph(5);
+    String greeting = "Hello";
+    String nodedata1 = "noded1";
+    String nodedata2 = "noded2";
+    Node n1 = createNode(g, nodedata1);
+    Node n2 = createNode(g, nodedata2);
+    Node n3 = createNode(g, greeting);  
+    bool success = True;
+
+    NodeList nl = createNodeList();
+    if (!nl.empty_NL()) {
+        success = False;
+    }
+
+    nl.appendNode(n1);
+    if (!(nl.length_NL() == 1)) {
+        success = False;
+    }
+    nl.prependNode(n2);
+    if (!(nl.length_NL() == 2)) {
+        success = False;
+    }
+    if (!nl.includesNode(n2)) {
+        success = False;
+    }
+    if (!nl.includesNode(n1)) {
+        success = False;
+    }
+
+    nl.removeFirst_NL();
+    if (!nl.includesNode(n1)) {
+        success = False;
+    }
+    if (nl.includesNode(n2)) {
+        success = False;
+    }
+
+    nl.prependNode(n2);
+    nl.removeLast_NL();   
+    if (!nl.includesNode(n2)) {
+        success = False;
+    }
+    if (nl.includesNode(n1)) {
+        success = False;
+    }
+
+    nl.appendNode(n1);
+    nl.appendNode(n3);
+    nl.removeNode(n1);
+    nl.removeNode(n3);
+    nl.removeNode(n2);
+    if (!nl.empty_NL()) {
+        success = False;
+    }
+
+    if (success) {
+        print("SUCCESS");
+    }
+    else {
+        print("FAILURE");
+    }
+
+    return 0;
+}

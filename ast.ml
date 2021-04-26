@@ -21,8 +21,9 @@ type expr =
   | Access of string * string
   | Insert of string * string * expr
   | Noexpr
-
-type bind =  (* Consider OPT type *)
+  | Nodexpr
+     
+type bind =  
     Dec of typ * string
   | Decinit of typ * string * expr
 
@@ -30,24 +31,29 @@ type formal = typ * string
 
 type stmt =
     Block of stmt list
+  | BlockEnd 
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | NodeFor of string * string * stmt 
-  | EdgeFor of string * string * stmt 
+  | For of typ * string * expr * stmt 
   | While of expr * stmt
-  | Hatch of string * string * expr list * stmt 
-  | Synch of string * stmt list
+  | Hatch of expr * string * expr list * stmt 
+  | Synch of string * stmt 
+  | LoclBind of bind
 
 type func_decl = {
     typ : typ;
     fname : string;
     formals : formal list;
-    locals : bind list;
     body : stmt list;
   }
 
-type program = bind list * func_decl list
+type progpart =
+    FuncDecl of func_decl
+  | GlobBind of bind
+  
+
+type program = progpart list
 
 (* Pretty-printing functions *)
 
@@ -92,22 +98,7 @@ let rec string_of_expr = function
   | Access(t, n) -> t ^ "[" ^ n ^ "]"
   | Insert(t, n, e) -> t ^ "[" ^ n ^ "] = " ^ string_of_expr e
   | Noexpr -> ""
-
-let rec string_of_stmt = function
-    Block(stmts) ->
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
-  | Expr(expr) -> string_of_expr expr ^ ";\n";
-  | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
-  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
-  | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
-      string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | NodeFor(n, l, s) -> "for (Node " ^ n ^ " in " ^ l ^ ") " ^ string_of_stmt s
-  | EdgeFor(e, l, s) -> "for (Edge " ^ e ^ " in " ^ l ^ ") " ^ string_of_stmt s
-  | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-  | Hatch(nl, f, el, s) -> "hatch " ^ nl ^ 
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
-  | Synch(l, stmts) -> "synch " ^ l ^ 
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
+  | Nodexpr -> ""
 
 let string_of_typ = function
     Int -> "int"
@@ -126,15 +117,33 @@ let string_of_typ = function
 let string_of_vdecl = function
 | Dec(t, id) -> string_of_typ t ^ " " ^ id ^ ";\n"
 | Decinit(t, id, e) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
+let rec string_of_stmt = function
+    Block(stmts) ->
+      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
+  | Expr(expr) -> string_of_expr expr ^ ";\n";
+  | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
+  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
+  | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
+      string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
+  | For(t, n, e, s) -> "for (" ^ string_of_typ t ^ " " ^ n ^ " in " ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | Hatch(nl, f, el, s) -> "hatch " ^ string_of_expr nl ^ " " ^
+      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ") " ^ string_of_stmt s
+  | Synch(l, stmt) -> "synch " ^ l ^ " " ^ string_of_stmt stmt ^ "\n"
+  | LoclBind(b) -> string_of_vdecl b
+  | BlockEnd -> "BlockEnd\n"
+ 
+
 
 let string_of_fdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
   fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
   ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
-let string_of_program (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs)
+let string_of_progpart = function
+| FuncDecl(f) -> string_of_fdecl f
+| GlobBind(b) -> string_of_vdecl b
+let string_of_program (progparts) =
+  String.concat "" (List.map string_of_progpart progparts) 

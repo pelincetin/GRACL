@@ -1,0 +1,83 @@
+void printEdgeList(EdgeList el) {
+    /*for (Edge e in el) {
+        print(e.data());
+    }*/
+    
+    int i = el.length_EL();
+    while (i > 0){
+        Edge e = el.removeFirst_EL();  //This call segfaults
+        print(e.start().data());  
+        el.appendEdge(e);
+        i = i - 1;
+    }
+}
+
+int main() {
+    //Make two nodes to be start and end for edge
+    String hello = "Hello";
+    String goodbye = "Goodbye";
+    String yo = "Yo";
+    Graph g = createGraph(100);
+    Node n1 = g.createNode(hello);
+    Node n2 = g.createNode(goodbye);
+    Node n3 = g.createNode(yo);
+    Edge e1 = g.addEdge(n1, n2, 15.3);
+    Edge e2 = g.addEdge(n2, n1, 3.7);
+    Edge e3 = g.addEdge(n3, n2, 4.8);
+    bool success = True;
+
+    EdgeList el = createEdgeList();
+    if (!el.empty_EL()) {
+        success = False; 
+    }
+    el.appendEdge(e1);
+    el.prependEdge(e2);
+    if (!(el.length_EL()==2)) {
+        success = False; 
+    }
+    el.prependEdge(e3);
+    if (!(el.length_EL()==3)) {
+        success = False; 
+    }
+    
+    el.removeFirst_EL();
+    print("After remove first (list should be goodbye hello): ");
+    printEdgeList(el);
+    if (!(el.length_EL()==2)) {
+        success = False; 
+    }
+
+    el.prependEdge(e3);
+    el.removeLast_EL();
+    print("After remove last (list should be yo goodbye): ");
+    printEdgeList(el);
+    if (!(el.length_EL()==2)) {
+        success = False; 
+    }
+
+    el.removeEdge(e1);
+    print("After remove edge (list should be yo goodbye): ");
+    printEdgeList(el); 
+    if (!(el.length_EL()==2)) {
+        success = False; 
+    }
+
+    el.removeEdge(e2);
+    if (!(el.length_EL()==1)) {
+        success = False; 
+    }
+
+    el.removeEdge(e3);
+    if (!el.empty_EL()) {
+        success = False; 
+    }
+
+    if (success) {
+        print("SUCCESS");
+    }
+    else {
+        print("FAILURE");
+    }
+
+    return 0;
+}

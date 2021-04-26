@@ -5,7 +5,7 @@ void printNodeList(struct NodeList* node_list) {
     struct NodeListItem *current = malloc(sizeof(struct NodeListItem));
     current = node_list->head;
     while (current != NULL) {
-        printf("%s\n", current->node->data); 
+        printf("id: %d data: %s\n", current->node->id, current->node->data); 
         current = current->next;
     }
 }
@@ -14,6 +14,7 @@ void printNode (struct Node* node) {
     printf("%s\n", node->visited ? "true" : "false");
     printf("%d\n", node->id);
     printf("%s", node->data);
+    return;
 }
 
 void printEdge (struct Edge* edge) {

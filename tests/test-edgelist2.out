@@ -2,11 +2,12 @@ Empty should be true:
 true
 Append edge with start 'hello'
 Prepend edge with start 'goodbye'
+List should be goodbye hello:
+Goodbye
+Hello
 Weight of head should be 3.7:
 3.700000
 Weight of tail should be 15.3:
 15.300000
 Length should be 2:
 2
-Prepend edge with start 'goodbye'
-Append edge with start 'hello'
