@@ -83,7 +83,6 @@ int main(){
     deleteInt(it, node5);
     deleteInt(it, node6);
     deleteInt(it, node7);
-    deleteInt(it, node8);
     deleteInt(it, node9);
     deleteInt(it, node10);
     deleteInt(it, node10); // try deleting same node (added to it twice) twice
@@ -92,13 +91,27 @@ int main(){
     if (inInt(it, node1)) {
         success = false;
     }
-    if (length_NL(intKeys(it)) != 0) {
+    if (length_NL(intKeys(it)) != 1) {
         success = false;
     }
 
     // test making an dt with a size of 0 or smaller
     //struct IntTable* it2 = createIntTable(0);
     //struct IntTable* it3 = createIntTable(-1);
+
+    removeNodeGraph(g, node8);
+    if (!inInt(it, node8)) {
+        success = false;
+    }
+    if (_getInt(it, node8) != 8) {
+        success = false;
+    } 
+    // line should fault out 
+    //_insertInt(it, node8, 18);
+    deleteInt(it, node8);
+    if (inInt(it, node8)) {
+        success = false;
+    }   
 
     if (success) {
         printf("SUCCESS\n");

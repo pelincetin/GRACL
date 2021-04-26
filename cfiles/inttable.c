@@ -27,7 +27,7 @@ int _getInt(struct IntTable* it, struct Node* n) {
     struct IntTableItem* start;
     start = &it->arr[hashIndex];
     while (start) {
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if (start->entry && (start->entry->key->id == n->id)) {
             return start->entry->value;
         }
         else {
@@ -88,7 +88,7 @@ bool inInt(struct IntTable* it, struct Node* n) {
     int hashIndex = hashCode_it(it, n);
     struct IntTableItem* start = &it->arr[hashIndex];
     while (start) {
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if (start->entry && (start->entry->key->id == n->id)) {
             return true;
         }
         else {
@@ -111,7 +111,7 @@ int deleteInt(struct IntTable* it, struct Node* n) {
     prev = NULL;
     while (start) {
         // find node to delete
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if (start->entry && (start->entry->key->id == n->id)) {
             if (prev == NULL) { // start of list
                 it->arr[hashIndex] = *start->next;
             }
