@@ -62,17 +62,6 @@ int main()
         success = false;
     }
 
-    // head_NL
-    // tail_NL
-    // removeFirst_NL
-    // removeLast_NL
-    // prependNode
-    // empty_NL
-    // length_NL
-    // appendNode
-    // removeNode
-    // includesNode
-    // neighbors
     struct Node* node3 = createNode(g, "A");
     struct Node* node4 = createNode(g, "B");
     struct Node* node5 = createNode(g, "C");  
