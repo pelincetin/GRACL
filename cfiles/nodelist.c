@@ -129,7 +129,7 @@ int removeNode(struct NodeList* node_list, struct Node* e) {
     } else {
         prev = head->prev;
         while (head) {
-            if (nodeEquals(e, head->node)) {
+            if (e->id == head->node->id) {
                 if (prev) {
                     next = head->next;
                     prev->next = next;

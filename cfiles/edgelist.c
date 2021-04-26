@@ -107,7 +107,8 @@ int removeEdge(struct EdgeList* edge_list, struct Edge* e) {
     } else {
         prev = head->prev;
         while (head) {
-            if (edgeEquals(e, head->edge)) {
+            bool equal = (e->weight == head->edge->weight) && (e->start->id == head->edge->start->id) && (e->end->id == head->edge->end->id);
+            if (equal) {
                 if (prev) {
                     next = head->next;
                     prev->next = next;

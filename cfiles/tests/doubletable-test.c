@@ -74,6 +74,12 @@ int main(){
     if ((get1 != 1.0) || (get8 != 8.0) || (get3 != 3.0)) {
         success = false;
     }
+
+    removeNodeGraph(g, node4);
+    if(!inDouble(dt, node4)){
+        success = false;
+    }
+
     
     // test delete
     deleteDouble(dt, node1);

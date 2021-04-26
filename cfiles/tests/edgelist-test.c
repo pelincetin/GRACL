@@ -78,6 +78,8 @@ int main() {
     printEdge(head_EL(el));
     printf("\n");
 
+    removeEdge(el, e4);
+    removeEdgeGraph(g, e5);
     removeFirst_EL(el);
     //Breaks the program, should print prependEdge: Edge  deleted
     //prependEdge(el, e4);
@@ -87,7 +89,7 @@ int main() {
     printEdge(head_EL(el));
     printf("\n");
 
-    removeEdge(el, e5);
+    //removeEdge(el, e5);
     printEdge(tail_EL(el));
     printf("\n");
 

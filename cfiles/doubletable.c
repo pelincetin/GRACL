@@ -27,7 +27,7 @@ double _getDouble(struct DoubleTable* dt, struct Node* n) {
     struct DoubleTableItem* start;
     start = &dt->arr[hashIndex];
     while (start) {
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if ((start->entry) && (start->entry->key->id == n->id)) {
             return start->entry->dub;
         }
         else {
@@ -89,7 +89,7 @@ bool inDouble(struct DoubleTable* dt, struct Node* n) {
     struct DoubleTableItem* start;
     start = &dt->arr[hashIndex];
     while (start) {
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if (start->entry && start->entry->key->id == n->id) {
             return true;
         }
         else {
@@ -112,7 +112,7 @@ int deleteDouble(struct DoubleTable* dt, struct Node* n) {
     prev = NULL;
     while (start) {
         // find node to delete
-        if (start->entry && nodeEquals(start->entry->key, n)) {
+        if (start->entry && start->entry->key->id == n->id) {
             if (prev == NULL) { // start of list
                 dt->arr[hashIndex] = *start->next;
             }
