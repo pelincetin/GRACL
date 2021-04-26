@@ -12,7 +12,7 @@ int normalDFS(Node current, Node goal, NodeList myPath, NodeList path) {
     if (!done && !goal_found) {
         myPath.appendNode(current);
         if (goalTest(goal, current)) { 
-            print("Found goal, goal path:"); 
+            //print("Found goal, goal path:"); 
             for (Node n in myPath) {
                 print(n.data());
             }
@@ -40,14 +40,14 @@ int normalDFS(Node current, Node goal, NodeList myPath, NodeList path) {
 }
 
 void normalDFS_start(Node current, Node goal, NodeList myPath, NodeList path){
-    print("Thread hatched: ");
+    //print("Thread hatched: ");
     NodeList individual_nl = createNodeList();
     for (Node n in myPath) {
         individual_nl.appendNode(n);
     }
     updateVisited(current, True);
     normalDFS(current, goal, individual_nl, path);
-    print("Thread complete.");
+    //print("Thread complete.");
 }
 
 int main() {
