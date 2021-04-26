@@ -1,7 +1,7 @@
 #!/bin/sh
 
-#make clean
-#make
+make clean
+make
 
 for i in {1..10}
     # get the time in miliseconds for normaldfs

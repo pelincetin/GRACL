@@ -160,7 +160,7 @@ let check (program) =
         Expr e -> SExpr (expr st e)
       | If(p, b1, b2) -> SIf(check_bool_expr st p, check_stmt st b1, check_stmt st b2)
       | While(p, s) -> SWhile(check_bool_expr st p, check_stmt st s)
-      | Return e -> let (t, e') = expr st e in     (* TODO: DO WE REQUIRE RETURN STATEMENTS? SHOULD WE CHECK? *)
+      | Return e -> let (t, e') = expr st e in    
         if t = func.typ then SReturn (t, e') 
         else raise (
 	        Failure ("return gives " ^ string_of_typ t ^ " expected " ^
@@ -216,12 +216,6 @@ let check (program) =
         | _ -> raise (Failure ("Cannot synch with " ^ string_of_typ typ ^ " type variable " ^ id))
 
 
-
-      (* TODO:
-      | NodeFor 
-      | EdgeFor
-        *)
-
     in (* body of check_function *)
     { styp = func.typ;
       sfname = func.fname;
@@ -235,7 +229,7 @@ let check (program) =
     }
 in
 
-let checkGlobal =  (* TODO: ADD TO LRM HOW GLOBALS CAN BE INITIALIZED/ARE DEFAULT *)
+let checkGlobal = 
     let rec constexpr = function
         Literal  l -> (Int, SLiteral l)
       | Fliteral l -> (Double, SFliteral l)

@@ -1,0 +1,7 @@
+int main() {
+    int big = 2147483647;
+    int small = 1;
+    printi(big);
+    printi(big+small); //This results in overflow
+    return 0;
+}
