@@ -1,0 +1,67 @@
+bool threads_done = false; 
+
+bidirectional_search(Node start) {
+    NodeList path = createNodeList();
+    path.appendNode(start);
+    NodeList to_visit = createNodeList();
+    bfs(start, path, to_visit);
+}
+
+bfs(start, visited, to_visit) {
+    path = createNodeList();
+    for (Node n in visited) {
+        path.append(n);
+    }
+    for (Node n in start.neighbors()) {
+        if (!visited(n) && !threads_done) {
+            to_visit.appendNode(n);
+        }
+        else {
+            threads_done = True;
+            print("Threads collide");
+            path.appendNode(n);
+            for (Node n in path) {
+                print(n.data())
+            } 
+        }
+    }
+    if (!threads_done) {
+        Node next = removeFirst_NL(to_visit);
+        synch next {
+            updateVisited(next, True);
+        }
+        path.appendNode(next);
+        bfs(next, path, to_visit);
+    }
+}
+
+
+
+int main() {
+    Graph g;
+
+    Node node1;
+    Node node2;
+
+    Edge e1;
+    Edge e2;
+
+    g = createGraph(12);
+    node1 = g.createNode("A");
+    node2 = g.createNode("B");
+
+    e1 = g.addEdge(node1, node2, 14.0);
+    e2 = g.addEdge(node2, node1, 13.0);
+
+    Node start = node1;
+    Node goal = node2;
+    updateVisited(goal, True);
+    updateVisited(start, True);
+    NodeList starters = createNodeList();
+    starters.appendNode(start);
+    starters.appendNode(goal);
+
+    hatch starters bidirectional_search() {
+        print("Parent process waiting for threads to join...")'
+    } 
+}
