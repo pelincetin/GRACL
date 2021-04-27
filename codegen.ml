@@ -476,7 +476,7 @@ let translate (globals, functions) =
         let length_load = L.build_load length_alloca "length" builder in
         let sext = L.build_sext length_load i64_t "sext_length" builder in
         let mul = L.build_mul numval sext "bytes" builder in
-        let malloc = L.build_call malloc_func [| mul |] "malloc" builder (*L.build_array_malloc string_t mul "malloc" builder*) in 
+        let malloc = L.build_call malloc_func [| mul |] "malloc" builder in 
         let bitcast = L.build_bitcast malloc typ "cast_mem" builder in
       bitcast in
       let _ = L.build_store (build_malloc (L.const_int i64_t 8) (L.pointer_type i64_t)) pthreads_alloca builder in

@@ -66,7 +66,6 @@ let function_decls =
         (Void, "appendNode", [(Nodelist, "nl"); (Node, "n")]);
         (Void, "prependNode", [(Nodelist, "nl"); (Node, "n")]);
         (Bool, "includesNode", [(Nodelist, "nl"); (Node, "n")]);
-        (Nodelist, "neighbors", [(Node, "node")]);
 
         (* Edgelist Functions *)
         (Edge, "head_EL", [Edgelist, "el"]);
@@ -88,7 +87,7 @@ let function_decls =
         (Bool, "inInt", [(Inttable, "it"); (Node, "n")]);
 
         (* Doubletable Functions *)
-        (Int, "hashCode_it", [(Doubletable, "dt"); (Node, "n")]);
+        (Int, "hashCode_dt", [(Doubletable, "dt"); (Node, "n")]);
         (Double, "_getDouble", [(Doubletable, "dt"); (Node, "n")]);
         (Void, "_insertDouble", [(Doubletable, "dt"); (Node, "n"); (Double, "d")]);
         (Nodelist, "doubleKeys", [Doubletable, "dt"]);
